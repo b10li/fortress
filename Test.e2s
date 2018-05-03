@@ -1,0 +1,174 @@
+S_ProjectSET
+Version : 0.16.81
+InputMap : E:\USM\Maps\Test\Test.scx
+OutputMap : E:\USM\Maps\Test\Test_Out.scx
+euddraftuse : True
+loadfromCHK : True
+UsedSetting0 : True
+UsedSetting1 : True
+UsedSetting2 : False
+UsedSetting3 : False
+UsedSetting4 : True
+UsedSetting5 : False
+UsedSetting6 : True
+UsedSetting7 : True
+UsedSetting8 : True
+EUDEditorDebug : False
+epTraceDebug : False
+triggerSetTouse : True
+triggerPlayer : 7
+E_ProjectSET
+S_DatEditSET
+0,0,156,34
+0,22,109,524288
+E_DatEditSET
+S_FireGraftSET
+E_FireGraftSET
+S_BtnSET
+E_BtnSET
+S_ReqSET
+E_ReqSET
+S_BinEditSET
+projectsceneDataCount : 1
+projectsceneData 0binDataCount : 26
+E_BinEditSET
+S_SoundPlayerSET
+Soundinterval : 3
+E_SoundPlayerSET
+S_GRPEditorSET
+GRPEditorDATCount : 0
+GRPEditorUsingDATCount : 0
+GRPEditorUsingindexDATCount : 0
+E_GRPEditorSET
+S_TileSET
+ProjectTileUseFile : False
+ProjectTileSetFileName : 
+ProjectTIleMSetCount : 24321
+ProjectTIleMSetArray : 
+ProjectTileSetDataCount : 0
+ProjectMTXMDATACount : 16384
+ProjectMTXMDATAArray : 
+E_TileSET
+S_SCDBSet
+SCDBDeath : 
+SCDBLoc : 
+SCDBLocLoad : 
+SCDBUse : False
+SCDBSerial : 0
+E_SCDBSet
+S_FileManagerSET
+stattextdicCount : 0
+wireuse : True
+E_FileManagerSET
+S_TriggerEditorSET
+&AddText&
+Type:23,False,False
+
+ElementsCount:0
+END
+
+&functions&
+Type:15,False,False
+ElementsCount:0
+END
+
+&GlobalVar&
+Type:0,False,False
+ElementsCount:0
+END
+
+&RawTriggers&
+Type:25,False,False
+ElementsCount:1
+Type:24,False,False
+1
+ElementsCount:2
+Type:26,False,False
+And
+ElementsCount:1
+Type:7,False,False
+con:Command
+13ஐ0ஐ1ஐ115
+ElementsCount:0
+END
+END
+Type:27,False,False
+ElementsCount:4
+Type:8,False,False
+act:MoveLocation
+1ஐ115ஐ13ஐ64
+ElementsCount:0
+END
+Type:8,False,False
+act:RemoveUnitAt
+1ஐ115ஐ1ஐ13
+ElementsCount:0
+END
+Type:8,False,False
+act:CreateUnit
+1ஐ156ஐ1ஐ13
+ElementsCount:0
+END
+Type:8,False,False
+act:PreserveTrigger
+None
+ElementsCount:0
+END
+END
+END
+END
+
+&onPluginStart&
+Type:0,False,False
+ElementsCount:0
+END
+
+&beforeTriggerExec&
+Type:0,False,False
+ElementsCount:0
+END
+
+&afterTriggerExec&
+Type:0,False,False
+ElementsCount:0
+END
+
+
+E_TriggerEditorSET
+S_PluginSET
+soundstopper : False
+scmloader : False
+noAirColsion : False
+unlimiter : False
+keepSTR : False
+eudTurbo : False
+iscriptPatcher : 
+iscriptPatcheruse : False
+unpatcher : 
+unpatcheruse : False
+nqcuse : False
+nqcunit : 58
+nqclocs : 
+nqccommands : 
+grpinjectoruse : False
+grpinjector_arrow : 
+grpinjector_drag : 
+grpinjector_illegal : 
+dataDumperuse : False
+dataDumper_user : 
+dataDumper_grpwire : 
+dataDumper_tranwire : 
+dataDumper_wirefram : 
+dataDumper_cmdicons : 
+dataDumper_stat_txt : 
+dataDumper_AIscript : 
+dataDumper_iscript : 
+dataDumper_grpwire_f : 0
+dataDumper_tranwire_f : 0
+dataDumper_wirefram_f : 0
+dataDumper_cmdicons_f : 0
+dataDumper_stat_txt_f : 0
+dataDumper_AIscript_f : 0
+dataDumper_iscript_f : 0
+extraedssetting : 
+E_PluginSET

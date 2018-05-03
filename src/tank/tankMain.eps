@@ -1,0 +1,58 @@
+import util.utilEud;
+import tank.tankAim;
+
+const unitTank = 5;
+const loc1 = $L('loc1');
+const tankEpd = EUDArray(6);
+
+function newTank(targetPlayer)
+{
+	tankEpd[targetPlayer] = epdread_epd(EPD(0x628438));
+	CreateUnit(1, unitTank, loc1+1, targetPlayer);
+
+	tankAim.setAngle(tankEpd[targetPlayer], 100); //init
+}
+
+function getTankEpd(targetPlayer)
+{
+	return tankEpd;
+}
+
+function controlTank(targetPlayer)
+{// 키인식으로 MurakamiShiinaQC.py
+    const angleNum = 10; //단위
+    const gaugeUnit = 1; //unitid
+
+    const unitEpd = getTankEpd(targetPlayer);
+    const angle = tankAim.getAngle(unitEpd);
+    const deathUnit = 0;
+    const locID = $L('loc_tank');
+
+    tankAim.showLaunchAngle(unitEpd);
+
+    if(1 == utilEud.getDeath(targetPlayer, deathUnit))
+    {// angle UP
+        tankAim.setAngle(unitEpd, angle + angleNum);
+    }
+    else if(2 == utilEud.getDeath(targetPlayer, deathUnit))
+    {// angle DOWN
+        tankAim.setAngle(unitEpd, angle - angleNum);
+    }
+        //발사 상태가 되고, 게이지가 해당 위치로 이동 하고
+    	//다시 발사를 누르면, 발사
+    	//아무것도 하지 않을경우 최대 출력 발사 
+    else if (4 == utilEud.getDeath(targetPlayer, deathUnit)
+    	&& Command(targetPlayer, Exactly, 0, gaugeUnit))
+    {// shoot 1st key press
+    	const x,y = utilEud.getUnitXY(unitEpd);
+    	utilEud.moveLocationXY(locID, x, y);
+    	CreateUnit(1, gaugeUnit, locID+1, targetPlayer);
+    	Order(gaugeUnit, targetPlayer, 'Anywhere', Move, $L('loc_aim'));
+    }
+    else if (4 == utilEud.getDeath(targetPlayer, deathUnit)
+    	&& Command(targetPlayer, Exactly, 1, gaugeUnit))
+    {// shoot 2nd key press
+    	RemoveUnit(gaugeUnit, targetPlayer);
+    	//shoot
+    }
+}

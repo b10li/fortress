@@ -1,0 +1,52 @@
+function moveLocationXY(locID, x, y) {
+    dwwrite_epd(EPD(0x58DC60) + 5 * locID, x);
+    dwwrite_epd(EPD(0x58DC60) + 5 * locID + 1, y);
+    dwwrite_epd(EPD(0x58DC60) + 5 * locID + 2, x);
+    dwwrite_epd(EPD(0x58DC60) + 5 * locID + 3, y);
+}
+
+function setpcolor(pnum, color) {
+    const pcolor_dst = 0x581D76 + 8 * pnum;
+    const mcolor_dst = 0x581DD6 + pnum;
+    bwrite(pcolor_dst, color);
+    bwrite(mcolor_dst, color);
+}
+
+function getUnitXY(unitEpd)
+{
+    return dwbreak(dwread_epd(unitEpd + 0x28/4));
+}
+
+function getOrderID(unitEpd)
+{
+    return dwbreak(dwread_epd(unitEpd + 0x4C / 4))[[3]];
+}
+
+function getPlayerID(unitEpd)
+{
+    return dwbreak(dwread_epd(unitEpd + 0x4C / 4))[[2]];
+}
+
+function setOrderID(unitEpd, orderID)
+{
+	const player = getPlayerID(unitEpd);
+	SetMemoryEPD(unitEpd + 0x4C / 4, SetTo, player + orderID * 256);
+}
+
+/*
+function getDeath(targetPlayer, targetUnit)
+{
+	var d=0;
+	for(var i=512; i>1; i=i/2)
+		if(Deaths(targetPlayer, AtLeast, d+i, targetUnit))
+			d = d+i;
+
+	return d;
+}*/
+function getDeath(targetPlayer, targetUnit)
+{
+	for(var i=0; i<128; i++)
+		if(Deaths(targetPlayer, Exactly, i, targetUnit))
+			return i;
+}
+

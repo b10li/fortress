@@ -1,0 +1,12 @@
+import tank.tankMain;
+import tank.tankAim;
+
+function onPluginStart() {
+	tankMain.newTank(0);
+}
+ //
+
+function beforeTriggerExec() {
+	tankMain.controlTank(0);
+	tankAim.showLaunchAngle(0)
+}
