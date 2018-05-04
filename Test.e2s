@@ -1,5 +1,5 @@
 S_ProjectSET
-Version : 0.16.81
+Version : 0.16.9
 InputMap : E:\USM\Maps\Test\Test.scx
 OutputMap : E:\USM\Maps\Test\Test_Out.scx
 euddraftuse : True
@@ -19,8 +19,8 @@ triggerSetTouse : True
 triggerPlayer : 7
 E_ProjectSET
 S_DatEditSET
-0,0,156,34
-0,22,109,524288
+2,0,128,-58
+4,7,233,15
 E_DatEditSET
 S_FireGraftSET
 E_FireGraftSET
@@ -62,54 +62,54 @@ wireuse : True
 E_FileManagerSET
 S_TriggerEditorSET
 &AddText&
-Type:23,False,False
+Type:23,False,False,False
 
 ElementsCount:0
 END
 
 &functions&
-Type:15,False,False
+Type:15,False,False,False
 ElementsCount:0
 END
 
 &GlobalVar&
-Type:0,False,False
+Type:0,False,False,False
 ElementsCount:0
 END
 
 &RawTriggers&
-Type:25,False,False
+Type:25,False,False,False
 ElementsCount:1
-Type:24,False,False
+Type:24,False,False,False
 1
 ElementsCount:2
-Type:26,False,False
+Type:26,False,False,False
 And
 ElementsCount:1
-Type:7,False,False
+Type:7,False,False,False
 con:Command
 13ஐ0ஐ1ஐ115
 ElementsCount:0
 END
 END
-Type:27,False,False
+Type:27,False,False,False
 ElementsCount:4
-Type:8,False,False
+Type:8,False,False,False
 act:MoveLocation
 1ஐ115ஐ13ஐ64
 ElementsCount:0
 END
-Type:8,False,False
+Type:8,False,False,False
 act:RemoveUnitAt
 1ஐ115ஐ1ஐ13
 ElementsCount:0
 END
-Type:8,False,False
+Type:8,False,False,False
 act:CreateUnit
 1ஐ156ஐ1ஐ13
 ElementsCount:0
 END
-Type:8,False,False
+Type:8,False,False,False
 act:PreserveTrigger
 None
 ElementsCount:0
@@ -119,17 +119,17 @@ END
 END
 
 &onPluginStart&
-Type:0,False,False
+Type:0,False,False,False
 ElementsCount:0
 END
 
 &beforeTriggerExec&
-Type:0,False,False
+Type:0,False,False,False
 ElementsCount:0
 END
 
 &afterTriggerExec&
-Type:0,False,False
+Type:0,False,False,False
 ElementsCount:0
 END
 

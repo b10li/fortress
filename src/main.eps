@@ -1,12 +1,59 @@
 import tank.tankMain;
 import tank.tankAim;
+import util.utilEud;
+import physics;
 
 function onPluginStart() {
+		SetMemory(0x661E90, SetTo, 65537);
+		SetMemory(0x661E94, SetTo, 65537);
+		SetMemory(0x663228, SetTo, 67375620);
+		SetMemory(0x664094, SetTo, 1512046592);
+		SetMemory(0x6643E4, SetTo, 545261572);
+		SetMemory(0x66EFEC, SetTo, 89);
+		SetMemory(0x6CA418, SetTo, 19005671);
 	tankMain.newTank(0);
 }
- //
 
+//function testControl(unitEpd);
 function beforeTriggerExec() {
-	tankMain.controlTank(0);
-	tankAim.showLaunchAngle(0)
+	if(Command(0, Exactly, 1, 5));
+		tankMain.controlTank(0);
 }
+/*
+function testControl(unitEpd)
+{
+	const deathUnit = 0;
+	const moveNum = 1;
+	const targetPlayer = utilEud.getPlayerID(unitEpd);
+	const vx, vy = physics.getVxy(unitEpd);
+	SetResources(0, SetTo, vx, Ore); //x 미네랄
+	SetResources(0, SetTo, vy, Gas); //y 가스
+	const death = utilEud.getDeath(targetPlayer, deathUnit);
+
+
+	if(1 == death) physics.setVxy(unitEpd, vx, vy - moveNum); // up I
+	else if(2 == death) physics.setVxy(unitEpd, vx, vy + moveNum); //down K
+	else if(4 == death) physics.setVxy(unitEpd, vx - moveNum, vy); //left J
+	else if(8 == death) physics.setVxy(unitEpd, vx + moveNum, vy); //right L
+
+}
+function Test()
+{
+	// 중앙에 마린 생성 및 초기화
+	if(Command(0, Exactly, 0, 8))
+	{
+		const epd = epdread_epd(EPD(0x628438));
+		CreateUnit(1, 8, 'Anywhere', 0);
+		physics.setVxy(epd, 0, 0);
+	}
+	// 선택한 유닛 값을 읽음
+	const unitepd = dwread_epd_safe(EPD(0x6284E8));
+	if(unitepd != 0)
+	{
+		// 유닛 xy 속도 값 조정 
+		testControl(EPD(unitepd));
+		//유닛 이동
+		physics.renderUnit(EPD(unitepd));
+	}
+}
+*/

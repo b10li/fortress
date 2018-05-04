@@ -122,61 +122,54 @@ def _LSH(l, r):
 
 # (Line 1) import util.utilEud;
 from util import utilEud
-# (Line 2) const dotUnit = 217;
-dotUnit = _CGFW(lambda: [217], 1)[0]
-# (Line 4) function setAngle(unitEpd, angle)
-# (Line 5) {
+# (Line 3) function getVxy(unitEpd)
+# (Line 4) {
 @EUDFunc
-def f_setAngle(unitEpd, angle):
-    # (Line 6) dwwrite_epd(unitEpd + 0xFC/4, (360 + angle)%360);
-    f_dwwrite_epd(unitEpd + 0xFC // 4, (360 + angle) % 360)
-    # (Line 7) }
-    # (Line 9) function getAngle(unitEpd)
+def f_getVxy(unitEpd):
+    # (Line 5) const vx = dwread_epd(unitEpd + 0xF8/4);
+    vx = f_dwread_epd(unitEpd + 0xF8 // 4)
+    # (Line 6) const vy = dwread_epd(unitEpd + 0xFC/4);
+    vy = f_dwread_epd(unitEpd + 0xFC // 4)
+    # (Line 8) return vx, vy;
+    EUDReturn(vx, vy)
+    # (Line 9) }
+    # (Line 11) function setVxy(unitEpd, vx, vy)
 
-# (Line 10) {
+# (Line 12) {
 @EUDFunc
-def f_getAngle(unitEpd):
-    # (Line 11) return dwread_epd(unitEpd + 0xFC/4);
-    EUDReturn(f_dwread_epd(unitEpd + 0xFC // 4))
-    # (Line 12) }
-    # (Line 14) function showLaunchAngle(unitEpd)
+def f_setVxy(unitEpd, vx, vy):
+    # (Line 13) dwwrite_epd(unitEpd + 0xF8/4, vx);
+    f_dwwrite_epd(unitEpd + 0xF8 // 4, vx)
+    # (Line 14) dwwrite_epd(unitEpd + 0xFC/4, vy);
+    f_dwwrite_epd(unitEpd + 0xFC // 4, vy)
+    # (Line 15) }
+    # (Line 17) function gravityPhysics(unitEpd)
 
-# (Line 15) {// 해당 턴의, 멈춰있는 플레이어 유닛의 에임(발사각도) 를 보여줌
+# (Line 18) {
 @EUDFunc
-def f_showLaunchAngle(unitEpd):
-    # (Line 16) const targetPlayer = utilEud.getPlayerID(unitEpd);
-    targetPlayer = utilEud.f_getPlayerID(unitEpd)
-    # (Line 18) const locID = $L('loc_aim');
-    locID = GetLocationIndex('loc_aim')
-    # (Line 19) const angle = getAngle(unitEpd);
-    angle = f_getAngle(unitEpd)
-    # (Line 20) const unitX, unitY = utilEud.getUnitXY(unitEpd);
-    unitX, unitY = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
-    # (Line 22) RemoveUnit(dotUnit, targetPlayer);
-    DoActions(RemoveUnit(dotUnit, targetPlayer))
-    # (Line 23) for(var i=1; i<28; i++)
-    i = EUDVariable()
-    i << (1)
-    if EUDWhile()(i >= 28, neg=True):
-        def _t2():
-            i.__iadd__(1)
-        # (Line 24) {
-        # (Line 25) const distanceX, distanceY = lengthdir(i*(8), angle);//단위: 반칸 16x16
-        distanceX, distanceY = List2Assignable([f_lengthdir(i * (8), angle)])
-        # (Line 26) utilEud.moveLocationXY(locID, unitX + distanceX, unitY + distanceY);
-        utilEud.f_moveLocationXY(locID, unitX + distanceX, unitY + distanceY)
-        # (Line 27) CreateUnit(1, dotUnit, locID+1, targetPlayer);
-        DoActions(CreateUnit(1, dotUnit, locID + 1, targetPlayer))
-        # (Line 28) }
-        # (Line 30) }
-        EUDSetContinuePoint()
-        _t2()
-    EUDEndWhile()
-    # (Line 32) function clearAngle(targetPlayer)
+def f_gravityPhysics(unitEpd):
+    # (Line 20) }
+    # (Line 22) function renderUnit(unitEpd)
+    pass
 
-# (Line 33) {
+# (Line 23) {// move unit
 @EUDFunc
-def f_clearAngle(targetPlayer):
-    # (Line 34) RemoveUnit(dotUnit, targetPlayer);
-    DoActions(RemoveUnit(dotUnit, targetPlayer))
-    # (Line 35) }
+def f_renderUnit(unitEpd):
+    # (Line 24) const vx, vy = getVxy(unitEpd);
+    vx, vy = List2Assignable([f_getVxy(unitEpd)])
+    # (Line 25) if(vx != 0 || vy != 0)
+    if EUDIf()(EUDSCOr()(vx == 0, neg=True)(vy == 0, neg=True)()):
+        # (Line 26) {
+        # (Line 27) const unitX, unitY = utilEud.getUnitXY(unitEpd);
+        unitX, unitY = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
+        # (Line 28) const unitPos = (unitX + vx) + (unitY + vy)*65536;
+        unitPos = (unitX + vx) + (unitY + vy) * 65536
+        # (Line 29) utilEud.moveLocationXY($L('locPre'), unitX, unitY);
+        utilEud.f_moveLocationXY(GetLocationIndex('locPre'), unitX, unitY)
+        # (Line 30) utilEud.moveLocationXY($L('locDst'), unitX + vx, unitY + vy);
+        utilEud.f_moveLocationXY(GetLocationIndex('locDst'), unitX + vx, unitY + vy)
+        # (Line 31) MoveUnit(1, utilEud.getUnitType(unitEpd), utilEud.getPlayerID(unitEpd), $L('locPre')+1, $L('locDst')+1);
+        DoActions(MoveUnit(1, utilEud.f_getUnitType(unitEpd), utilEud.f_getPlayerID(unitEpd), GetLocationIndex('locPre') + 1, GetLocationIndex('locDst') + 1))
+        # (Line 32) }
+        # (Line 33) }
+    EUDEndIf()

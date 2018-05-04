@@ -150,8 +150,8 @@ def f_setpcolor(pnum, color):
 # (Line 16) {
 @EUDFunc
 def f_getUnitXY(unitEpd):
-    # (Line 17) return dwbreak(dwread_epd(unitEpd + 0x28/4));
-    EUDReturn(f_dwbreak(f_dwread_epd(unitEpd + 0x28 // 4)))
+    # (Line 17) return dwbreak(dwread_epd(unitEpd + 0x28/4))[[0,1]];
+    EUDReturn(_SRET(f_dwbreak(f_dwread_epd(unitEpd + 0x28 // 4)), [0, 1]))
     # (Line 18) }
     # (Line 20) function getOrderID(unitEpd)
 
@@ -199,3 +199,19 @@ def f_getDeath(targetPlayer, targetUnit):
         EUDSetContinuePoint()
         _t2()
     EUDEndWhile()
+    # (Line 53) function getUnitType(unitEpd)
+
+# (Line 54) {
+@EUDFunc
+def f_getUnitType(unitEpd):
+    # (Line 55) return dwread_epd(unitEpd + 0x64/4);
+    EUDReturn(f_dwread_epd(unitEpd + 0x64 // 4))
+    # (Line 56) }
+    # (Line 58) function getUnitEnergy(unitEpd)
+
+# (Line 59) {
+@EUDFunc
+def f_getUnitEnergy(unitEpd):
+    # (Line 60) return dwbreak(dwread_epd(unitEpd + 0xA0 / 4))[[5]];
+    EUDReturn(f_dwbreak(f_dwread_epd(unitEpd + 0xA0 // 4))[5])
+    # (Line 61) }

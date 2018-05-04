@@ -15,44 +15,60 @@ function newTank(targetPlayer)
 
 function getTankEpd(targetPlayer)
 {
-	return tankEpd;
+	return tankEpd[targetPlayer];
 }
 
 function controlTank(targetPlayer)
 {// 키인식으로 MurakamiShiinaQC.py
     const angleNum = 10; //단위
-    const gaugeUnit = 1; //unitid
+    const gaugeUnit = 47; //unitid
+    const deathUnit = 0;
 
     const unitEpd = getTankEpd(targetPlayer);
+    const energy = utilEud.getUnitEnergy(unitEpd);
     const angle = tankAim.getAngle(unitEpd);
-    const deathUnit = 0;
+
+    SetResources(0, SetTo, angle, Ore);
+
     const locID = $L('loc_tank');
 
-    tankAim.showLaunchAngle(unitEpd);
+    const orderID = utilEud.getOrderID(unitEpd);
+    const death = utilEud.getDeath(targetPlayer, deathUnit);
+    if(orderID == 6)  // move
+    	tankAim.clearAngle(targetPlayer);
 
-    if(1 == utilEud.getDeath(targetPlayer, deathUnit))
+    if(1 == death)
     {// angle UP
         tankAim.setAngle(unitEpd, angle + angleNum);
+        tankAim.showLaunchAngle(unitEpd);
     }
-    else if(2 == utilEud.getDeath(targetPlayer, deathUnit))
+    else if(2 == death)
     {// angle DOWN
         tankAim.setAngle(unitEpd, angle - angleNum);
+        tankAim.showLaunchAngle(unitEpd);
     }
         //발사 상태가 되고, 게이지가 해당 위치로 이동 하고
     	//다시 발사를 누르면, 발사
     	//아무것도 하지 않을경우 최대 출력 발사 
-    else if (4 == utilEud.getDeath(targetPlayer, deathUnit)
-    	&& Command(targetPlayer, Exactly, 0, gaugeUnit))
-    {// shoot 1st key press
-    	const x,y = utilEud.getUnitXY(unitEpd);
-    	utilEud.moveLocationXY(locID, x, y);
-    	CreateUnit(1, gaugeUnit, locID+1, targetPlayer);
-    	Order(gaugeUnit, targetPlayer, 'Anywhere', Move, $L('loc_aim'));
+    else if (4 == death
+    	&& Accumulate(targetPlayer, Exactly, 0, Gas))
+    {// shoot inital key press
+        //initialize 
+        SetResources(targetPlayer, SetTo, 1, Gas);
+        SetMemoryEPD(unitEpd + 0xA0 / 4, SetTo, 0);
     }
-    else if (4 == utilEud.getDeath(targetPlayer, deathUnit)
-    	&& Command(targetPlayer, Exactly, 1, gaugeUnit))
-    {// shoot 2nd key press
-    	RemoveUnit(gaugeUnit, targetPlayer);
-    	//shoot
+    else if (4 != death
+        && Accumulate(targetPlayer, Exactly, 1, Gas)
+        || energy == 200)
+    {// end key press
+        SetResources(targetPlayer, SetTo, 0, Gas);
+        tankAim.clearAngle(targetPlayer);
+        //shoot()
+    }
+    else if (4 == death
+    	&& Accumulate(targetPlayer, Exactly, 1, Gas))
+    {// shoot key pressing
+        SetMemoryEPD(unitEpd + 0xA0 / 4, Add, 3*0x1000000);
     }
 }
+

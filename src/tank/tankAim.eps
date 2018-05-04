@@ -1,8 +1,9 @@
 import util.utilEud;
+const dotUnit = 217;
 
 function setAngle(unitEpd, angle)
 {
-    dwwrite_epd(unitEpd + 0xFC/4, angle);
+    dwwrite_epd(unitEpd + 0xFC/4, (360 + angle)%360);
 }
 
 function getAngle(unitEpd)
@@ -13,20 +14,22 @@ function getAngle(unitEpd)
 function showLaunchAngle(unitEpd)
 {// 해당 턴의, 멈춰있는 플레이어 유닛의 에임(발사각도) 를 보여줌 
     const targetPlayer = utilEud.getPlayerID(unitEpd);
-    const dotUnit = 47;
+
     const locID = $L('loc_aim');
     const angle = getAngle(unitEpd);
     const unitX, unitY = utilEud.getUnitXY(unitEpd);
-
+    
     RemoveUnit(dotUnit, targetPlayer);
-
-    if(Command(targetPlayer, Exactly, 0, dotUnit))
-    {//멈춰있을때 한번만 실행
-        for(var i=1; i<7; i++)
-        {
-            const distanceX, distanceY = lengthdir(i*32*32, angle);//단위: 반칸 16x16
-            utilEud.moveLocationXY(locID, unitX + distanceX, unitY + distanceY);
-            CreateUnit(1, dotUnit, locID+1, targetPlayer);
-        }
+    for(var i=1; i<28; i++)
+    {
+        const distanceX, distanceY = lengthdir(i*(8), angle);//단위: 반칸 16x16
+        utilEud.moveLocationXY(locID, unitX + distanceX, unitY + distanceY);
+        CreateUnit(1, dotUnit, locID+1, targetPlayer);
     }
+
+}
+
+function clearAngle(targetPlayer)
+{
+    RemoveUnit(dotUnit, targetPlayer);
 }

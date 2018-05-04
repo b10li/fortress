@@ -146,61 +146,83 @@ def f_newTank(targetPlayer):
 # (Line 17) {
 @EUDFunc
 def f_getTankEpd(targetPlayer):
-    # (Line 18) return tankEpd;
-    EUDReturn(tankEpd)
+    # (Line 18) return tankEpd[targetPlayer];
+    EUDReturn(tankEpd[targetPlayer])
     # (Line 19) }
     # (Line 21) function controlTank(targetPlayer)
 
 # (Line 22) {// 키인식으로 MurakamiShiinaQC.py
 @EUDFunc
 def f_controlTank(targetPlayer):
-    # (Line 23) const angleUnit = 10; //단위
-    angleUnit = 10
-    # (Line 24) const gaugeUnit = 1; //unitid
-    gaugeUnit = 1
-    # (Line 26) const unitEpd = getTankEpd(targetPlayer);
-    unitEpd = f_getTankEpd(targetPlayer)
-    # (Line 27) const angle = tankAim.getAngle(unitEpd);
-    angle = tankAim.f_getAngle(unitEpd)
-    # (Line 28) const deathUnit = 0;
+    # (Line 23) const angleNum = 10; //단위
+    angleNum = 10
+    # (Line 24) const gaugeUnit = 47; //unitid
+    gaugeUnit = 47
+    # (Line 25) const deathUnit = 0;
     deathUnit = 0
-    # (Line 29) const locID = $L('loc_tank');
+    # (Line 27) const unitEpd = getTankEpd(targetPlayer);
+    unitEpd = f_getTankEpd(targetPlayer)
+    # (Line 28) const energy = utilEud.getUnitEnergy(unitEpd);
+    energy = utilEud.f_getUnitEnergy(unitEpd)
+    # (Line 29) const angle = tankAim.getAngle(unitEpd);
+    angle = tankAim.f_getAngle(unitEpd)
+    # (Line 31) SetResources(0, SetTo, angle, Ore);
+    DoActions(SetResources(0, SetTo, angle, Ore))
+    # (Line 33) const locID = $L('loc_tank');
     locID = GetLocationIndex('loc_tank')
-    # (Line 31) tankAim.showLaunchAngle(unitEpd);
-    tankAim.f_showLaunchAngle(unitEpd)
-    # (Line 33) if(1 == utilEud.getDeath(targetPlayer, deathUnit))
-    if EUDIf()(1 == utilEud.f_getDeath(targetPlayer, deathUnit)):
-        # (Line 34) {// angle UP
-        # (Line 35) tankAim.setAngle(unitEpd, angle + angleUnit);
-        tankAim.f_setAngle(unitEpd, angle + angleUnit)
-        # (Line 36) }
-        # (Line 37) else if(2 == utilEud.getDeath(targetPlayer, deathUnit))
-    if EUDElseIf()(2 == utilEud.f_getDeath(targetPlayer, deathUnit)):
-        # (Line 38) {// angle DOWN
-        # (Line 39) tankAim.setAngle(unitEpd, angle - angleUnit);
-        tankAim.f_setAngle(unitEpd, angle - angleUnit)
-        # (Line 40) }
-        # (Line 44) else if (4 == utilEud.getDeath(targetPlayer, deathUnit)
-    _t3 = EUDElseIf()
-    # (Line 45) && Command(targetPlayer, Exactly, 0, gaugeUnit))
-    if _t3(EUDSCAnd()(4 == utilEud.f_getDeath(targetPlayer, deathUnit))(Command(targetPlayer, Exactly, 0, gaugeUnit))()):
-        # (Line 46) {// shoot 1st key press
-        # (Line 47) const x,y = utilEud.getUnitXY(unitEpd);
-        x, y = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
-        # (Line 48) utilEud.moveLocationXY(locID, x, y);
-        utilEud.f_moveLocationXY(locID, x, y)
-        # (Line 49) CreateUnit(1, gaugeUnit, locID+1, targetPlayer);
-        DoActions(CreateUnit(1, gaugeUnit, locID + 1, targetPlayer))
-        # (Line 50) Order(gaugeUnit, targetPlayer, 'Anywhere', Move, $L('loc_aim'));
-        DoActions(Order(gaugeUnit, targetPlayer, 'Anywhere', Move, GetLocationIndex('loc_aim')))
-        # (Line 51) }
-        # (Line 52) else if (4 == utilEud.getDeath(targetPlayer, deathUnit)
+    # (Line 35) const orderID = utilEud.getOrderID(unitEpd);
+    orderID = utilEud.f_getOrderID(unitEpd)
+    # (Line 36) const death = utilEud.getDeath(targetPlayer, deathUnit);
+    death = utilEud.f_getDeath(targetPlayer, deathUnit)
+    # (Line 37) if(orderID == 6)  // move
+    if EUDIf()(orderID == 6):
+        # (Line 38) tankAim.clearAngle(targetPlayer);
+        tankAim.f_clearAngle(targetPlayer)
+        # (Line 40) if(1 == death)
+    EUDEndIf()
+    if EUDIf()(1 == death):
+        # (Line 41) {// angle UP
+        # (Line 42) tankAim.setAngle(unitEpd, angle + angleNum);
+        tankAim.f_setAngle(unitEpd, angle + angleNum)
+        # (Line 43) tankAim.showLaunchAngle(unitEpd);
+        tankAim.f_showLaunchAngle(unitEpd)
+        # (Line 44) }
+        # (Line 45) else if(2 == death)
+    if EUDElseIf()(2 == death):
+        # (Line 46) {// angle DOWN
+        # (Line 47) tankAim.setAngle(unitEpd, angle - angleNum);
+        tankAim.f_setAngle(unitEpd, angle - angleNum)
+        # (Line 48) tankAim.showLaunchAngle(unitEpd);
+        tankAim.f_showLaunchAngle(unitEpd)
+        # (Line 49) }
+        # (Line 53) else if (4 == death
     _t4 = EUDElseIf()
-    # (Line 53) && Command(targetPlayer, Exactly, 1, gaugeUnit))
-    if _t4(EUDSCAnd()(4 == utilEud.f_getDeath(targetPlayer, deathUnit))(Command(targetPlayer, Exactly, 1, gaugeUnit))()):
-        # (Line 54) {// shoot 2nd key press
-        # (Line 55) RemoveUnit(gaugeUnit, targetPlayer);
-        DoActions(RemoveUnit(gaugeUnit, targetPlayer))
-        # (Line 57) }
-        # (Line 58) }
+    # (Line 54) && Accumulate(targetPlayer, Exactly, 0, Gas))
+    if _t4(EUDSCAnd()(4 == death)(Accumulate(targetPlayer, Exactly, 0, Gas))()):
+        # (Line 55) {// shoot inital key press
+        # (Line 57) SetResources(targetPlayer, SetTo, 1, Gas);
+        DoActions(SetResources(targetPlayer, SetTo, 1, Gas))
+        # (Line 58) SetMemoryEPD(unitEpd + 0xA0 / 4, SetTo, 0);
+        DoActions(SetMemoryEPD(unitEpd + 0xA0 // 4, SetTo, 0))
+        # (Line 59) }
+        # (Line 60) else if (4 != death
+    _t5 = EUDElseIf()
+    # (Line 61) && Accumulate(targetPlayer, Exactly, 1, Gas)
+    # (Line 62) || energy == 200)
+    if _t5(EUDSCOr()(EUDSCAnd()(4 == death, neg=True)(Accumulate(targetPlayer, Exactly, 1, Gas))())(energy == 200)()):
+        # (Line 63) {// end key press
+        # (Line 64) SetResources(targetPlayer, SetTo, 0, Gas);
+        DoActions(SetResources(targetPlayer, SetTo, 0, Gas))
+        # (Line 65) tankAim.clearAngle(targetPlayer);
+        tankAim.f_clearAngle(targetPlayer)
+        # (Line 67) }
+        # (Line 68) else if (4 == death
+    _t6 = EUDElseIf()
+    # (Line 69) && Accumulate(targetPlayer, Exactly, 1, Gas))
+    if _t6(EUDSCAnd()(4 == death)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
+        # (Line 70) {// shoot key pressing
+        # (Line 71) SetMemoryEPD(unitEpd + 0xA0 / 4, Add, 3*0x1000000);
+        DoActions(SetMemoryEPD(unitEpd + 0xA0 // 4, Add, 3 * 0x1000000))
+        # (Line 72) }
+        # (Line 73) }
     EUDEndIf()

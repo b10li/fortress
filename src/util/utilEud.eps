@@ -14,7 +14,7 @@ function setpcolor(pnum, color) {
 
 function getUnitXY(unitEpd)
 {
-    return dwbreak(dwread_epd(unitEpd + 0x28/4));
+    return dwbreak(dwread_epd(unitEpd + 0x28/4))[[0,1]];
 }
 
 function getOrderID(unitEpd)
@@ -50,3 +50,12 @@ function getDeath(targetPlayer, targetUnit)
 			return i;
 }
 
+function getUnitType(unitEpd)
+{
+    return dwread_epd(unitEpd + 0x64/4);
+}
+
+function getUnitEnergy(unitEpd)
+{
+    return dwbreak(dwread_epd(unitEpd + 0xA0 / 4))[[5]];
+}

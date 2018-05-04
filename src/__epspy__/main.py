@@ -124,17 +124,38 @@ def _LSH(l, r):
 from tank import tankMain
 # (Line 2) import tank.tankAim;
 from tank import tankAim
-# (Line 4) function onPluginStart() {
+# (Line 3) import util.utilEud;
+from util import utilEud
+# (Line 4) import physics;
+import physics
+# (Line 6) function onPluginStart() {
 @EUDFunc
 def onPluginStart():
-    # (Line 5) tankMain.newTank(0);
+    # (Line 7) SetMemory(0x661E90, SetTo, 65537);
+    DoActions(SetMemory(0x661E90, SetTo, 65537))
+    # (Line 8) SetMemory(0x661E94, SetTo, 65537);
+    DoActions(SetMemory(0x661E94, SetTo, 65537))
+    # (Line 9) SetMemory(0x663228, SetTo, 67375620);
+    DoActions(SetMemory(0x663228, SetTo, 67375620))
+    # (Line 10) SetMemory(0x664094, SetTo, 1512046592);
+    DoActions(SetMemory(0x664094, SetTo, 1512046592))
+    # (Line 11) SetMemory(0x6643E4, SetTo, 545261572);
+    DoActions(SetMemory(0x6643E4, SetTo, 545261572))
+    # (Line 12) SetMemory(0x66EFEC, SetTo, 89);
+    DoActions(SetMemory(0x66EFEC, SetTo, 89))
+    # (Line 13) SetMemory(0x6CA418, SetTo, 19005671);
+    DoActions(SetMemory(0x6CA418, SetTo, 19005671))
+    # (Line 14) tankMain.newTank(0);
     tankMain.f_newTank(0)
-    # (Line 6) }
-    # (Line 9) function beforeTriggerExec() {
+    # (Line 15) }
+    # (Line 18) function beforeTriggerExec() {
 
 @EUDFunc
 def beforeTriggerExec():
-    # (Line 10) tankMain.controlTank(0);
+    # (Line 19) if(Command(0, Exactly, 1, 5));
+    if EUDIf()(Command(0, Exactly, 1, 5)):
+        # (Line 20) tankMain.controlTank(0);
+        pass
+    EUDEndIf()
     tankMain.f_controlTank(0)
-    # (Line 11) tankAim.showLaunchAngle(0)
-    # (Line 12) }
+    # (Line 21) }
