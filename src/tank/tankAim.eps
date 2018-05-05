@@ -20,13 +20,12 @@ function showLaunchAngle(unitEpd)
     const unitX, unitY = utilEud.getUnitXY(unitEpd);
     
     RemoveUnit(dotUnit, targetPlayer);
-    for(var i=1; i<28; i++)
+    for(var i=1; i<14; i++)
     {
-        const distanceX, distanceY = lengthdir(i*(8), angle);//단위: 반칸 16x16
+        const distanceX, distanceY = lengthdir(i*(16), angle);//단위: 반칸 16x16
         utilEud.moveLocationXY(locID, unitX + distanceX, unitY + distanceY);
         CreateUnit(1, dotUnit, locID+1, targetPlayer);
     }
-
 }
 
 function clearAngle(targetPlayer)

@@ -122,61 +122,42 @@ def _LSH(l, r):
 
 # (Line 1) import util.utilEud;
 from util import utilEud
-# (Line 2) const dotUnit = 217;
-dotUnit = _CGFW(lambda: [217], 1)[0]
-# (Line 4) function setAngle(unitEpd, angle)
-# (Line 5) {
+# (Line 2) import physics;
+import physics
+# (Line 4) const TOPSPEED = 32;
+TOPSPEED = _CGFW(lambda: [32], 1)[0]
+# (Line 5) const BOTSPEED = 4;
+BOTSPEED = _CGFW(lambda: [4], 1)[0]
+# (Line 8) function makeBullet(unitType, x, y, angle, speed)
+# (Line 9) {
 @EUDFunc
-def f_setAngle(unitEpd, angle):
-    # (Line 6) dwwrite_epd(unitEpd + 0xFC/4, (360 + angle)%360);
-    f_dwwrite_epd(unitEpd + 0xFC // 4, (360 + angle) % 360)
-    # (Line 7) }
-    # (Line 9) function getAngle(unitEpd)
+def f_makeBullet(unitType, x, y, angle, speed):
+    # (Line 10) const locID = $L('locBullet');
+    locID = GetLocationIndex('locBullet')
+    # (Line 11) utilEud.moveLocationXY(locID, x, y);
+    utilEud.f_moveLocationXY(locID, x, y)
+    # (Line 13) const epd = epdread_epd(EPD(0x628438));
+    epd = f_epdread_epd(EPD(0x628438))
+    # (Line 14) CreateUnitWithProperties(1, unitType, locID+1, $P7, UnitProperty(invincible = true));
+    DoActions(CreateUnitWithProperties(1, unitType, locID + 1, 6, UnitProperty(invincible=True)))
+    # (Line 17) const changedSpeed = TOPSPEED * speed/200 + BOTSPEED;
+    changedSpeed = TOPSPEED * speed // 200 + BOTSPEED
+    # (Line 18) const vx, vy = lengthdir(changedSpeed, angle);
+    vx, vy = List2Assignable([f_lengthdir(changedSpeed, angle)])
+    # (Line 19) physics.setVxy(epd, vx, vy);
+    physics.f_setVxy(epd, vx, vy)
+    # (Line 20) physics.push(epd);
+    physics.f_push(epd)
+    # (Line 21) }
+    # (Line 23) function shoot(unitEpd, angle, speed)
 
-# (Line 10) {
+# (Line 24) {
 @EUDFunc
-def f_getAngle(unitEpd):
-    # (Line 11) return dwread_epd(unitEpd + 0xFC/4);
-    EUDReturn(f_dwread_epd(unitEpd + 0xFC // 4))
-    # (Line 12) }
-    # (Line 14) function showLaunchAngle(unitEpd)
-
-# (Line 15) {// 해당 턴의, 멈춰있는 플레이어 유닛의 에임(발사각도) 를 보여줌
-@EUDFunc
-def f_showLaunchAngle(unitEpd):
-    # (Line 16) const targetPlayer = utilEud.getPlayerID(unitEpd);
-    targetPlayer = utilEud.f_getPlayerID(unitEpd)
-    # (Line 18) const locID = $L('loc_aim');
-    locID = GetLocationIndex('loc_aim')
-    # (Line 19) const angle = getAngle(unitEpd);
-    angle = f_getAngle(unitEpd)
-    # (Line 20) const unitX, unitY = utilEud.getUnitXY(unitEpd);
-    unitX, unitY = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
-    # (Line 22) RemoveUnit(dotUnit, targetPlayer);
-    DoActions(RemoveUnit(dotUnit, targetPlayer))
-    # (Line 23) for(var i=1; i<14; i++)
-    i = EUDVariable()
-    i << (1)
-    if EUDWhile()(i >= 14, neg=True):
-        def _t2():
-            i.__iadd__(1)
-        # (Line 24) {
-        # (Line 25) const distanceX, distanceY = lengthdir(i*(16), angle);//단위: 반칸 16x16
-        distanceX, distanceY = List2Assignable([f_lengthdir(i * (16), angle)])
-        # (Line 26) utilEud.moveLocationXY(locID, unitX + distanceX, unitY + distanceY);
-        utilEud.f_moveLocationXY(locID, unitX + distanceX, unitY + distanceY)
-        # (Line 27) CreateUnit(1, dotUnit, locID+1, targetPlayer);
-        DoActions(CreateUnit(1, dotUnit, locID + 1, targetPlayer))
-        # (Line 28) }
-        # (Line 29) }
-        EUDSetContinuePoint()
-        _t2()
-    EUDEndWhile()
-    # (Line 31) function clearAngle(targetPlayer)
-
-# (Line 32) {
-@EUDFunc
-def f_clearAngle(targetPlayer):
-    # (Line 33) RemoveUnit(dotUnit, targetPlayer);
-    DoActions(RemoveUnit(dotUnit, targetPlayer))
-    # (Line 34) }
+def f_shoot(unitEpd, angle, speed):
+    # (Line 25) const x, y = utilEud.getUnitXY(unitEpd);
+    x, y = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
+    # (Line 27) const dx, dy = lengthdir(32, angle);
+    dx, dy = List2Assignable([f_lengthdir(32, angle)])
+    # (Line 30) makeBullet(47, x+dx, y+dy, angle, speed);
+    f_makeBullet(47, x + dx, y + dy, angle, speed)
+    # (Line 31) }

@@ -124,105 +124,122 @@ def _LSH(l, r):
 from util import utilEud
 # (Line 2) import tank.tankAim;
 from tank import tankAim
-# (Line 4) const unitTank = 5;
+# (Line 3) import tank.tankBullet;
+from tank import tankBullet
+# (Line 5) const unitTank = 5;
 unitTank = _CGFW(lambda: [5], 1)[0]
-# (Line 5) const loc1 = $L('loc1');
+# (Line 6) const loc1 = $L('loc1');
 loc1 = _CGFW(lambda: [GetLocationIndex('loc1')], 1)[0]
-# (Line 6) const tankEpd = EUDArray(6);
+# (Line 7) const tankEpd = EUDArray(6);
 tankEpd = _CGFW(lambda: [EUDArray(6)], 1)[0]
-# (Line 8) function newTank(targetPlayer)
-# (Line 9) {
+# (Line 9) function newTank(targetPlayer)
+# (Line 10) {
 @EUDFunc
 def f_newTank(targetPlayer):
-    # (Line 10) tankEpd[targetPlayer] = epdread_epd(EPD(0x628438));
+    # (Line 11) tankEpd[targetPlayer] = epdread_epd(EPD(0x628438));
     _ARRW(tankEpd, targetPlayer) << (f_epdread_epd(EPD(0x628438)))
-    # (Line 11) CreateUnit(1, unitTank, loc1+1, targetPlayer);
+    # (Line 12) CreateUnit(1, unitTank, loc1+1, targetPlayer);
     DoActions(CreateUnit(1, unitTank, loc1 + 1, targetPlayer))
-    # (Line 13) tankAim.setAngle(tankEpd[targetPlayer], 100); //init
+    # (Line 14) tankAim.setAngle(tankEpd[targetPlayer], 100); //init
     tankAim.f_setAngle(tankEpd[targetPlayer], 100)
-    # (Line 14) }
-    # (Line 16) function getTankEpd(targetPlayer)
+    # (Line 15) }
+    # (Line 17) function getTankEpd(targetPlayer)
 
-# (Line 17) {
+# (Line 18) {
 @EUDFunc
 def f_getTankEpd(targetPlayer):
-    # (Line 18) return tankEpd[targetPlayer];
+    # (Line 19) return tankEpd[targetPlayer];
     EUDReturn(tankEpd[targetPlayer])
-    # (Line 19) }
-    # (Line 21) function controlTank(targetPlayer)
+    # (Line 20) }
+    # (Line 22) function controlTank(targetPlayer)
 
-# (Line 22) {// 키인식으로 MurakamiShiinaQC.py
+# (Line 23) {// 키인식으로 MurakamiShiinaQC.py
 @EUDFunc
 def f_controlTank(targetPlayer):
-    # (Line 23) const angleNum = 10; //단위
-    angleNum = 10
-    # (Line 24) const gaugeUnit = 47; //unitid
-    gaugeUnit = 47
-    # (Line 25) const deathUnit = 0;
-    deathUnit = 0
-    # (Line 27) const unitEpd = getTankEpd(targetPlayer);
-    unitEpd = f_getTankEpd(targetPlayer)
-    # (Line 28) const energy = utilEud.getUnitEnergy(unitEpd);
-    energy = utilEud.f_getUnitEnergy(unitEpd)
-    # (Line 29) const angle = tankAim.getAngle(unitEpd);
-    angle = tankAim.f_getAngle(unitEpd)
-    # (Line 31) SetResources(0, SetTo, angle, Ore);
-    DoActions(SetResources(0, SetTo, angle, Ore))
-    # (Line 33) const locID = $L('loc_tank');
-    locID = GetLocationIndex('loc_tank')
-    # (Line 35) const orderID = utilEud.getOrderID(unitEpd);
-    orderID = utilEud.f_getOrderID(unitEpd)
-    # (Line 36) const death = utilEud.getDeath(targetPlayer, deathUnit);
-    death = utilEud.f_getDeath(targetPlayer, deathUnit)
-    # (Line 37) if(orderID == 6)  // move
-    if EUDIf()(orderID == 6):
-        # (Line 38) tankAim.clearAngle(targetPlayer);
-        tankAim.f_clearAngle(targetPlayer)
-        # (Line 40) if(1 == death)
-    EUDEndIf()
-    if EUDIf()(1 == death):
-        # (Line 41) {// angle UP
-        # (Line 42) tankAim.setAngle(unitEpd, angle + angleNum);
-        tankAim.f_setAngle(unitEpd, angle + angleNum)
-        # (Line 43) tankAim.showLaunchAngle(unitEpd);
-        tankAim.f_showLaunchAngle(unitEpd)
-        # (Line 44) }
-        # (Line 45) else if(2 == death)
-    if EUDElseIf()(2 == death):
-        # (Line 46) {// angle DOWN
-        # (Line 47) tankAim.setAngle(unitEpd, angle - angleNum);
-        tankAim.f_setAngle(unitEpd, angle - angleNum)
-        # (Line 48) tankAim.showLaunchAngle(unitEpd);
-        tankAim.f_showLaunchAngle(unitEpd)
-        # (Line 49) }
-        # (Line 53) else if (4 == death
-    _t4 = EUDElseIf()
-    # (Line 54) && Accumulate(targetPlayer, Exactly, 0, Gas))
-    if _t4(EUDSCAnd()(4 == death)(Accumulate(targetPlayer, Exactly, 0, Gas))()):
-        # (Line 55) {// shoot inital key press
-        # (Line 57) SetResources(targetPlayer, SetTo, 1, Gas);
-        DoActions(SetResources(targetPlayer, SetTo, 1, Gas))
-        # (Line 58) SetMemoryEPD(unitEpd + 0xA0 / 4, SetTo, 0);
-        DoActions(SetMemoryEPD(unitEpd + 0xA0 // 4, SetTo, 0))
-        # (Line 59) }
-        # (Line 60) else if (4 != death
-    _t5 = EUDElseIf()
-    # (Line 61) && Accumulate(targetPlayer, Exactly, 1, Gas)
-    # (Line 62) || energy == 200)
-    if _t5(EUDSCOr()(EUDSCAnd()(4 == death, neg=True)(Accumulate(targetPlayer, Exactly, 1, Gas))())(energy == 200)()):
-        # (Line 63) {// end key press
-        # (Line 64) SetResources(targetPlayer, SetTo, 0, Gas);
-        DoActions(SetResources(targetPlayer, SetTo, 0, Gas))
-        # (Line 65) tankAim.clearAngle(targetPlayer);
-        tankAim.f_clearAngle(targetPlayer)
-        # (Line 67) }
-        # (Line 68) else if (4 == death
-    _t6 = EUDElseIf()
-    # (Line 69) && Accumulate(targetPlayer, Exactly, 1, Gas))
-    if _t6(EUDSCAnd()(4 == death)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
-        # (Line 70) {// shoot key pressing
-        # (Line 71) SetMemoryEPD(unitEpd + 0xA0 / 4, Add, 3*0x1000000);
-        DoActions(SetMemoryEPD(unitEpd + 0xA0 // 4, Add, 3 * 0x1000000))
-        # (Line 72) }
-        # (Line 73) }
+    # (Line 24) if(CountdownTimer(Exactly, 0))
+    if EUDIf()(CountdownTimer(Exactly, 0)):
+        # (Line 25) {
+        # (Line 26) const angleNum = 10; //단위
+        angleNum = 10
+        # (Line 27) const gaugeUnit = 47; //unitid
+        gaugeUnit = 47
+        # (Line 28) const deathUnit = 0;
+        deathUnit = 0
+        # (Line 30) const unitEpd = getTankEpd(targetPlayer);
+        unitEpd = f_getTankEpd(targetPlayer)
+        # (Line 31) const energy = utilEud.getUnitEnergy(unitEpd);
+        energy = utilEud.f_getUnitEnergy(unitEpd)
+        # (Line 32) const angle = tankAim.getAngle(unitEpd);
+        angle = tankAim.f_getAngle(unitEpd)
+        # (Line 35) SetResources(0, SetTo, angle, Ore);
+        DoActions(SetResources(0, SetTo, angle, Ore))
+        # (Line 36) const locID = $L('loc_tank');
+        locID = GetLocationIndex('loc_tank')
+        # (Line 37) const orderID = utilEud.getOrderID(unitEpd);
+        orderID = utilEud.f_getOrderID(unitEpd)
+        # (Line 38) const death = utilEud.getDeath(targetPlayer, deathUnit);
+        death = utilEud.f_getDeath(targetPlayer, deathUnit)
+        # (Line 40) if(orderID == 6)  // while moving
+        if EUDIf()(orderID == 6):
+            # (Line 41) tankAim.clearAngle(targetPlayer);
+            tankAim.f_clearAngle(targetPlayer)
+            # (Line 43) if(1 == death)
+        EUDEndIf()
+        if EUDIf()(1 == death):
+            # (Line 44) {// angle UP
+            # (Line 45) tankAim.setAngle(unitEpd, angle + angleNum);
+            tankAim.f_setAngle(unitEpd, angle + angleNum)
+            # (Line 46) tankAim.showLaunchAngle(unitEpd);
+            tankAim.f_showLaunchAngle(unitEpd)
+            # (Line 47) }
+            # (Line 48) else if(2 == death)
+        if EUDElseIf()(2 == death):
+            # (Line 49) {// angle DOWN
+            # (Line 50) tankAim.setAngle(unitEpd, angle - angleNum);
+            tankAim.f_setAngle(unitEpd, angle - angleNum)
+            # (Line 51) tankAim.showLaunchAngle(unitEpd);
+            tankAim.f_showLaunchAngle(unitEpd)
+            # (Line 52) }
+            # (Line 53) else if (4 == death && Accumulate(targetPlayer, Exactly, 0, Gas))
+        if EUDElseIf()(EUDSCAnd()(4 == death)(Accumulate(targetPlayer, Exactly, 0, Gas))()):
+            # (Line 54) {// shoot inital key press
+            # (Line 56) SetResources(targetPlayer, SetTo, 1, Gas);
+            DoActions(SetResources(targetPlayer, SetTo, 1, Gas))
+            # (Line 57) SetMemoryEPD(unitEpd + 0xA0 / 4, SetTo, 0);
+            DoActions(SetMemoryEPD(unitEpd + 0xA0 // 4, SetTo, 0))
+            # (Line 58) SetDeaths(targetPlayer, SetTo, 0, 217);
+            DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
+            # (Line 59) }
+            # (Line 60) else if (4 != death && Accumulate(targetPlayer, Exactly, 1, Gas))
+        if EUDElseIf()(EUDSCAnd()(4 == death, neg=True)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
+            # (Line 61) {// end key press
+            # (Line 62) SetDeaths(targetPlayer, Add, 1, 217);
+            DoActions(SetDeaths(targetPlayer, Add, 1, 217))
+            # (Line 63) }
+            # (Line 64) else if (4 == death && Accumulate(targetPlayer, Exactly, 1, Gas))
+        if EUDElseIf()(EUDSCAnd()(4 == death)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
+            # (Line 65) {// shoot key pressing
+            # (Line 66) SetMemoryEPD(unitEpd + 0xA0 / 4, Add, 3*0x1000000);
+            DoActions(SetMemoryEPD(unitEpd + 0xA0 // 4, Add, 3 * 0x1000000))
+            # (Line 67) }
+            # (Line 68) if (Deaths(targetPlayer, AtLeast, 2, 217) || energy == 200)
+        EUDEndIf()
+        if EUDIf()(EUDSCOr()(Deaths(targetPlayer, AtLeast, 2, 217))(energy == 200)()):
+            # (Line 69) {// end key press for 1sec
+            # (Line 70) SetDeaths(targetPlayer, SetTo, 0, 217);
+            DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
+            # (Line 71) SetResources(targetPlayer, SetTo, 0, Gas);
+            DoActions(SetResources(targetPlayer, SetTo, 0, Gas))
+            # (Line 72) tankAim.clearAngle(targetPlayer);
+            tankAim.f_clearAngle(targetPlayer)
+            # (Line 73) tankBullet.shoot(unitEpd, angle, energy);
+            tankBullet.f_shoot(unitEpd, angle, energy)
+            # (Line 74) SetMemoryEPD(unitEpd + 0xA0 / 4, SetTo, 0);
+            DoActions(SetMemoryEPD(unitEpd + 0xA0 // 4, SetTo, 0))
+            # (Line 76) SetCountdownTimer(SetTo, 3);
+            DoActions(SetCountdownTimer(SetTo, 3))
+            # (Line 77) }
+            # (Line 78) }
+        EUDEndIf()
+        # (Line 79) }
     EUDEndIf()

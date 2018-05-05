@@ -1,5 +1,27 @@
 import util.utilEud;
 
+
+const gravity = 1;
+const pTargetArray = EUDArray(10);
+var epdnum = 0;
+//epd가 저장된 배열을 돌며 0 이 아닌걸 물리적용함
+function push(unitEpd)
+{
+	pTargetArray[epdnum] = unitEpd;
+	epdnum = epdnum + 1;
+}
+function popmid(unitEpd)
+{
+	for(var i=0; i<10; i++)
+	{
+		if(pTargetArray[i] == unitEpd)
+		{
+			pTargetArray[i] = 0;
+			epdnum = epdnum - 1;
+		}
+	}
+}
+
 function getVxy(unitEpd)
 {
 	const vx = dwread_epd(unitEpd + 0xF8/4);
@@ -14,11 +36,6 @@ function setVxy(unitEpd, vx, vy)
 	dwwrite_epd(unitEpd + 0xFC/4, vy);
 }
 
-function gravityPhysics(unitEpd)
-{
-	
-}
-
 function renderUnit(unitEpd)
 {// move unit
 	const vx, vy = getVxy(unitEpd);
@@ -31,10 +48,28 @@ function renderUnit(unitEpd)
 		MoveUnit(1, utilEud.getUnitType(unitEpd), utilEud.getPlayerID(unitEpd), $L('locPre')+1, $L('locDst')+1);
 	}
 }
-/*
-		dwwrite_epd(unitEpd + 0x10/4, unitPos); // 0x010 BW::target moveTarget
-		dwwrite_epd(unitEpd + 0x18/4, unitPos); // 0x018 BW::position nextMovmentWaypoint
-		// halt == x(or y)*256
-		dwwrite_epd(unitEpd + 0x2C/4, unitX + vx* 256); // 0x02C haltX
-		dwwrite_epd(unitEpd + 0x30/4, unitY + vy* 256); // 0x030 haltY
-*/
+
+function renderBullet()
+{
+    for(var i=0; i<10; i++)
+    {
+        if(pTargetArray[i])
+        {
+        	const unitEpd = pTargetArray[i];
+            renderUnit(unitEpd);
+            MoveLocation($L('locBullet')+1, 47, $P7, $L('locDst')+1);
+            //collision
+            if(Bring($P8, AtLeast, 1, $U('Flag'), $L('locBullet')+1))
+            {
+                popmid(unitEpd);
+                RemoveUnitAt(1, '(men)',  $L('locBullet')+1, $P7);
+                //boom()
+            }
+            else
+            {
+                const vx, vy = getVxy(unitEpd);
+                setVxy(unitEpd, vx, vy + gravity);
+            }
+        }
+    }
+}

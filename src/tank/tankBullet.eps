@@ -1,0 +1,31 @@
+import util.utilEud;
+import physics;
+
+const TOPSPEED = 32;
+const BOTSPEED = 4;
+
+
+function makeBullet(unitType, x, y, angle, speed)
+{
+    const locID = $L('locBullet');
+    utilEud.moveLocationXY(locID, x, y);
+
+    const epd = epdread_epd(EPD(0x628438));
+    CreateUnitWithProperties(1, unitType, locID+1, $P7, UnitProperty(invincible = true));
+    // speed : 200(maxenergy) = x : 32(maxspeed)
+    // and +minimum
+    const changedSpeed = TOPSPEED * speed/200 + BOTSPEED;
+    const vx, vy = lengthdir(changedSpeed, angle);
+    physics.setVxy(epd, vx, vy);
+    physics.push(epd);
+}
+
+function shoot(unitEpd, angle, speed)
+{
+    const x, y = utilEud.getUnitXY(unitEpd);
+    // shoot from distances
+    const dx, dy = lengthdir(32, angle);
+    //const speed = utilEud.getUnitEnergy(unitEpd);
+    //const angle = tankAim.getAngle(unitEpd);
+    makeBullet(47, x+dx, y+dy, angle, speed);
+}

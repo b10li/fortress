@@ -26,5 +26,5 @@ SetMemory(0x661E94, SetTo, 65537);
 SetMemory(0x663228, SetTo, 67375620);
 SetMemory(0x664094, SetTo, 1512046592);
 SetMemory(0x6643E4, SetTo, 545261572);
-SetMemory(0x66EFEC, SetTo, 89);
-SetMemory(0x6CA418, SetTo, 19005671);
+SetMemory(0x66F428, SetTo, 89);
+SetMemory(0x6CA418, SetTo, 19005793);
