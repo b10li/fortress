@@ -53,7 +53,7 @@ function controlTank(targetPlayer)
     const angleNum = 2; //단위
     const unitEpd = getTankEpd(targetPlayer);
     //prevent Error
-    //if(unitEpd == 0) return -1;
+    if(unitEpd == 0) return -1;
     const power = utilEud.getRemainingBuildtime(unitEpd);
     const angle = tankAim.getAngle(unitEpd);
 
@@ -89,7 +89,6 @@ function controlTank(targetPlayer)
     else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
     {
         utilEud.setRemainingBuildtime(unitEpd, power -1);
-        SetDeaths(targetPlayer, SetTo, 0, 217);
     }
     else if (8 == keyValue && Switch(targetPlayer, Cleared))
     {// change weapon
@@ -106,7 +105,7 @@ function controlTank(targetPlayer)
     }
 
 
-    if (Deaths(targetPlayer, AtLeast, 12, 217) || power == 0)
+    if (Deaths(targetPlayer, AtLeast, 2, 217) || power == 0)
     {// end key press for 1sec
         utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
         SetDeaths(targetPlayer, SetTo, 0, 217);

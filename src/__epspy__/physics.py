@@ -122,135 +122,54 @@ def _LSH(l, r):
 
 # (Line 1) import util.utilEud;
 from util import utilEud
-# (Line 4) const gravity = 1;
-gravity = _CGFW(lambda: [1], 1)[0]
-# (Line 5) const pTargetArray = EUDArray(10);
-pTargetArray = _CGFW(lambda: [EUDArray(10)], 1)[0]
-# (Line 6) var epdnum = 0;
-epdnum = EUDCreateVariables(1)
-_IGVA([epdnum], lambda: [0])
-# (Line 8) function push(unitEpd)
-# (Line 9) {
-@EUDFunc
-def f_push(unitEpd):
-    # (Line 10) pTargetArray[epdnum] = unitEpd;
-    _ARRW(pTargetArray, epdnum) << (unitEpd)
-    # (Line 11) epdnum = epdnum + 1;
-    epdnum << (epdnum + 1)
-    # (Line 12) }
-    # (Line 13) function popmid(unitEpd)
-
-# (Line 14) {
-@EUDFunc
-def f_popmid(unitEpd):
-    # (Line 15) for(var i=0; i<10; i++)
-    i = EUDVariable()
-    i << (0)
-    if EUDWhile()(i >= 10, neg=True):
-        def _t2():
-            i.__iadd__(1)
-        # (Line 16) {
-        # (Line 17) if(pTargetArray[i] == unitEpd)
-        if EUDIf()(pTargetArray[i] == unitEpd):
-            # (Line 18) {
-            # (Line 19) pTargetArray[i] = 0;
-            _ARRW(pTargetArray, i) << (0)
-            # (Line 20) epdnum = epdnum - 1;
-            epdnum << (epdnum - 1)
-            # (Line 21) }
-            # (Line 22) }
-        EUDEndIf()
-        # (Line 23) }
-        EUDSetContinuePoint()
-        _t2()
-    EUDEndWhile()
-    # (Line 25) function getVxy(unitEpd)
-
-# (Line 26) {
+# (Line 3) function getVxy(unitEpd)
+# (Line 4) {
 @EUDFunc
 def f_getVxy(unitEpd):
-    # (Line 27) const vx = dwread_epd(unitEpd + 0xF8/4);
+    # (Line 5) const vx = dwread_epd(unitEpd + 0xF8/4);
     vx = f_dwread_epd(unitEpd + 0xF8 // 4)
-    # (Line 28) const vy = dwread_epd(unitEpd + 0xFC/4);
+    # (Line 6) const vy = dwread_epd(unitEpd + 0xFC/4);
     vy = f_dwread_epd(unitEpd + 0xFC // 4)
-    # (Line 30) return vx, vy;
+    # (Line 8) return vx, vy;
     EUDReturn(vx, vy)
-    # (Line 31) }
-    # (Line 33) function setVxy(unitEpd, vx, vy)
+    # (Line 9) }
+    # (Line 11) function setVxy(unitEpd, vx, vy)
 
-# (Line 34) {
+# (Line 12) {
 @EUDFunc
 def f_setVxy(unitEpd, vx, vy):
-    # (Line 35) dwwrite_epd(unitEpd + 0xF8/4, vx);
+    # (Line 13) dwwrite_epd(unitEpd + 0xF8/4, vx);
     f_dwwrite_epd(unitEpd + 0xF8 // 4, vx)
-    # (Line 36) dwwrite_epd(unitEpd + 0xFC/4, vy);
+    # (Line 14) dwwrite_epd(unitEpd + 0xFC/4, vy);
     f_dwwrite_epd(unitEpd + 0xFC // 4, vy)
-    # (Line 37) }
-    # (Line 39) function renderUnit(unitEpd)
+    # (Line 15) }
+    # (Line 17) function renderUnit(unitEpd, option)
 
-# (Line 40) {// move unit
+# (Line 18) {// move unit
 @EUDFunc
-def f_renderUnit(unitEpd):
-    # (Line 41) const vx, vy = getVxy(unitEpd);
+def f_renderUnit(unitEpd, option):
+    # (Line 19) const vx, vy = getVxy(unitEpd);
     vx, vy = List2Assignable([f_getVxy(unitEpd)])
-    # (Line 42) if(vx != 0 || vy != 0)
+    # (Line 20) if(vx != 0 || vy != 0)
     if EUDIf()(EUDSCOr()(vx == 0, neg=True)(vy == 0, neg=True)()):
-        # (Line 43) {
-        # (Line 44) const unitX, unitY = utilEud.getUnitXY(unitEpd);
+        # (Line 21) {
+        # (Line 22) const unitX, unitY = utilEud.getUnitXY(unitEpd);
         unitX, unitY = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
-        # (Line 45) const unitPos = (unitX + vx) + (unitY + vy)*65536;
+        # (Line 23) const unitPos = (unitX + vx) + (unitY + vy)*65536;
         unitPos = (unitX + vx) + (unitY + vy) * 65536
-        # (Line 46) utilEud.moveLocationXY($L('locPre'), unitX, unitY);
+        # (Line 24) utilEud.moveLocationXY($L('locPre'), unitX, unitY);
         utilEud.f_moveLocationXY(GetLocationIndex('locPre'), unitX, unitY)
-        # (Line 47) utilEud.moveLocationXY($L('locDst'), unitX + vx, unitY + vy);
+        # (Line 25) utilEud.moveLocationXY($L('locDst'), unitX + vx, unitY + vy);
         utilEud.f_moveLocationXY(GetLocationIndex('locDst'), unitX + vx, unitY + vy)
-        # (Line 48) MoveUnit(1, utilEud.getUnitType(unitEpd), utilEud.getPlayerID(unitEpd), $L('locPre')+1, $L('locDst')+1);
+        # (Line 26) MoveUnit(1, utilEud.getUnitType(unitEpd), utilEud.getPlayerID(unitEpd), $L('locPre')+1, $L('locDst')+1);
         DoActions(MoveUnit(1, utilEud.f_getUnitType(unitEpd), utilEud.f_getPlayerID(unitEpd), GetLocationIndex('locPre') + 1, GetLocationIndex('locDst') + 1))
-        # (Line 49) }
-        # (Line 50) }
-    EUDEndIf()
-    # (Line 52) function renderBullet()
-
-# (Line 53) {
-@EUDFunc
-def f_renderBullet():
-    # (Line 54) for(var i=0; i<10; i++)
-    i = EUDVariable()
-    i << (0)
-    if EUDWhile()(i >= 10, neg=True):
-        def _t2():
-            i.__iadd__(1)
-        # (Line 55) {
-        # (Line 56) if(pTargetArray[i])
-        if EUDIf()(pTargetArray[i]):
-            # (Line 57) {
-            # (Line 58) const unitEpd = pTargetArray[i];
-            unitEpd = pTargetArray[i]
-            # (Line 59) renderUnit(unitEpd);
-            f_renderUnit(unitEpd)
-            # (Line 60) MoveLocation($L('locBullet')+1, 47, $P7, $L('locDst')+1);
-            DoActions(MoveLocation(GetLocationIndex('locBullet') + 1, 47, 6, GetLocationIndex('locDst') + 1))
-            # (Line 62) if(Bring($P8, AtLeast, 1, $U('Flag'), $L('locBullet')+1))
-            if EUDIf()(Bring(7, AtLeast, 1, EncodeUnit('Flag'), GetLocationIndex('locBullet') + 1)):
-                # (Line 63) {
-                # (Line 64) popmid(unitEpd);
-                f_popmid(unitEpd)
-                # (Line 65) RemoveUnitAt(1, '(men)',  $L('locBullet')+1, $P7);
-                DoActions(RemoveUnitAt(1, '(men)', GetLocationIndex('locBullet') + 1, 6))
-                # (Line 67) }
-                # (Line 68) else
-                # (Line 69) {
-            if EUDElse()():
-                # (Line 70) const vx, vy = getVxy(unitEpd);
-                vx, vy = List2Assignable([f_getVxy(unitEpd)])
-                # (Line 71) setVxy(unitEpd, vx, vy + gravity);
-                f_setVxy(unitEpd, vx, vy + gravity)
-                # (Line 72) }
-                # (Line 73) }
-            EUDEndIf()
-            # (Line 74) }
+        # (Line 27) if(option)
+        if EUDIf()(option):
+            # (Line 28) {
+            # (Line 30) bwrite_epd(unitEpd + 0x021 / 4,  0x021 % 4, (atan2(vy, vx)*256/360 + 64)%256);
+            f_bwrite_epd(unitEpd + 0x021 // 4, 0x021 % 4, (f_atan2(vy, vx) * 256 // 360 + 64) % 256)
+            # (Line 31) }
+            # (Line 33) }
         EUDEndIf()
-        # (Line 75) }
-        EUDSetContinuePoint()
-        _t2()
-    EUDEndWhile()
+        # (Line 34) }
+    EUDEndIf()

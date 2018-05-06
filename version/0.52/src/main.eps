@@ -1,16 +1,3 @@
-/* Fortress Star.eps -------------------------
-this code follows BSD license.
-
-madeby: sheun_t_@naver.com (우마)
-used:
-SCM draft2
-EUD Editor
-EUD Draft
-CustomText
-http://cafe.naver.com/edac/64676
-etc.
----------------------------------------------*/
-
 import tank.tankMain;
 import tank.tankAim;
 import tank.tankBullet;
@@ -18,6 +5,10 @@ import util.utilEud;
 import header;
 import physics;
 import customText3 as ct; 
+/* CustomText -------------------------
+
+http://cafe.naver.com/edac/64676
+--------------------------------------*/
 
 
 
@@ -30,11 +21,9 @@ function onPluginStart()
 	sths();
 	randomize();
 }
-function gameInfo(targetPlayer);
 function getPlayerText(turnPlayer);
 function getRandomTurn();
 function playerDeath();
-function teamVictory();
 function beforeTriggerExec() 
 {
 	
@@ -82,7 +71,6 @@ function beforeTriggerExec()
 			const chatPtr = dwread_epd(EPD(0x640B58));
 			getPlayerText(turnPlayer);
 			ct.printP(ct.cp, "\x13\x01차례");
-			gameInfo(turnPlayer);
 			const check = tankMain.controlTank(turnPlayer);
 			if(check == -1)
 			{// error
@@ -124,34 +112,14 @@ function beforeTriggerExec()
 		turnPointer = (turnPointer+1)%6;
 		gameState = 2;
 	}
-	if(gameState >= 2) 
-	{
-		playerDeath();
-		teamVictory();
-	}
+	if(gameState >= 2) playerDeath();
 
 	// 물리엔진
 	tankMain.renderTank();
 	tankBullet.renderBullet();
-	// 바람, 아이템, 총알 별 데미지 및 이펙트
+	// 바람, 아이템, 총알 데미지(지형파괴)
 }
 
-function teamVictory()
-{
-	if(Command($Force1, Exactly, 0, '(men)') || Command($Force3, Exactly, 0, '(men)') )
-	{
-		Victory();
-	}
-}
-
-function gameInfo(targetPlayer)
-{
-	ct.printP(targetPlayer, "\x13\x07[조작법]");
-	ct.printP(targetPlayer, "\x13\x07[I],[K]: \x01각도");
-	ct.printP(targetPlayer, "\x13\x07[J]: \x01발사파워 (꾹 누름)");
-	ct.printP(targetPlayer, "\x13\x07[L]: \x01무기교체 ");
-
-}
 function playerDeath()
 {
 	for(var i=0; i<6; i++)
@@ -206,12 +174,12 @@ function getPlayerText(turnPlayer)
 {
 	//const chatPtr = dwread_epd(EPD(0x640B58));
   	//ct.printP(ct.cp, ""); // ct.cp는 모두에게 출력
-  	if(turnPlayer == 0) ct.printP(ct.cp, "\x13\x06빨강\x01");
-  	if(turnPlayer == 1) ct.printP(ct.cp, "\x13\x0e파랑\x01");
-  	if(turnPlayer == 2) ct.printP(ct.cp, "\x13\x0f연두\x01");
-  	if(turnPlayer == 3) ct.printP(ct.cp, "\x13\x10보라\x01");
-  	if(turnPlayer == 4) ct.printP(ct.cp, "\x13\x11주황\x01");
-  	if(turnPlayer == 5) ct.printP(ct.cp, "\x13\x15갈색\x01");
+  	if(turnPlayer == 0) ct.printP(ct.cp, "\x13\x06빨강");
+  	if(turnPlayer == 1) ct.printP(ct.cp, "\x13\x0e파랑");
+  	if(turnPlayer == 2) ct.printP(ct.cp, "\x13\x0f연두");
+  	if(turnPlayer == 3) ct.printP(ct.cp, "\x13\x10보라");
+  	if(turnPlayer == 4) ct.printP(ct.cp, "\x13\x11주황");
+  	if(turnPlayer == 5) ct.printP(ct.cp, "\x13\x15갈색");
 	//dwwrite_epd(EPD(0x640B58), chatPtr);
 }
 

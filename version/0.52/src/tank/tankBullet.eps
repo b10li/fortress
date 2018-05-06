@@ -36,7 +36,6 @@ function renderBullet()
             const unitType = utilEud.getUnitType(unitEpd);
             physics.renderUnit(unitEpd, 1);
             MoveLocation(locID+1, unitType, $P7, $L('locDst')+1);
-            if(pTargetArray[0]) CenterView(locID+1);
             //collision
             if(Bring($P8, AtLeast, 1, '(buildings)', locID+1))
             {

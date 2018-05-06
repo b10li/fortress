@@ -124,40 +124,475 @@ def _LSH(l, r):
 from tank import tankMain
 # (Line 2) import tank.tankAim;
 from tank import tankAim
-# (Line 3) import util.utilEud;
+# (Line 3) import tank.tankBullet;
+from tank import tankBullet
+# (Line 4) import util.utilEud;
 from util import utilEud
-# (Line 4) import physics;
+# (Line 5) import header;
+import header
+# (Line 6) import physics;
 import physics
-# (Line 6) function onPluginStart() {
+# (Line 7) import customText3 as ct;
+import customText3 as ct
+# (Line 15) const turnArray = [0,1,2, 3,4,5,7];
+turnArray = _CGFW(lambda: [_ARR(FlattenList([0, 1, 2, 3, 4, 5, 7]))], 1)[0]
+# (Line 16) var turnPointer = 6;
+turnPointer = EUDCreateVariables(1)
+_IGVA([turnPointer], lambda: [6])
+# (Line 17) var gameState = 0;
+gameState = EUDCreateVariables(1)
+_IGVA([gameState], lambda: [0])
+# (Line 18) function sths();
+# (Line 19) function onPluginStart()
+# (Line 20) {
 @EUDFunc
 def onPluginStart():
-    # (Line 7) SetMemory(0x661E90, SetTo, 65537);
-    DoActions(SetMemory(0x661E90, SetTo, 65537))
-    # (Line 8) SetMemory(0x661E94, SetTo, 65537);
-    DoActions(SetMemory(0x661E94, SetTo, 65537))
-    # (Line 9) SetMemory(0x663228, SetTo, 67375620);
-    DoActions(SetMemory(0x663228, SetTo, 67375620))
-    # (Line 10) SetMemory(0x664094, SetTo, 1512046592);
-    DoActions(SetMemory(0x664094, SetTo, 1512046592))
-    # (Line 11) SetMemory(0x6643E4, SetTo, 545261572);
-    DoActions(SetMemory(0x6643E4, SetTo, 545261572))
-    # (Line 12) SetMemory(0x66F428, SetTo, 89);
-    DoActions(SetMemory(0x66F428, SetTo, 89))
-    # (Line 13) SetMemory(0x6CA418, SetTo, 19005793);
-    DoActions(SetMemory(0x6CA418, SetTo, 19005793))
-    # (Line 14) tankMain.newTank(0);
-    tankMain.f_newTank(0)
-    # (Line 15) }
-    # (Line 18) function beforeTriggerExec() {
+    # (Line 21) sths();
+    f_sths()
+    # (Line 22) randomize();
+    f_randomize()
+    # (Line 23) }
+    # (Line 24) function gameInfo(targetPlayer);
 
+# (Line 25) function getPlayerText(turnPlayer);
+# (Line 26) function getRandomTurn();
+# (Line 27) function playerDeath();
+# (Line 28) function teamVictory();
+# (Line 29) function beforeTriggerExec()
+# (Line 30) {
 @EUDFunc
 def beforeTriggerExec():
-    # (Line 19) if(Command(0, Exactly, 1, 5));
-    if EUDIf()(Command(0, Exactly, 1, 5)):
-        # (Line 20) tankMain.controlTank(0);
-        pass
+    # (Line 32) const turnPlayer = turnArray[turnPointer];
+    turnPlayer = turnArray[turnPointer]
+    # (Line 34) if(gameState == 0)
+    if EUDIf()(gameState == 0):
+        # (Line 35) {// 선택 끝나면 탱크 생성 이후 1
+        # (Line 36) if(tankMain.selectTank())
+        if EUDIf()(tankMain.f_selectTank()):
+            # (Line 37) {
+            # (Line 38) gameState = 1;
+            gameState << (1)
+            # (Line 39) }
+            # (Line 40) }
+        EUDEndIf()
+        # (Line 41) if(gameState == 1)
     EUDEndIf()
-    tankMain.f_controlTank(0)
-    # (Line 22) physics.renderBullet();
-    physics.f_renderBullet()
-    # (Line 23) }
+    if EUDIf()(gameState == 1):
+        # (Line 42) {
+        # (Line 43) if(getRandomTurn());
+        if EUDIf()(f_getRandomTurn()):
+            # (Line 44) gameState = 10;
+            pass
+        EUDEndIf()
+        gameState << (10)
+        # (Line 45) }
+        # (Line 46) if(gameState == 10)
+    EUDEndIf()
+    if EUDIf()(gameState == 10):
+        # (Line 47) {
+        # (Line 49) gameState = 2;
+        gameState << (2)
+        # (Line 50) }
+        # (Line 51) if(gameState == 2)
+    EUDEndIf()
+    if EUDIf()(gameState == 2):
+        # (Line 52) {//control
+        # (Line 54) if(CountdownTimer(Exactly, 0))
+        if EUDIf()(CountdownTimer(Exactly, 0)):
+            # (Line 55) {//pre control
+            # (Line 57) if(turnPlayer !=7 && playerexist(turnPlayer))
+            if EUDIf()(EUDSCAnd()(turnPlayer == 7, neg=True)(f_playerexist(turnPlayer))()):
+                # (Line 58) {
+                # (Line 59) SetCountdownTimer(SetTo, 20);
+                DoActions(SetCountdownTimer(SetTo, 20))
+                # (Line 60) tankMain.toggleDisable(turnPlayer, 1);
+                tankMain.f_toggleDisable(turnPlayer, 1)
+                # (Line 61) MoveLocation($L('loc1')+1, '(men)', turnPlayer, $L('PlayArea')+1);
+                DoActions(MoveLocation(GetLocationIndex('loc1') + 1, '(men)', turnPlayer, GetLocationIndex('PlayArea') + 1))
+                # (Line 62) CenterView($L('loc1')+1);
+                DoActions(CenterView(GetLocationIndex('loc1') + 1))
+                # (Line 63) }
+                # (Line 64) else
+                # (Line 65) {
+            if EUDElse()():
+                # (Line 66) turnArray[turnPointer] = 7;
+                _ARRW(turnArray, turnPointer) << (7)
+                # (Line 67) gameState = 4;
+                gameState << (4)
+                # (Line 68) }
+                # (Line 69) }
+            EUDEndIf()
+            # (Line 70) if(CountdownTimer(AtLeast, 1))
+        EUDEndIf()
+        if EUDIf()(CountdownTimer(AtLeast, 1)):
+            # (Line 71) {//during control
+            # (Line 73) const chatPtr = dwread_epd(EPD(0x640B58));
+            chatPtr = f_dwread_epd(EPD(0x640B58))
+            # (Line 74) getPlayerText(turnPlayer);
+            f_getPlayerText(turnPlayer)
+            # (Line 75) ct.printP(ct.cp, "\x13\x01차례");
+            ct.f_printP(ct.cp, "\x13\x01차례")
+            # (Line 76) gameInfo(turnPlayer);
+            f_gameInfo(turnPlayer)
+            # (Line 77) const check = tankMain.controlTank(turnPlayer);
+            check = tankMain.f_controlTank(turnPlayer)
+            # (Line 78) if(check == -1)
+            if EUDIf()(check == -1):
+                # (Line 79) {// error
+                # (Line 80) gameState = 4;
+                gameState << (4)
+                # (Line 81) SetCountdownTimer(SetTo, 0);
+                DoActions(SetCountdownTimer(SetTo, 0))
+                # (Line 82) }
+                # (Line 83) else if (check == 0){}
+            if EUDElseIf()(check == 0):
+                # (Line 84) else
+                # (Line 85) {//goto shoot state
+                pass
+            if EUDElse()():
+                # (Line 86) gameState = 3;
+                gameState << (3)
+                # (Line 87) SetCountdownTimer(SetTo, 0);
+                DoActions(SetCountdownTimer(SetTo, 0))
+                # (Line 89) SetDeaths(turnPlayer, SetTo, 1, header.shootNum);
+                DoActions(SetDeaths(turnPlayer, SetTo, 1, header.shootNum))
+                # (Line 91) tankMain.toggleDisable(turnPlayer, 0);
+                tankMain.f_toggleDisable(turnPlayer, 0)
+                # (Line 92) }
+                # (Line 95) dwwrite_epd(EPD(0x640B58), chatPtr);
+            EUDEndIf()
+            f_dwwrite_epd(EPD(0x640B58), chatPtr)
+            # (Line 96) }
+            # (Line 97) }
+        EUDEndIf()
+        # (Line 98) if(gameState == 3)
+    EUDEndIf()
+    if EUDIf()(gameState == 3):
+        # (Line 99) {// shoot
+        # (Line 100) const shootChance = utilEud.getDeath(turnPlayer, header.shootNum);
+        shootChance = utilEud.f_getDeath(turnPlayer, header.shootNum)
+        # (Line 101) if(shootChance > 0 && CountdownTimer(Exactly, 0))
+        if EUDIf()(EUDSCAnd()(shootChance <= 0, neg=True)(CountdownTimer(Exactly, 0))()):
+            # (Line 102) {
+            # (Line 103) SetCountdownTimer(SetTo, 5);
+            DoActions(SetCountdownTimer(SetTo, 5))
+            # (Line 104) tankMain.shootMissile(turnPlayer);
+            tankMain.f_shootMissile(turnPlayer)
+            # (Line 105) SetDeaths(turnPlayer, Subtract, 1, header.shootNum);
+            DoActions(SetDeaths(turnPlayer, Subtract, 1, header.shootNum))
+            # (Line 106) }
+            # (Line 107) else if(shootChance == 0 &&  CountdownTimer(Exactly, 0))
+        if EUDElseIf()(EUDSCAnd()(shootChance == 0)(CountdownTimer(Exactly, 0))()):
+            # (Line 108) {// end shooting
+            # (Line 109) gameState = 4;
+            gameState << (4)
+            # (Line 110) }
+            # (Line 112) }
+        EUDEndIf()
+        # (Line 113) if(gameState == 4)
+    EUDEndIf()
+    if EUDIf()(gameState == 4):
+        # (Line 114) {// next
+        # (Line 115) turnPointer = (turnPointer+1)%6;
+        turnPointer << ((turnPointer + 1) % 6)
+        # (Line 116) gameState = 2;
+        gameState << (2)
+        # (Line 117) }
+        # (Line 118) if(gameState >= 2)
+    EUDEndIf()
+    if EUDIf()(gameState >= 2):
+        # (Line 119) {
+        # (Line 120) playerDeath();
+        f_playerDeath()
+        # (Line 122) }
+        # (Line 125) tankMain.renderTank();
+    EUDEndIf()
+    tankMain.f_renderTank()
+    # (Line 126) tankBullet.renderBullet();
+    tankBullet.f_renderBullet()
+    # (Line 128) }
+    # (Line 130) function teamVictory()
+
+# (Line 131) {
+@EUDFunc
+def f_teamVictory():
+    # (Line 132) if(Command($Force1, Exactly, 0, '(men)') || Command($Force3, Exactly, 0, '(men)') )
+    if EUDIf()(EUDSCOr()(Command(18, Exactly, 0, '(men)'))(Command(20, Exactly, 0, '(men)'))()):
+        # (Line 133) {
+        # (Line 134) Victory();
+        DoActions(Victory())
+        # (Line 135) }
+        # (Line 136) }
+    EUDEndIf()
+    # (Line 138) function gameInfo(targetPlayer)
+
+# (Line 139) {
+@EUDFunc
+def f_gameInfo(targetPlayer):
+    # (Line 140) ct.printP(targetPlayer, "\x13\x07[조작법]");
+    ct.f_printP(targetPlayer, "\x13\x07[조작법]")
+    # (Line 141) ct.printP(targetPlayer, "\x13\x07[I],[K]: \x01각도");
+    ct.f_printP(targetPlayer, "\x13\x07[I],[K]: \x01각도")
+    # (Line 142) ct.printP(targetPlayer, "\x13\x07[J]: \x01발사파워 (꾹 누름)");
+    ct.f_printP(targetPlayer, "\x13\x07[J]: \x01발사파워 (꾹 누름)")
+    # (Line 143) ct.printP(targetPlayer, "\x13\x07[L]: \x01무기교체 ");
+    ct.f_printP(targetPlayer, "\x13\x07[L]: \x01무기교체 ")
+    # (Line 145) }
+    # (Line 146) function playerDeath()
+
+# (Line 147) {
+@EUDFunc
+def f_playerDeath():
+    # (Line 148) for(var i=0; i<6; i++)
+    i = EUDVariable()
+    i << (0)
+    if EUDWhile()(i >= 6, neg=True):
+        def _t2():
+            i.__iadd__(1)
+        # (Line 149) {
+        # (Line 150) if(turnArray[i] != 7 )
+        if EUDIf()(turnArray[i] == 7, neg=True):
+            # (Line 151) {
+            # (Line 152) if(Bring(turnArray[i], Exactly, 0, '(men)', $L('PlayArea')+1))
+            if EUDIf()(Bring(turnArray[i], Exactly, 0, '(men)', GetLocationIndex('PlayArea') + 1)):
+                # (Line 153) {
+                # (Line 154) if(tankMain.checkDeath(turnArray[i]))
+                if EUDIf()(tankMain.f_checkDeath(turnArray[i])):
+                    # (Line 155) {
+                    # (Line 156) const chatPtr = dwread_epd(EPD(0x640B58));
+                    chatPtr = f_dwread_epd(EPD(0x640B58))
+                    # (Line 157) ct.printP(ct.cp, "\x13\x01사망");
+                    ct.f_printP(ct.cp, "\x13\x01사망")
+                    # (Line 158) getPlayerText(turnArray[i]);
+                    f_getPlayerText(turnArray[i])
+                    # (Line 159) dwwrite_epd(EPD(0x640B58), chatPtr);
+                    f_dwwrite_epd(EPD(0x640B58), chatPtr)
+                    # (Line 161) tankMain.removeTank(turnArray[i]);
+                    tankMain.f_removeTank(turnArray[i])
+                    # (Line 162) turnArray[i] = 7;
+                    _ARRW(turnArray, i) << (7)
+                    # (Line 163) }
+                    # (Line 164) }
+                EUDEndIf()
+                # (Line 165) }
+            EUDEndIf()
+            # (Line 166) }
+        EUDEndIf()
+        # (Line 167) }
+        EUDSetContinuePoint()
+        _t2()
+    EUDEndWhile()
+    # (Line 169) function getRandomTurn()
+
+# (Line 170) {
+@EUDFunc
+def f_getRandomTurn():
+    # (Line 171) for(var i = 0; i<6; i++)
+    i = EUDVariable()
+    i << (0)
+    if EUDWhile()(i >= 6, neg=True):
+        def _t2():
+            i.__iadd__(1)
+        # (Line 172) {
+        # (Line 173) const rn = rand()%6;
+        rn = f_rand() % 6
+        # (Line 174) if(rn == i)
+        if EUDIf()(rn == i):
+            # (Line 175) {
+            # (Line 176) continue;
+            EUDContinue()
+            # (Line 177) }
+            # (Line 178) else
+            # (Line 179) {//swap
+        if EUDElse()():
+            # (Line 180) const temp = turnArray[i];
+            temp = turnArray[i]
+            # (Line 181) turnArray[i] = turnArray[rn];
+            _ARRW(turnArray, i) << (turnArray[rn])
+            # (Line 182) turnArray[rn] = temp;
+            _ARRW(turnArray, rn) << (temp)
+            # (Line 183) }
+            # (Line 184) }
+        EUDEndIf()
+        # (Line 185) for(var j=0; j<6; j++)
+        EUDSetContinuePoint()
+        _t2()
+    EUDEndWhile()
+    j = EUDVariable()
+    j << (0)
+    if EUDWhile()(j >= 6, neg=True):
+        def _t5():
+            j.__iadd__(1)
+        # (Line 186) {
+        # (Line 188) if(Deaths(turnArray[j], Exactly, 0, header.tankType))
+        if EUDIf()(Deaths(turnArray[j], Exactly, 0, header.tankType)):
+            # (Line 189) {
+            # (Line 190) turnArray[j] = 7;
+            _ARRW(turnArray, j) << (7)
+            # (Line 191) }
+            # (Line 192) }
+        EUDEndIf()
+        # (Line 193) return 1;
+        EUDSetContinuePoint()
+        _t5()
+    EUDEndWhile()
+    EUDReturn(1)
+    # (Line 194) }
+    # (Line 196) function getPlayerText(turnPlayer)
+
+# (Line 197) {
+@EUDFunc
+def f_getPlayerText(turnPlayer):
+    # (Line 200) if(turnPlayer == 0) ct.printP(ct.cp, "\x13\x06빨강");
+    if EUDIf()(turnPlayer == 0):
+        ct.f_printP(ct.cp, "\x13\x06빨강")
+        # (Line 201) if(turnPlayer == 1) ct.printP(ct.cp, "\x13\x0e파랑");
+    EUDEndIf()
+    if EUDIf()(turnPlayer == 1):
+        ct.f_printP(ct.cp, "\x13\x0e파랑")
+        # (Line 202) if(turnPlayer == 2) ct.printP(ct.cp, "\x13\x0f연두");
+    EUDEndIf()
+    if EUDIf()(turnPlayer == 2):
+        ct.f_printP(ct.cp, "\x13\x0f연두")
+        # (Line 203) if(turnPlayer == 3) ct.printP(ct.cp, "\x13\x10보라");
+    EUDEndIf()
+    if EUDIf()(turnPlayer == 3):
+        ct.f_printP(ct.cp, "\x13\x10보라")
+        # (Line 204) if(turnPlayer == 4) ct.printP(ct.cp, "\x13\x11주황");
+    EUDEndIf()
+    if EUDIf()(turnPlayer == 4):
+        ct.f_printP(ct.cp, "\x13\x11주황")
+        # (Line 205) if(turnPlayer == 5) ct.printP(ct.cp, "\x13\x15갈색");
+    EUDEndIf()
+    if EUDIf()(turnPlayer == 5):
+        ct.f_printP(ct.cp, "\x13\x15갈색")
+        # (Line 207) }
+    EUDEndIf()
+    # (Line 209) function sths()
+
+# (Line 210) {
+@EUDFunc
+def f_sths():
+    # (Line 211) SetMemory(0x5193BC, SetTo, 4344512);
+    DoActions(SetMemory(0x5193BC, SetTo, 4344512))
+    # (Line 212) SetMemory(0x5193C0, SetTo, 4354656);
+    DoActions(SetMemory(0x5193C0, SetTo, 4354656))
+    # (Line 213) SetMemory(0x5193C8, SetTo, 4344512);
+    DoActions(SetMemory(0x5193C8, SetTo, 4344512))
+    # (Line 214) SetMemory(0x5193CC, SetTo, 4354656);
+    DoActions(SetMemory(0x5193CC, SetTo, 4354656))
+    # (Line 215) SetMemory(0x5193E0, SetTo, 4344512);
+    DoActions(SetMemory(0x5193E0, SetTo, 4344512))
+    # (Line 216) SetMemory(0x5193E4, SetTo, 4354656);
+    DoActions(SetMemory(0x5193E4, SetTo, 4354656))
+    # (Line 217) SetMemory(0x519578, SetTo, 4344512);
+    DoActions(SetMemory(0x519578, SetTo, 4344512))
+    # (Line 218) SetMemory(0x51957C, SetTo, 4354656);
+    DoActions(SetMemory(0x51957C, SetTo, 4354656))
+    # (Line 219) SetMemory(0x51968C, SetTo, 4344512);
+    DoActions(SetMemory(0x51968C, SetTo, 4344512))
+    # (Line 220) SetMemory(0x519690, SetTo, 4354656);
+    DoActions(SetMemory(0x519690, SetTo, 4354656))
+    # (Line 221) SetMemory(0x519698, SetTo, 4344512);
+    DoActions(SetMemory(0x519698, SetTo, 4344512))
+    # (Line 222) SetMemory(0x51969C, SetTo, 4354656);
+    DoActions(SetMemory(0x51969C, SetTo, 4354656))
+    # (Line 223) SetMemory(0x5196BC, SetTo, 4344512);
+    DoActions(SetMemory(0x5196BC, SetTo, 4344512))
+    # (Line 224) SetMemory(0x5196C0, SetTo, 4354656);
+    DoActions(SetMemory(0x5196C0, SetTo, 4354656))
+    # (Line 225) SetMemory(0x519788, SetTo, 4344512);
+    DoActions(SetMemory(0x519788, SetTo, 4344512))
+    # (Line 226) SetMemory(0x51978C, SetTo, 4354656);
+    DoActions(SetMemory(0x51978C, SetTo, 4354656))
+    # (Line 227) SetMemory(0x519824, SetTo, 4344512);
+    DoActions(SetMemory(0x519824, SetTo, 4344512))
+    # (Line 228) SetMemory(0x519828, SetTo, 4354656);
+    DoActions(SetMemory(0x519828, SetTo, 4354656))
+    # (Line 229) SetMemory(0x519878, SetTo, 4344512);
+    DoActions(SetMemory(0x519878, SetTo, 4344512))
+    # (Line 230) SetMemory(0x51987C, SetTo, 4354656);
+    DoActions(SetMemory(0x51987C, SetTo, 4354656))
+    # (Line 231) SetMemory(0x6566A4, SetTo, 100992257);
+    DoActions(SetMemory(0x6566A4, SetTo, 100992257))
+    # (Line 232) SetMemory(0x65672C, SetTo, 16908801);
+    DoActions(SetMemory(0x65672C, SetTo, 16908801))
+    # (Line 233) SetMemory(0x6568F0, SetTo, 1310720);
+    DoActions(SetMemory(0x6568F0, SetTo, 1310720))
+    # (Line 234) SetMemory(0x656D80, SetTo, 150);
+    DoActions(SetMemory(0x656D80, SetTo, 150))
+    # (Line 235) SetMemory(0x657130, SetTo, 1310720);
+    DoActions(SetMemory(0x657130, SetTo, 1310720))
+    # (Line 236) SetMemory(0x657544, SetTo, 3);
+    DoActions(SetMemory(0x657544, SetTo, 3))
+    # (Line 237) SetMemory(0x6577E8, SetTo, 1310720);
+    DoActions(SetMemory(0x6577E8, SetTo, 1310720))
+    # (Line 238) SetMemory(0x661E90, SetTo, 65537);
+    DoActions(SetMemory(0x661E90, SetTo, 65537))
+    # (Line 239) SetMemory(0x661E94, SetTo, 65537);
+    DoActions(SetMemory(0x661E94, SetTo, 65537))
+    # (Line 240) SetMemory(0x663180, SetTo, 68293124);
+    DoActions(SetMemory(0x663180, SetTo, 68293124))
+    # (Line 241) SetMemory(0x66318C, SetTo, 67372050);
+    DoActions(SetMemory(0x66318C, SetTo, 67372050))
+    # (Line 242) SetMemory(0x663228, SetTo, 67375620);
+    DoActions(SetMemory(0x663228, SetTo, 67375620))
+    # (Line 243) SetMemory(0x664148, SetTo, 403767428);
+    DoActions(SetMemory(0x664148, SetTo, 403767428))
+    # (Line 244) SetMemory(0x6642A4, SetTo, 86179969);
+    DoActions(SetMemory(0x6642A4, SetTo, 86179969))
+    # (Line 245) SetMemory(0x6643E4, SetTo, 545261572);
+    DoActions(SetMemory(0x6643E4, SetTo, 545261572))
+    # (Line 246) SetMemory(0x664500, SetTo, 1833537616);
+    DoActions(SetMemory(0x664500, SetTo, 1833537616))
+    # (Line 247) SetMemory(0x66450C, SetTo, 1381390670);
+    DoActions(SetMemory(0x66450C, SetTo, 1381390670))
+    # (Line 248) SetMemory(0x664514, SetTo, 1431586455);
+    DoActions(SetMemory(0x664514, SetTo, 1431586455))
+    # (Line 249) SetMemory(0x664520, SetTo, 3423339777);
+    DoActions(SetMemory(0x664520, SetTo, 3423339777))
+    # (Line 250) SetMemory(0x664524, SetTo, 305827);
+    DoActions(SetMemory(0x664524, SetTo, 305827))
+    # (Line 251) SetMemory(0x66453C, SetTo, 808135718);
+    DoActions(SetMemory(0x66453C, SetTo, 808135718))
+    # (Line 252) SetMemory(0x664548, SetTo, 791097219);
+    DoActions(SetMemory(0x664548, SetTo, 791097219))
+    # (Line 253) SetMemory(0x6662DC, SetTo, 7996367);
+    DoActions(SetMemory(0x6662DC, SetTo, 7996367))
+    # (Line 254) SetMemory(0x6662E4, SetTo, 34275465);
+    DoActions(SetMemory(0x6662E4, SetTo, 34275465))
+    # (Line 255) SetMemory(0x666320, SetTo, 35586265);
+    DoActions(SetMemory(0x666320, SetTo, 35586265))
+    # (Line 256) SetMemory(0x66633C, SetTo, 16187936);
+    DoActions(SetMemory(0x66633C, SetTo, 16187936))
+    # (Line 257) SetMemory(0x6663A8, SetTo, 26084310);
+    DoActions(SetMemory(0x6663A8, SetTo, 26084310))
+    # (Line 258) SetMemory(0x66652C, SetTo, 63177629);
+    DoActions(SetMemory(0x66652C, SetTo, 63177629))
+    # (Line 259) SetMemory(0x66A1BC, SetTo, 8);
+    DoActions(SetMemory(0x66A1BC, SetTo, 8))
+    # (Line 260) SetMemory(0x66F244, SetTo, 149);
+    DoActions(SetMemory(0x66F244, SetTo, 149))
+    # (Line 261) SetMemory(0x66F428, SetTo, 89);
+    DoActions(SetMemory(0x66F428, SetTo, 89))
+    # (Line 262) SetMemory(0x66F43C, SetTo, 89);
+    DoActions(SetMemory(0x66F43C, SetTo, 89))
+    # (Line 263) SetMemory(0x66F474, SetTo, 89);
+    DoActions(SetMemory(0x66F474, SetTo, 89))
+    # (Line 264) SetMemory(0x66F488, SetTo, 89);
+    DoActions(SetMemory(0x66F488, SetTo, 89))
+    # (Line 265) SetMemory(0x66F4C4, SetTo, 89);
+    DoActions(SetMemory(0x66F4C4, SetTo, 89))
+    # (Line 266) SetMemory(0x66F4C8, SetTo, 89);
+    DoActions(SetMemory(0x66F4C8, SetTo, 89))
+    # (Line 267) SetMemory(0x66F4F0, SetTo, 89);
+    DoActions(SetMemory(0x66F4F0, SetTo, 89))
+    # (Line 268) SetMemory(0x66FB50, SetTo, 383);
+    DoActions(SetMemory(0x66FB50, SetTo, 383))
+    # (Line 269) SetMemory(0x66FB58, SetTo, 89);
+    DoActions(SetMemory(0x66FB58, SetTo, 89))
+    # (Line 270) SetMemory(0x66FB84, SetTo, 89);
+    DoActions(SetMemory(0x66FB84, SetTo, 89))
+    # (Line 271) SetMemory(0x6CA418, SetTo, 19005793);
+    DoActions(SetMemory(0x6CA418, SetTo, 19005793))
+    # (Line 272) }

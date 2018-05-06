@@ -179,39 +179,91 @@ def f_setOrderID(unitEpd, orderID):
     # (Line 33) SetMemoryEPD(unitEpd + 0x4C / 4, SetTo, player + orderID * 256);
     DoActions(SetMemoryEPD(unitEpd + 0x4C // 4, SetTo, player + orderID * 256))
     # (Line 34) }
-    # (Line 46) function getDeath(targetPlayer, targetUnit)
+    # (Line 36) function getDeath(targetPlayer, targetUnit)
 
-# (Line 47) {
+# (Line 37) {
 @EUDFunc
 def f_getDeath(targetPlayer, targetUnit):
-    # (Line 48) for(var i=0; i<128; i++)
+    # (Line 38) for(var i=0; i<128; i++)
     i = EUDVariable()
     i << (0)
     if EUDWhile()(i >= 128, neg=True):
         def _t2():
             i.__iadd__(1)
-        # (Line 49) if(Deaths(targetPlayer, Exactly, i, targetUnit))
+        # (Line 39) if(Deaths(targetPlayer, Exactly, i, targetUnit))
         if EUDIf()(Deaths(targetPlayer, Exactly, i, targetUnit)):
-            # (Line 50) return i;
+            # (Line 40) return i;
             EUDReturn(i)
-            # (Line 51) }
+            # (Line 41) }
         EUDEndIf()
         EUDSetContinuePoint()
         _t2()
     EUDEndWhile()
-    # (Line 53) function getUnitType(unitEpd)
+    # (Line 43) function getUnitType(unitEpd)
+
+# (Line 44) {
+@EUDFunc
+def f_getUnitType(unitEpd):
+    # (Line 45) return dwread_epd(unitEpd + 0x64/4);
+    EUDReturn(f_dwread_epd(unitEpd + 0x64 // 4))
+    # (Line 46) }
+    # (Line 48) function getUnitEnergy(unitEpd)
+
+# (Line 49) {
+@EUDFunc
+def f_getUnitEnergy(unitEpd):
+    # (Line 50) return dwbreak(dwread_epd(unitEpd + 0xA0 / 4))[[5]];
+    EUDReturn(f_dwbreak(f_dwread_epd(unitEpd + 0xA0 // 4))[5])
+    # (Line 51) }
+    # (Line 53) function getBuildQueue1(unitEpd)
 
 # (Line 54) {
 @EUDFunc
-def f_getUnitType(unitEpd):
-    # (Line 55) return dwread_epd(unitEpd + 0x64/4);
-    EUDReturn(f_dwread_epd(unitEpd + 0x64 // 4))
-    # (Line 56) }
-    # (Line 58) function getUnitEnergy(unitEpd)
+def f_getBuildQueue1(unitEpd):
+    # (Line 55) const BuildQueueList = dwread_epd(unitEpd + 0x98 /4); //대기열
+    BuildQueueList = f_dwread_epd(unitEpd + 0x98 // 4)
+    # (Line 56) const BuildQueue1 = dwbreak(BuildQueueList)[[0]]; //1번대기열
+    BuildQueue1 = f_dwbreak(BuildQueueList)[0]
+    # (Line 58) return BuildQueue1;
+    EUDReturn(BuildQueue1)
+    # (Line 59) }
+    # (Line 61) function setBuildQueue1(unitEpd, value)
 
-# (Line 59) {
+# (Line 62) {
 @EUDFunc
-def f_getUnitEnergy(unitEpd):
-    # (Line 60) return dwbreak(dwread_epd(unitEpd + 0xA0 / 4))[[5]];
-    EUDReturn(f_dwbreak(f_dwread_epd(unitEpd + 0xA0 // 4))[5])
-    # (Line 61) }
+def f_setBuildQueue1(unitEpd, value):
+    # (Line 63) wwrite_epd(unitEpd + 0x098 / 4,  0x098 % 4, value);
+    f_wwrite_epd(unitEpd + 0x098 // 4, 0x098 % 4, value)
+    # (Line 64) }
+    # (Line 66) function getKillCount(unitEpd)
+
+# (Line 67) {
+@EUDFunc
+def f_getKillCount(unitEpd):
+    # (Line 68) return bread_epd(unitEpd + 0x08F / 4,  0x08F % 4);
+    EUDReturn(f_bread_epd(unitEpd + 0x08F // 4, 0x08F % 4))
+    # (Line 69) }
+    # (Line 71) function setKillCount(unitEpd, value)
+
+# (Line 72) {
+@EUDFunc
+def f_setKillCount(unitEpd, value):
+    # (Line 73) bwrite_epd(unitEpd + 0x08F / 4,  0x08F % 4, value);
+    f_bwrite_epd(unitEpd + 0x08F // 4, 0x08F % 4, value)
+    # (Line 74) }
+    # (Line 76) function setRemainingBuildtime(unitEpd, value)
+
+# (Line 77) {
+@EUDFunc
+def f_setRemainingBuildtime(unitEpd, value):
+    # (Line 78) wwrite_epd(unitEpd + 0x0AC / 4,  0x0AC % 4, value);
+    f_wwrite_epd(unitEpd + 0x0AC // 4, 0x0AC % 4, value)
+    # (Line 79) }
+    # (Line 81) function getRemainingBuildtime(unitEpd)
+
+# (Line 82) {
+@EUDFunc
+def f_getRemainingBuildtime(unitEpd):
+    # (Line 83) return wread_epd(unitEpd + 0x0AC / 4,  0x0AC % 4);
+    EUDReturn(f_wread_epd(unitEpd + 0x0AC // 4, 0x0AC % 4))
+    # (Line 84) }

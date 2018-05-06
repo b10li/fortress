@@ -1,0 +1,13 @@
+function getRandom(low, high) {
+    return (rand() % (high - low)) + low;
+}
+function min(a, b) {
+    if(a > b) return b;
+    else return a;
+}
+function abs(x) {
+    if(x >= 0x80000000) {
+        x = -x;
+    }
+    return x;
+}
