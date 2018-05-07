@@ -1,0 +1,60 @@
+var weaponSaver = 0;
+const ap = 30;
+const weaponList = [
+//  No.,   graphic, splash, damage, type(3 normal, 4 ignore armor) -- hp 100
+    60,     156,    20, ap+ 37,      3,
+    70,     152,   	 7,     50,      4,
+
+    71,     152,    30,     30,      4,
+    69,     150,    20,     35,      4,
+
+    94,     142,    30,     34,      4,
+    95,     142,    30,	ap+	25,      3,
+
+    72,     172,    30, ap+ 36,      3,
+    80,     142,    10,     60,      4,
+
+    43,     205,    40, ap+ 15,      3,
+    44,     172,     5,     60,      4,
+
+    12,     142,    25,     30,      4,
+    8,      150,    27, ap+ 35,      3,
+
+    9,      143,    20, ap+ 20,      3,
+    28,     143,    10,     65,      4,
+
+    11,     150,   	64, ap+ 10,      3,
+    21,     143,    20,     10,      4,
+
+    45,     142,   	50, ap+ 25,      3,
+    47,     142,   	 5,      7,      4,
+
+    42,     205,   	64,     21,      4,
+    57,     172,     1, ap+  1,      4
+    ];
+function setWeapon(unitType)
+{
+    for(var i=0; i<20; i++)
+    {
+        const index = i*5;
+        if(weaponList[index] == unitType)
+        {
+
+            if(weaponSaver != weaponList[index])
+            {
+                weaponSaver = weaponList[index];
+                // graphic
+                dwwrite(0x6564E0 + 1992 + 54 * 4, weaponList[index +1]);
+                // o,m,i splash
+                wwrite(0x6564E0 + 4768 + 54 * 2, weaponList[index +2]);
+                wwrite(0x6564E0 + 3048 + 54 * 2, weaponList[index +2]+10);
+                wwrite(0x6564E0 + 936 + 54 * 2, weaponList[index +2]+20);
+                // damage amount
+                wwrite(0x6564E0 + 2512 + 54 * 2, weaponList[index+3]);
+                // damage type
+                bwrite(0x6564E0 + 3448 + 54 * 1, weaponList[index+4]);
+            }
+            return;
+        }
+    }
+}

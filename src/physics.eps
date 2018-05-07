@@ -1,5 +1,4 @@
 import util.utilEud;
-
 function getVxy(unitEpd)
 {
 	const vx = dwread_epd(unitEpd + 0xF8/4);
@@ -29,6 +28,5 @@ function renderUnit(unitEpd, option)
 		    //unit facing
             bwrite_epd(unitEpd + 0x021 / 4,  0x021 % 4, (atan2(vy, vx)*256/360 + 64)%256);
 		}
-
 	}
 }

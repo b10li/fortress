@@ -202,8 +202,8 @@ def f_showTankInfo(unitType, targetPlayer):
             # (Line 53) {
             # (Line 54) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
             ct.f_printP(targetPlayer, "")
-            # (Line 55) ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07빡탱\x01 ]")
+            # (Line 55) ct.printP(targetPlayer, "\x13[ \x07립탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07립탱\x01 ]")
             # (Line 56) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
             ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
             # (Line 57) ct.printP(targetPlayer, "\x03특징: \x01기어다님");
@@ -214,8 +214,8 @@ def f_showTankInfo(unitType, targetPlayer):
             # (Line 61) {
             # (Line 62) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
             ct.f_printP(targetPlayer, "")
-            # (Line 63) ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07빡탱\x01 ]")
+            # (Line 63) ct.printP(targetPlayer, "\x13[ \x07곰탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07곰탱\x01 ]")
             # (Line 64) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
             ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
             # (Line 65) ct.printP(targetPlayer, "\x03특징: \x01귀여움");
@@ -242,8 +242,8 @@ def f_showTankInfo(unitType, targetPlayer):
             ct.f_printP(targetPlayer, "\x13[ \x07딥탱\x01 ]")
             # (Line 80) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
             ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 81) ct.printP(targetPlayer, "\x03특징: \x01디바가 울면?");
-            ct.f_printP(targetPlayer, "\x03특징: \x01디바가 울면?")
+            # (Line 81) ct.printP(targetPlayer, "\x03문제: \x01디바가 울면?");
+            ct.f_printP(targetPlayer, "\x03문제: \x01디바가 울면?")
             # (Line 82) }
             # (Line 84) else if(unitType == header.Tank)
         if EUDElseIf()(unitType == header.Tank):
@@ -254,8 +254,8 @@ def f_showTankInfo(unitType, targetPlayer):
             ct.f_printP(targetPlayer, "\x13[ \x07탱크\x01 ]")
             # (Line 88) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
             ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 89) ct.printP(targetPlayer, "\x03특징: \x01변신 못함");
-            ct.f_printP(targetPlayer, "\x03특징: \x01변신 못함")
+            # (Line 89) ct.printP(targetPlayer, "\x03특징: \x01시즈 못함");
+            ct.f_printP(targetPlayer, "\x03특징: \x01시즈 못함")
             # (Line 90) }
             # (Line 92) else if(unitType == header.Goliath)
         if EUDElseIf()(unitType == header.Goliath):
@@ -278,8 +278,8 @@ def f_showTankInfo(unitType, targetPlayer):
             ct.f_printP(targetPlayer, "\x13[ \x07벌탱\x01 ]")
             # (Line 104) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
             ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 105) ct.printP(targetPlayer, "\x03특징: \x01시벌탱");
-            ct.f_printP(targetPlayer, "\x03특징: \x01시벌탱")
+            # (Line 105) ct.printP(targetPlayer, "\x03특징: \x01마인 시벌탱");
+            ct.f_printP(targetPlayer, "\x03특징: \x01마인 시벌탱")
             # (Line 106) }
             # (Line 108) else if(unitType == header.Lurker)
         if EUDElseIf()(unitType == header.Lurker):
@@ -313,73 +313,75 @@ def f_showTankInfo(unitType, targetPlayer):
             # (Line 126) ct.printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요");
             ct.f_printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요")
             # (Line 127) }
-            # (Line 128) ct.printP(targetPlayer, "\x12\x07[ L ] : \x01선택");
+            # (Line 128) ct.printP(targetPlayer, "");
         EUDEndIf()
-        ct.f_printP(targetPlayer, "\x12\x07[ L ] : \x01선택")
-        # (Line 129) dwwrite_epd(EPD(0x640B58), chatPtr);
+        ct.f_printP(targetPlayer, "")
+        # (Line 129) ct.printP(targetPlayer, "\x13\x07[ L ] : \x01선택");
+        ct.f_printP(targetPlayer, "\x13\x07[ L ] : \x01선택")
+        # (Line 130) dwwrite_epd(EPD(0x640B58), chatPtr);
         f_dwwrite_epd(EPD(0x640B58), chatPtr)
-        # (Line 130) }
-        # (Line 131) return unitType;
+        # (Line 131) }
+        # (Line 132) return unitType;
     EUDEndIf()
     EUDReturn(unitType)
-    # (Line 132) }
-    # (Line 134) function isListed(unitType)
+    # (Line 133) }
+    # (Line 135) function isListed(unitType)
 
-# (Line 135) {
+# (Line 136) {
 @EUDFunc
 def f_isListed(unitType):
-    # (Line 136) for(var i=0; i<10; i++)
+    # (Line 137) for(var i=0; i<10; i++)
     i = EUDVariable()
     i << (0)
     if EUDWhile()(i >= 10, neg=True):
         def _t2():
             i.__iadd__(1)
-        # (Line 137) {
-        # (Line 138) if(header.List[i] == unitType) return 1;
+        # (Line 138) {
+        # (Line 139) if(header.List[i] == unitType) return 1;
         if EUDIf()(header.List[i] == unitType):
             EUDReturn(1)
-            # (Line 139) }
+            # (Line 140) }
         EUDEndIf()
-        # (Line 140) return 0;
+        # (Line 141) return 0;
         EUDSetContinuePoint()
         _t2()
     EUDEndWhile()
     EUDReturn(0)
-    # (Line 141) }
-    # (Line 143) function selectScreen()
+    # (Line 142) }
+    # (Line 144) function selectScreen()
 
-# (Line 144) {
+# (Line 145) {
 @EUDFunc
 def f_selectScreen():
-    # (Line 145) EUDPlayerLoop()();
+    # (Line 146) EUDPlayerLoop()();
     EUDPlayerLoop()()
-    # (Line 146) const i = getcurpl();
+    # (Line 147) const i = getcurpl();
     i = f_getcurpl()
-    # (Line 147) if(i<6)
+    # (Line 148) if(i<6)
     if EUDIf()(i >= 6, neg=True):
-        # (Line 148) {
-        # (Line 150) if(Command(i, Exactly, 1, header.Flag))
+        # (Line 149) {
+        # (Line 151) if(Command(i, Exactly, 1, header.Flag))
         if EUDIf()(Command(i, Exactly, 1, header.Flag)):
-            # (Line 151) {
-            # (Line 152) const key = utilEud.getDeath(i, 0);
+            # (Line 152) {
+            # (Line 153) const key = utilEud.getDeath(i, 0);
             key = utilEud.f_getDeath(i, 0)
-            # (Line 153) CenterView($L('select')+1);
+            # (Line 154) CenterView($L('select')+1);
             DoActions(CenterView(GetLocationIndex('select') + 1))
-            # (Line 154) const unitType = showTankInfo(getSelection(i), i);
+            # (Line 155) const unitType = showTankInfo(getSelection(i), i);
             unitType = f_showTankInfo(f_getSelection(i), i)
-            # (Line 156) if(key == 8 && isListed(unitType)) // L
+            # (Line 157) if(key == 8 && isListed(unitType)) // L
             if EUDIf()(EUDSCAnd()(key == 8)(f_isListed(unitType))()):
-                # (Line 157) {// confirm
-                # (Line 158) RemoveUnit(header.Flag, i);
+                # (Line 158) {// confirm
+                # (Line 159) RemoveUnit(header.Flag, i);
                 DoActions(RemoveUnit(header.Flag, i))
-                # (Line 160) SetDeaths(i, SetTo, unitType, header.tankType);
+                # (Line 161) SetDeaths(i, SetTo, unitType, header.tankType);
                 DoActions(SetDeaths(i, SetTo, unitType, header.tankType))
-                # (Line 161) }
-                # (Line 163) }
+                # (Line 162) }
+                # (Line 164) }
             EUDEndIf()
-            # (Line 164) }
+            # (Line 165) }
         EUDEndIf()
-        # (Line 165) EUDEndPlayerLoop();
+        # (Line 166) EUDEndPlayerLoop();
     EUDEndIf()
     EUDEndPlayerLoop()
-    # (Line 166) }
+    # (Line 167) }

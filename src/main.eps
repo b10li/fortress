@@ -10,7 +10,7 @@ CustomText
 http://cafe.naver.com/edac/64676
 etc.
 ---------------------------------------------*/
-
+import eudEdit;
 import tank.tankMain;
 import tank.tankAim;
 import tank.tankBullet;
@@ -19,17 +19,19 @@ import header;
 import physics;
 import customText3 as ct; 
 
-
-
+//0 if test
+const RELEASE = 1;
 const turnArray = [0,1,2, 3,4,5,7];
 var turnPointer = 6;
 var gameState = 0;
-function sths();
+var preTurn = 7;
+var wind = 0;
 function onPluginStart() 
 {
-	sths();
+	eudEdit.memoryEdit();
 	randomize();
 }
+function displayWind(windVal);
 function gameInfo(targetPlayer);
 function getPlayerText(turnPlayer);
 function getRandomTurn();
@@ -37,7 +39,7 @@ function playerDeath();
 function teamVictory();
 function beforeTriggerExec() 
 {
-	
+
 	const turnPlayer = turnArray[turnPointer];
 	//탱크 선택 중에는 0
 	if(gameState == 0)
@@ -62,34 +64,50 @@ function beforeTriggerExec()
 
 		if(CountdownTimer(Exactly, 0))
 		{//pre control
-			//enable
+			if(preTurn == turnPlayer && RELEASE) 
+			{// time end
+				//init
+				SetDeaths(turnPlayer, SetTo, 0, 217);
+        		SetResources(turnPlayer, SetTo, 0, Gas);
+				SetDeaths(turnPlayer, SetTo, 0, header.shootNum);
+				tankMain.toggleDisable(turnPlayer, 0);
+				//get next turn
+				gameState = 4;
+				return;
+			}
 			if(turnPlayer !=7 && playerexist(turnPlayer))
 			{
-				SetCountdownTimer(SetTo, 20);
+				// random wind
+				wind = (rand()%22)/2;
+				SetCountdownTimer(SetTo, 40);
 				tankMain.toggleDisable(turnPlayer, 1);
 				MoveLocation($L('loc1')+1, '(men)', turnPlayer, $L('PlayArea')+1);
 				CenterView($L('loc1')+1);
 			}
-			else
-			{
+			else 
+			{// dead or none player
 				turnArray[turnPointer] = 7;
+				//get next turn
 				gameState = 4;
 			}
+
 		}
 		if(CountdownTimer(AtLeast, 1))
-		{//during control
+		{//start control
+			preTurn = turnPlayer;
 			//start texing
 			const chatPtr = dwread_epd(EPD(0x640B58));
+			displayWind(wind);
 			getPlayerText(turnPlayer);
 			ct.printP(ct.cp, "\x13\x01차례");
 			gameInfo(turnPlayer);
 			const check = tankMain.controlTank(turnPlayer);
-			if(check == -1)
-			{// error
-				gameState = 4;
-				SetCountdownTimer(SetTo, 0);
-			}
-			else if (check == 0){}
+			//if(check == -1)
+			//{// error
+			//	gameState = 4;
+			//	SetCountdownTimer(SetTo, 0);
+			//} else
+			if (check == 0){}
 			else
 			{//goto shoot state
 				gameState = 3;
@@ -99,7 +117,6 @@ function beforeTriggerExec()
 				//disable
 				tankMain.toggleDisable(turnPlayer, 0);
 			}
-			
 			//end of texting
 			dwwrite_epd(EPD(0x640B58), chatPtr);
 		}
@@ -121,35 +138,44 @@ function beforeTriggerExec()
 	}
 	if(gameState == 4)
 	{// next
+		for(var i=0; i<6; i++){
+			tankAim.clearAngle(i);
+		}
 		turnPointer = (turnPointer+1)%6;
 		gameState = 2;
 	}
 	if(gameState >= 2) 
 	{
 		playerDeath();
-		teamVictory();
+		if(RELEASE) teamVictory();
 	}
+	EUDPlayerLoop()();
+	SetAllianceStatus($AllPlayers, Ally);
+	EUDEndPlayerLoop();
 
 	// 물리엔진
-	tankMain.renderTank();
-	tankBullet.renderBullet();
+	tankMain.renderTank();	 
+	tankBullet.renderBullet(wind);
 	// 바람, 아이템, 총알 별 데미지 및 이펙트
 }
 
 function teamVictory()
 {
-	if(Command($Force1, Exactly, 0, '(men)') || Command($Force3, Exactly, 0, '(men)') )
+	if(Command($Force1, Exactly, 0, '(men)') || Command($Force3, Exactly, 0, '(men)'))
 	{
+		EUDPlayerLoop()();
 		Victory();
+		EUDEndPlayerLoop();
 	}
 }
 
 function gameInfo(targetPlayer)
 {
-	ct.printP(targetPlayer, "\x13\x07[조작법]");
-	ct.printP(targetPlayer, "\x13\x07[I],[K]: \x01각도");
-	ct.printP(targetPlayer, "\x13\x07[J]: \x01발사파워 (꾹 누름)");
-	ct.printP(targetPlayer, "\x13\x07[L]: \x01무기교체 ");
+	ct.printP(targetPlayer, "\x07[조작법]");
+	ct.printP(targetPlayer, "\x07[I],[K]: \x01각도");
+	ct.printP(targetPlayer, "\x07[J]: \x01발사파워 (꾹 누름)");
+	ct.printP(targetPlayer, "\x07[L]: \x01무기교체 ");
+	ct.printP(targetPlayer, "\x01이동: \x01그냥 우클릭 무브해");
 
 }
 function playerDeath()
@@ -207,75 +233,26 @@ function getPlayerText(turnPlayer)
 	//const chatPtr = dwread_epd(EPD(0x640B58));
   	//ct.printP(ct.cp, ""); // ct.cp는 모두에게 출력
   	if(turnPlayer == 0) ct.printP(ct.cp, "\x13\x06빨강\x01");
-  	if(turnPlayer == 1) ct.printP(ct.cp, "\x13\x0e파랑\x01");
-  	if(turnPlayer == 2) ct.printP(ct.cp, "\x13\x0f연두\x01");
-  	if(turnPlayer == 3) ct.printP(ct.cp, "\x13\x10보라\x01");
-  	if(turnPlayer == 4) ct.printP(ct.cp, "\x13\x11주황\x01");
-  	if(turnPlayer == 5) ct.printP(ct.cp, "\x13\x15갈색\x01");
+  	else if(turnPlayer == 1) ct.printP(ct.cp, "\x13\x0e파랑\x01");
+  	else if(turnPlayer == 2) ct.printP(ct.cp, "\x13\x0f연두\x01");
+  	else if(turnPlayer == 3) ct.printP(ct.cp, "\x13\x10보라\x01");
+  	else if(turnPlayer == 4) ct.printP(ct.cp, "\x13\x11주황\x01");
+  	else if(turnPlayer == 5) ct.printP(ct.cp, "\x13\x15갈색\x01");
 	//dwwrite_epd(EPD(0x640B58), chatPtr);
 }
 
-function sths()
+function displayWind(windVal)
 {
-		SetMemory(0x5193BC, SetTo, 4344512);
-		SetMemory(0x5193C0, SetTo, 4354656);
-		SetMemory(0x5193C8, SetTo, 4344512);
-		SetMemory(0x5193CC, SetTo, 4354656);
-		SetMemory(0x5193E0, SetTo, 4344512);
-		SetMemory(0x5193E4, SetTo, 4354656);
-		SetMemory(0x519578, SetTo, 4344512);
-		SetMemory(0x51957C, SetTo, 4354656);
-		SetMemory(0x51968C, SetTo, 4344512);
-		SetMemory(0x519690, SetTo, 4354656);
-		SetMemory(0x519698, SetTo, 4344512);
-		SetMemory(0x51969C, SetTo, 4354656);
-		SetMemory(0x5196BC, SetTo, 4344512);
-		SetMemory(0x5196C0, SetTo, 4354656);
-		SetMemory(0x519788, SetTo, 4344512);
-		SetMemory(0x51978C, SetTo, 4354656);
-		SetMemory(0x519824, SetTo, 4344512);
-		SetMemory(0x519828, SetTo, 4354656);
-		SetMemory(0x519878, SetTo, 4344512);
-		SetMemory(0x51987C, SetTo, 4354656);
-		SetMemory(0x6566A4, SetTo, 100992257);
-		SetMemory(0x65672C, SetTo, 16908801);
-		SetMemory(0x6568F0, SetTo, 1310720);
-		SetMemory(0x656D80, SetTo, 150);
-		SetMemory(0x657130, SetTo, 1310720);
-		SetMemory(0x657544, SetTo, 3);
-		SetMemory(0x6577E8, SetTo, 1310720);
-		SetMemory(0x661E90, SetTo, 65537);
-		SetMemory(0x661E94, SetTo, 65537);
-		SetMemory(0x663180, SetTo, 68293124);
-		SetMemory(0x66318C, SetTo, 67372050);
-		SetMemory(0x663228, SetTo, 67375620);
-		SetMemory(0x664148, SetTo, 403767428);
-		SetMemory(0x6642A4, SetTo, 86179969);
-		SetMemory(0x6643E4, SetTo, 545261572);
-		SetMemory(0x664500, SetTo, 1833537616);
-		SetMemory(0x66450C, SetTo, 1381390670);
-		SetMemory(0x664514, SetTo, 1431586455);
-		SetMemory(0x664520, SetTo, 3423339777);
-		SetMemory(0x664524, SetTo, 305827);
-		SetMemory(0x66453C, SetTo, 808135718);
-		SetMemory(0x664548, SetTo, 791097219);
-		SetMemory(0x6662DC, SetTo, 7996367);
-		SetMemory(0x6662E4, SetTo, 34275465);
-		SetMemory(0x666320, SetTo, 35586265);
-		SetMemory(0x66633C, SetTo, 16187936);
-		SetMemory(0x6663A8, SetTo, 26084310);
-		SetMemory(0x66652C, SetTo, 63177629);
-		SetMemory(0x66A1BC, SetTo, 8);
-		SetMemory(0x66F244, SetTo, 149);
-		SetMemory(0x66F428, SetTo, 89);
-		SetMemory(0x66F43C, SetTo, 89);
-		SetMemory(0x66F474, SetTo, 89);
-		SetMemory(0x66F488, SetTo, 89);
-		SetMemory(0x66F4C4, SetTo, 89);
-		SetMemory(0x66F4C8, SetTo, 89);
-		SetMemory(0x66F4F0, SetTo, 89);
-		SetMemory(0x66FB50, SetTo, 383);
-		SetMemory(0x66FB58, SetTo, 89);
-		SetMemory(0x66FB84, SetTo, 89);
-		SetMemory(0x6CA418, SetTo, 19005793);
+	const wind = 5 - windVal;
+	if(wind == -5) ct.printP(ct.cp, "\x12바람: \x0e◀◀◀◀◀▷▷▷▷▷\x01");
+	else if(wind == -4) ct.printP(ct.cp, "\x12바람: \x0e◁◀◀◀◀▷▷▷▷▷\x01");
+	else if(wind == -3) ct.printP(ct.cp, "\x12바람: \x0e◁◁◀◀◀▷▷▷▷▷\x01");
+	else if(wind == -2) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◀◀▷▷▷▷▷\x01");
+	else if(wind == -1) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◁◀▷▷▷▷▷\x01");
+	else if(wind == 0) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◁◁▷▷▷▷▷\x01");
+	else if(wind == 1) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◁◁▶▷▷▷▷\x01");
+	else if(wind == 2) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◁◁▶▶▷▷▷\x01");
+	else if(wind == 3) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◁◁▶▶▶▷▷\x01");
+	else if(wind == 4) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◁◁▶▶▶▶▷\x01");
+	else if(wind == 5) ct.printP(ct.cp, "\x12바람: \x0e◁◁◁◁◁▶▶▶▶▶\x01");
 }

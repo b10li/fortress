@@ -205,102 +205,103 @@ def f_checkDeath(targetPlayer):
 # (Line 51) {// 키인식으로
 @EUDFunc
 def f_controlTank(targetPlayer):
-    # (Line 53) const angleNum = 2; //단위
-    angleNum = 2
-    # (Line 54) const unitEpd = getTankEpd(targetPlayer);
+    # (Line 52) const angleNum = 4; //단위
+    angleNum = 4
+    # (Line 53) const unitEpd = getTankEpd(targetPlayer);
     unitEpd = f_getTankEpd(targetPlayer)
-    # (Line 57) const power = utilEud.getRemainingBuildtime(unitEpd);
+    # (Line 56) const power = utilEud.getRemainingBuildtime(unitEpd);
     power = utilEud.f_getRemainingBuildtime(unitEpd)
-    # (Line 58) const angle = tankAim.getAngle(unitEpd);
+    # (Line 57) const angle = tankAim.getAngle(unitEpd);
     angle = tankAim.f_getAngle(unitEpd)
-    # (Line 60) const locID = $L('loc_tank');
+    # (Line 59) const locID = $L('loc_tank');
     locID = GetLocationIndex('loc_tank')
-    # (Line 61) const orderID = utilEud.getOrderID(unitEpd);
+    # (Line 60) const orderID = utilEud.getOrderID(unitEpd);
     orderID = utilEud.f_getOrderID(unitEpd)
-    # (Line 62) const keyValue = utilEud.getDeath(targetPlayer, header.keydeath);
+    # (Line 61) const keyValue = utilEud.getDeath(targetPlayer, header.keydeath);
     keyValue = utilEud.f_getDeath(targetPlayer, header.keydeath)
-    # (Line 64) if(orderID == 6)  // while moving
+    # (Line 63) if(orderID == 6)  // while moving
     if EUDIf()(orderID == 6):
-        # (Line 65) tankAim.clearAngle(targetPlayer);
+        # (Line 64) tankAim.clearAngle(targetPlayer);
         tankAim.f_clearAngle(targetPlayer)
-        # (Line 67) if(1 == keyValue)
+        # (Line 66) if(1 == keyValue)
     EUDEndIf()
     if EUDIf()(1 == keyValue):
-        # (Line 68) {// angle UP
-        # (Line 69) tankAim.setAngle(unitEpd, angle + angleNum);
+        # (Line 67) {// angle UP
+        # (Line 68) tankAim.setAngle(unitEpd, angle + angleNum);
         tankAim.f_setAngle(unitEpd, angle + angleNum)
-        # (Line 70) tankAim.showLaunchAngle(unitEpd);
+        # (Line 69) tankAim.showLaunchAngle(unitEpd);
         tankAim.f_showLaunchAngle(unitEpd)
-        # (Line 71) }
-        # (Line 72) else if(2 == keyValue)
+        # (Line 70) }
+        # (Line 71) else if(2 == keyValue)
     if EUDElseIf()(2 == keyValue):
-        # (Line 73) {// angle DOWN
-        # (Line 74) tankAim.setAngle(unitEpd, angle - angleNum);
+        # (Line 72) {// angle DOWN
+        # (Line 73) tankAim.setAngle(unitEpd, angle - angleNum);
         tankAim.f_setAngle(unitEpd, angle - angleNum)
-        # (Line 75) tankAim.showLaunchAngle(unitEpd);
+        # (Line 74) tankAim.showLaunchAngle(unitEpd);
         tankAim.f_showLaunchAngle(unitEpd)
-        # (Line 76) }
-        # (Line 77) else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 0, Gas))
+        # (Line 75) }
+        # (Line 76) else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 0, Gas))
     if EUDElseIf()(EUDSCAnd()(4 == keyValue)(Accumulate(targetPlayer, Exactly, 0, Gas))()):
-        # (Line 78) {// shoot inital key press
-        # (Line 80) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
+        # (Line 77) {// shoot inital key press
+        # (Line 79) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
         utilEud.f_setRemainingBuildtime(unitEpd, header.maxbuildtime)
-        # (Line 81) SetResources(targetPlayer, SetTo, 1, Gas);
+        # (Line 80) SetResources(targetPlayer, SetTo, 1, Gas);
         DoActions(SetResources(targetPlayer, SetTo, 1, Gas))
-        # (Line 83) SetDeaths(targetPlayer, SetTo, 0, 217);
+        # (Line 82) SetDeaths(targetPlayer, SetTo, 0, 217);
         DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
-        # (Line 84) }
-        # (Line 85) else if (4 != keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
+        # (Line 83) }
+        # (Line 84) else if (4 != keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
     if EUDElseIf()(EUDSCAnd()(4 == keyValue, neg=True)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
-        # (Line 86) {// end key press
-        # (Line 87) SetDeaths(targetPlayer, Add, 1, 217);
+        # (Line 85) {// end key press
+        # (Line 86) SetDeaths(targetPlayer, Add, 1, 217);
         DoActions(SetDeaths(targetPlayer, Add, 1, 217))
-        # (Line 88) }
-        # (Line 89) else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
+        # (Line 87) }
+        # (Line 88) else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
     if EUDElseIf()(EUDSCAnd()(4 == keyValue)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
-        # (Line 90) {
-        # (Line 91) utilEud.setRemainingBuildtime(unitEpd, power -1);
-        utilEud.f_setRemainingBuildtime(unitEpd, power - 1)
-        # (Line 92) SetDeaths(targetPlayer, SetTo, 0, 217);
+        # (Line 89) {
+        # (Line 90) utilEud.setRemainingBuildtime(unitEpd, power -2);
+        utilEud.f_setRemainingBuildtime(unitEpd, power - 2)
+        # (Line 91) SetDeaths(targetPlayer, SetTo, 0, 217);
         DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
-        # (Line 93) }
-        # (Line 94) else if (8 == keyValue && Switch(targetPlayer, Cleared))
+        # (Line 92) }
+        # (Line 93) else if (8 == keyValue && Switch(targetPlayer, Cleared))
     if EUDElseIf()(EUDSCAnd()(8 == keyValue)(Switch(targetPlayer, Cleared))()):
-        # (Line 95) {// change weapon
-        # (Line 97) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+        # (Line 94) {// change weapon
+        # (Line 96) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
         ct.f_printP(targetPlayer, "")
-        # (Line 98) ct.printP(targetPlayer, "\x13[ 무기 교체 ] ");
+        # (Line 97) ct.printP(targetPlayer, "\x13[ 무기 교체 ] ");
         ct.f_printP(targetPlayer, "\x13[ 무기 교체 ] ")
-        # (Line 100) tankBullet.toggleBullet(unitEpd);
+        # (Line 99) tankBullet.toggleBullet(unitEpd);
         tankBullet.f_toggleBullet(unitEpd)
-        # (Line 101) SetSwitch(targetPlayer, Set);
+        # (Line 100) SetSwitch(targetPlayer, Set);
         DoActions(SetSwitch(targetPlayer, Set))
-        # (Line 102) }
-        # (Line 103) if(8 != keyValue && Switch(targetPlayer, Set))
+        # (Line 101) }
+        # (Line 102) if(8 != keyValue && Switch(targetPlayer, Set))
     EUDEndIf()
     if EUDIf()(EUDSCAnd()(8 == keyValue, neg=True)(Switch(targetPlayer, Set))()):
-        # (Line 104) {// change weapon keydelay
-        # (Line 105) SetSwitch(targetPlayer, Clear);
+        # (Line 103) {// change weapon keydelay
+        # (Line 104) SetSwitch(targetPlayer, Clear);
         DoActions(SetSwitch(targetPlayer, Clear))
-        # (Line 106) }
-        # (Line 109) if (Deaths(targetPlayer, AtLeast, 12, 217) || power == 0)
+        # (Line 105) }
+        # (Line 108) if (Deaths(targetPlayer, AtLeast, 8, 217) || power == 0)
     EUDEndIf()
-    if EUDIf()(EUDSCOr()(Deaths(targetPlayer, AtLeast, 12, 217))(power == 0)()):
-        # (Line 110) {// end key press for 1sec
-        # (Line 111) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
+    if EUDIf()(EUDSCOr()(Deaths(targetPlayer, AtLeast, 8, 217))(power == 0)()):
+        # (Line 109) {// end key press for 1sec
+        # (Line 110) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
         utilEud.f_setRemainingBuildtime(unitEpd, header.maxbuildtime)
-        # (Line 112) SetDeaths(targetPlayer, SetTo, 0, 217);
+        # (Line 111) SetDeaths(targetPlayer, SetTo, 0, 217);
         DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
-        # (Line 113) SetResources(targetPlayer, SetTo, 0, Gas);
+        # (Line 112) SetResources(targetPlayer, SetTo, 0, Gas);
         DoActions(SetResources(targetPlayer, SetTo, 0, Gas))
-        # (Line 114) tankAim.clearAngle(targetPlayer);
+        # (Line 113) tankAim.clearAngle(targetPlayer);
         tankAim.f_clearAngle(targetPlayer)
-        # (Line 116) utilEud.setKillCount(unitEpd, (header.maxbuildtime+1) - power);
+        # (Line 115) utilEud.setKillCount(unitEpd, (header.maxbuildtime+1) - power);
         utilEud.f_setKillCount(unitEpd, (header.maxbuildtime + 1) - power)
-        # (Line 117) return unitEpd;
+        # (Line 116) return unitEpd;
         EUDReturn(unitEpd)
-        # (Line 118) }
-        # (Line 119) else return 0;
+        # (Line 117) }
+        # (Line 118) else
+        # (Line 119) return 0;
     if EUDElse()():
         EUDReturn(0)
         # (Line 121) }

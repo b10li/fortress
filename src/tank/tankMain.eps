@@ -49,8 +49,7 @@ function checkDeath(targetPlayer)
 }
 function controlTank(targetPlayer)
 {// 키인식으로 
-
-    const angleNum = 2; //단위
+    const angleNum = 4; //단위
     const unitEpd = getTankEpd(targetPlayer);
     //prevent Error
     //if(unitEpd == 0) return -1;
@@ -88,7 +87,7 @@ function controlTank(targetPlayer)
     }
     else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
     {
-        utilEud.setRemainingBuildtime(unitEpd, power -1);
+        utilEud.setRemainingBuildtime(unitEpd, power -2);
         SetDeaths(targetPlayer, SetTo, 0, 217);
     }
     else if (8 == keyValue && Switch(targetPlayer, Cleared))
@@ -106,7 +105,7 @@ function controlTank(targetPlayer)
     }
 
 
-    if (Deaths(targetPlayer, AtLeast, 12, 217) || power == 0)
+    if (Deaths(targetPlayer, AtLeast, 8, 217) || power == 0)
     {// end key press for 1sec
         utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
         SetDeaths(targetPlayer, SetTo, 0, 217);
@@ -116,7 +115,8 @@ function controlTank(targetPlayer)
         utilEud.setKillCount(unitEpd, (header.maxbuildtime+1) - power); 
         return unitEpd;
     }
-    else return 0;
+    else 
+        return 0;
     
 }
 

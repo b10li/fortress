@@ -1,12 +1,18 @@
 import header;
 import util.utilEud;
+import util.utilMath;
 import tank.tankAim;
+import tank.tankWeapon;
 import physics;
 
+
+const TOPSPEED = 30;
+const BOTSPEED = 2;
 // physics -----------------------------------------------------
 const gravity = 1;
 const pTargetArray = EUDArray(10);
 var epdnum = 0;
+var framebool = 0;    
 //epd가 저장된 배열을 돌며 0 이 아닌걸 물리적용함
 function push(unitEpd)
 {
@@ -25,7 +31,8 @@ function popmid(unitEpd)
     }
 }
 function boom(unitType, locID);
-function renderBullet()
+function speedLimit(v);
+function renderBullet(wind)
 {//bullet physics
     for(var i=0; i<10; i++)
     {
@@ -38,7 +45,9 @@ function renderBullet()
             MoveLocation(locID+1, unitType, $P7, $L('locDst')+1);
             if(pTargetArray[0]) CenterView(locID+1);
             //collision
-            if(Bring($P8, AtLeast, 1, '(buildings)', locID+1))
+            if(Bring($P8, AtLeast, 1, '(buildings)', locID+1)
+                || Bring($Force1, AtLeast, 1, '(men)', locID+1)
+                || Bring($Force3, AtLeast, 1, '(men)', locID+1))
             {
                 popmid(unitEpd);
                 RemoveUnitAt(1, '(men)', locID+1, $P7);
@@ -46,15 +55,32 @@ function renderBullet()
             }
             else
             {
-                const vx, vy = physics.getVxy(unitEpd);
-                physics.setVxy(unitEpd, vx, vy + gravity);
+                var vx, vy = physics.getVxy(unitEpd);
+                // speed limit
+                vx = speedLimit(vx);
+                vy = speedLimit(vy);
+                const nw = 2- wind/2;
+                // slower accleration
+                if(framebool == 0) physics.setVxy(unitEpd, vx, vy + gravity);
+                else if(framebool == 1) physics.setVxy(unitEpd, vx, vy);
+                else if(framebool == 2) physics.setVxy(unitEpd, vx, vy);
+                else physics.setVxy(unitEpd, vx + nw, vy + gravity);
+                framebool = (framebool+1)%4;
             }
         }
     }
 }
+function speedLimit(v)
+{
+    if(utilMath.abs(v) > (TOPSPEED + BOTSPEED)) 
+    {
+        if(v >= 0x80000000) v = -(TOPSPEED + BOTSPEED);
+        else v = (TOPSPEED + BOTSPEED);
+    }
+    return v;
+}
 // shoot & create ----------------------------------------------------
-const TOPSPEED = 28;
-const BOTSPEED = 4;
+
 function getBullet(unitType, num);
 function toggleBullet(unitEpd)
 {
@@ -72,9 +98,8 @@ function makeBullet(unitType, x, y, angle, speed)
 {
     const locID = $L('locBullet');
     utilEud.moveLocationXY(locID, x, y);
-
     const unitEpd = epdread_epd(EPD(0x628438));
-    CreateUnitWithProperties(1, unitType, locID+1, $P7, UnitProperty(invincible = true));
+    CreateUnit(1, unitType, locID+1, $P7);
     // speed : 100(max) = x : 32(maxspeed)
     // and +minimum
     const changedSpeed = TOPSPEED * speed/100 + BOTSPEED;
@@ -94,16 +119,28 @@ function shoot(unitEpd)
     const unitType = utilEud.getUnitType(unitEpd);
     const bullet = getBullet(unitType, utilEud.getDeath(targetPlayer, header.bulletQ));
     // 총알 종류에 따른 다양한 생성
-    //if(bulletType == sth)
+    if(bullet == 47)
+    {
+        for (var i=1; i<4; i++){
+            makeBullet(bullet, x+dx, y+dy, angle+i, speed);
+        }
+    }
+    if(unitType == header.Devourer) makeBullet(bullet, x+dx, y+dy + 32, angle, speed);
     makeBullet(bullet, x+dx, y+dy, angle, speed);
 }
 
+function getWeapon(unitType);
 function boom(unitType, locID)
 {
     const bombUnit = 50;
+    //change Weapon
+    tankWeapon.setWeapon(unitType);
+    //dwwrite(0x6564E0 + 1992 + 54 * 4, 150);
     const unitEpd = epdread_epd(EPD(0x628438));
+    //create
     CreateUnitWithProperties(1, bombUnit, locID+1, $P7, UnitProperty(invincible=true));
     const unitPos = dwread_epd(unitEpd + 0x28/4); 
+    //suicide attack
     dwwrite_epd(unitEpd + 0x58/4, unitPos);
     utilEud.setOrderID(unitEpd, 135);
 }
