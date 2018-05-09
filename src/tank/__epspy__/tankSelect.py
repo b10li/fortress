@@ -126,6 +126,7 @@ from util import utilEud
 import header
 # (Line 3) import customText3 as ct;
 import customText3 as ct
+# (Line 7) function showTankInfo(unitType, targetPlayer);
 # (Line 8) function isSelecting()
 # (Line 9) {
 @EUDFunc
@@ -163,225 +164,245 @@ def f_getSelection(targetPlayer):
         EUDReturn(0)
         # (Line 27) }
     EUDEndIf()
-    # (Line 29) function showTankInfo(unitType, targetPlayer)
+    # (Line 30) function isListed(unitType)
 
-# (Line 30) {
-@EUDFunc
-def f_showTankInfo(unitType, targetPlayer):
-    # (Line 33) if (unitType == 0)
-    if EUDIf()(unitType == 0):
-        # (Line 34) {
-        # (Line 35) const chatPtr = dwread_epd(EPD(0x640B58));
-        chatPtr = f_dwread_epd(EPD(0x640B58))
-        # (Line 36) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-        ct.f_printP(targetPlayer, "")
-        # (Line 37) ct.printP(targetPlayer, "\x13원하는 탱크를 마우스로 클릭해주세요");
-        ct.f_printP(targetPlayer, "\x13원하는 탱크를 마우스로 클릭해주세요")
-        # (Line 38) dwwrite_epd(EPD(0x640B58), chatPtr);
-        f_dwwrite_epd(EPD(0x640B58), chatPtr)
-        # (Line 39) }
-        # (Line 40) else
-        # (Line 41) {
-    if EUDElse()():
-        # (Line 42) const chatPtr = dwread_epd(EPD(0x640B58));
-        chatPtr = f_dwread_epd(EPD(0x640B58))
-        # (Line 44) if(unitType == header.Dragoon)
-        if EUDIf()(unitType == header.Dragoon):
-            # (Line 45) {
-            # (Line 46) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 47) ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07빡탱\x01 ]")
-            # (Line 48) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 49) ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
-            ct.f_printP(targetPlayer, "\x03특징: \x01길 못찾음")
-            # (Line 50) }
-            # (Line 52) else if(unitType == header.Reaver)
-        if EUDElseIf()(unitType == header.Reaver):
-            # (Line 53) {
-            # (Line 54) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 55) ct.printP(targetPlayer, "\x13[ \x07립탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07립탱\x01 ]")
-            # (Line 56) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 57) ct.printP(targetPlayer, "\x03특징: \x01기어다님");
-            ct.f_printP(targetPlayer, "\x03특징: \x01기어다님")
-            # (Line 58) }
-            # (Line 60) else if(unitType == header.Ursadon)
-        if EUDElseIf()(unitType == header.Ursadon):
-            # (Line 61) {
-            # (Line 62) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 63) ct.printP(targetPlayer, "\x13[ \x07곰탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07곰탱\x01 ]")
-            # (Line 64) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 65) ct.printP(targetPlayer, "\x03특징: \x01귀여움");
-            ct.f_printP(targetPlayer, "\x03특징: \x01귀여움")
-            # (Line 66) }
-            # (Line 68) else if(unitType == header.Darchon)
-        if EUDElseIf()(unitType == header.Darchon):
-            # (Line 69) {
-            # (Line 70) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 71) ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07빡탱\x01 ]")
-            # (Line 72) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 73) ct.printP(targetPlayer, "\x03특징: \x01당하면 화남");
-            ct.f_printP(targetPlayer, "\x03특징: \x01당하면 화남")
-            # (Line 74) }
-            # (Line 76) else if(unitType == header.Devourer)
-        if EUDElseIf()(unitType == header.Devourer):
-            # (Line 77) {
-            # (Line 78) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 79) ct.printP(targetPlayer, "\x13[ \x07딥탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07딥탱\x01 ]")
-            # (Line 80) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 81) ct.printP(targetPlayer, "\x03문제: \x01디바가 울면?");
-            ct.f_printP(targetPlayer, "\x03문제: \x01디바가 울면?")
-            # (Line 82) }
-            # (Line 84) else if(unitType == header.Tank)
-        if EUDElseIf()(unitType == header.Tank):
-            # (Line 85) {
-            # (Line 86) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 87) ct.printP(targetPlayer, "\x13[ \x07탱크\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07탱크\x01 ]")
-            # (Line 88) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 89) ct.printP(targetPlayer, "\x03특징: \x01시즈 못함");
-            ct.f_printP(targetPlayer, "\x03특징: \x01시즈 못함")
-            # (Line 90) }
-            # (Line 92) else if(unitType == header.Goliath)
-        if EUDElseIf()(unitType == header.Goliath):
-            # (Line 93) {
-            # (Line 94) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 95) ct.printP(targetPlayer, "\x13[ \x07골탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07골탱\x01 ]")
-            # (Line 96) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 97) ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
-            ct.f_printP(targetPlayer, "\x03특징: \x01길 못찾음")
-            # (Line 98) }
-            # (Line 100) else if(unitType == header.Vulture)
-        if EUDElseIf()(unitType == header.Vulture):
-            # (Line 101) {
-            # (Line 102) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 103) ct.printP(targetPlayer, "\x13[ \x07벌탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07벌탱\x01 ]")
-            # (Line 104) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 105) ct.printP(targetPlayer, "\x03특징: \x01마인 시벌탱");
-            ct.f_printP(targetPlayer, "\x03특징: \x01마인 시벌탱")
-            # (Line 106) }
-            # (Line 108) else if(unitType == header.Lurker)
-        if EUDElseIf()(unitType == header.Lurker):
-            # (Line 109) {
-            # (Line 110) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 111) ct.printP(targetPlayer, "\x13[ \x07럴탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07럴탱\x01 ]")
-            # (Line 112) ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■■□")
-            # (Line 113) ct.printP(targetPlayer, "\x03특징: \x01숨어있음");
-            ct.f_printP(targetPlayer, "\x03특징: \x01숨어있음")
-            # (Line 114) }
-            # (Line 116) else if(unitType == header.Ultralisk)
-        if EUDElseIf()(unitType == header.Ultralisk):
-            # (Line 117) {
-            # (Line 118) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 119) ct.printP(targetPlayer, "\x13[ \x07울탱\x01 ]");
-            ct.f_printP(targetPlayer, "\x13[ \x07울탱\x01 ]")
-            # (Line 120) ct.printP(targetPlayer, "\x13공격: \x08■■■□□");
-            ct.f_printP(targetPlayer, "\x13공격: \x08■■■□□")
-            # (Line 121) ct.printP(targetPlayer, "\x03상식: \x01돼지는 하늘을 못본다");
-            ct.f_printP(targetPlayer, "\x03상식: \x01돼지는 하늘을 못본다")
-            # (Line 122) }
-            # (Line 123) else
-            # (Line 124) {
-        if EUDElse()():
-            # (Line 125) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.f_printP(targetPlayer, "")
-            # (Line 126) ct.printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요");
-            ct.f_printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요")
-            # (Line 127) }
-            # (Line 128) ct.printP(targetPlayer, "");
-        EUDEndIf()
-        ct.f_printP(targetPlayer, "")
-        # (Line 129) ct.printP(targetPlayer, "\x13\x07[ L ] : \x01선택");
-        ct.f_printP(targetPlayer, "\x13\x07[ L ] : \x01선택")
-        # (Line 130) dwwrite_epd(EPD(0x640B58), chatPtr);
-        f_dwwrite_epd(EPD(0x640B58), chatPtr)
-        # (Line 131) }
-        # (Line 132) return unitType;
-    EUDEndIf()
-    EUDReturn(unitType)
-    # (Line 133) }
-    # (Line 135) function isListed(unitType)
-
-# (Line 136) {
+# (Line 31) {
 @EUDFunc
 def f_isListed(unitType):
-    # (Line 137) for(var i=0; i<10; i++)
+    # (Line 32) for(var i=0; i<10; i++)
     i = EUDVariable()
     i << (0)
     if EUDWhile()(i >= 10, neg=True):
         def _t2():
             i.__iadd__(1)
-        # (Line 138) {
-        # (Line 139) if(header.List[i] == unitType) return 1;
-        if EUDIf()(header.List[i] == unitType):
+        # (Line 33) {
+        # (Line 34) if(header.List[i*3] == unitType) return 1;
+        if EUDIf()(header.List[i * 3] == unitType):
             EUDReturn(1)
-            # (Line 140) }
+            # (Line 35) }
         EUDEndIf()
-        # (Line 141) return 0;
+        # (Line 36) return 0;
         EUDSetContinuePoint()
         _t2()
     EUDEndWhile()
     EUDReturn(0)
-    # (Line 142) }
-    # (Line 144) function selectScreen()
+    # (Line 37) }
+    # (Line 38) function selectScreen()
 
-# (Line 145) {
+# (Line 39) {
 @EUDFunc
 def f_selectScreen():
-    # (Line 146) EUDPlayerLoop()();
+    # (Line 40) EUDPlayerLoop()();
     EUDPlayerLoop()()
-    # (Line 147) const i = getcurpl();
+    # (Line 41) const i = getcurpl();
     i = f_getcurpl()
-    # (Line 148) if(i<6)
+    # (Line 42) if(i<6)
     if EUDIf()(i >= 6, neg=True):
-        # (Line 149) {
-        # (Line 151) if(Command(i, Exactly, 1, header.Flag))
+        # (Line 43) {
+        # (Line 45) if(Command(i, Exactly, 1, header.Flag))
         if EUDIf()(Command(i, Exactly, 1, header.Flag)):
-            # (Line 152) {
-            # (Line 153) const key = utilEud.getDeath(i, 0);
+            # (Line 46) {
+            # (Line 47) const key = utilEud.getDeath(i, 0);
             key = utilEud.f_getDeath(i, 0)
-            # (Line 154) CenterView($L('select')+1);
+            # (Line 48) CenterView($L('select')+1);
             DoActions(CenterView(GetLocationIndex('select') + 1))
-            # (Line 155) const unitType = showTankInfo(getSelection(i), i);
+            # (Line 49) const unitType = showTankInfo(getSelection(i), i);
             unitType = f_showTankInfo(f_getSelection(i), i)
-            # (Line 157) if(key == 8 && isListed(unitType)) // L
+            # (Line 51) if(key == 8 && isListed(unitType)) // L
             if EUDIf()(EUDSCAnd()(key == 8)(f_isListed(unitType))()):
-                # (Line 158) {// confirm
-                # (Line 159) RemoveUnit(header.Flag, i);
+                # (Line 52) {// confirm
+                # (Line 53) RemoveUnit(header.Flag, i);
                 DoActions(RemoveUnit(header.Flag, i))
-                # (Line 161) SetDeaths(i, SetTo, unitType, header.tankType);
+                # (Line 55) SetDeaths(i, SetTo, unitType, header.tankType);
                 DoActions(SetDeaths(i, SetTo, unitType, header.tankType))
-                # (Line 162) }
-                # (Line 164) }
+                # (Line 56) }
+                # (Line 58) }
             EUDEndIf()
-            # (Line 165) }
+            # (Line 59) }
         EUDEndIf()
-        # (Line 166) EUDEndPlayerLoop();
+        # (Line 60) EUDEndPlayerLoop();
     EUDEndIf()
     EUDEndPlayerLoop()
-    # (Line 167) }
+    # (Line 61) }
+    # (Line 63) function showTankInfo(unitType, targetPlayer)
+
+# (Line 64) {
+@EUDFunc
+def f_showTankInfo(unitType, targetPlayer):
+    # (Line 67) if (unitType == 0)
+    if EUDIf()(unitType == 0):
+        # (Line 68) {
+        # (Line 69) const chatPtr = dwread_epd(EPD(0x640B58));
+        chatPtr = f_dwread_epd(EPD(0x640B58))
+        # (Line 70) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+        ct.f_printP(targetPlayer, "")
+        # (Line 71) ct.printP(targetPlayer, "\x13원하는 탱크를 마우스로 클릭해주세요");
+        ct.f_printP(targetPlayer, "\x13원하는 탱크를 마우스로 클릭해주세요")
+        # (Line 72) dwwrite_epd(EPD(0x640B58), chatPtr);
+        f_dwwrite_epd(EPD(0x640B58), chatPtr)
+        # (Line 73) }
+        # (Line 74) else
+        # (Line 75) {
+    if EUDElse()():
+        # (Line 76) const chatPtr = dwread_epd(EPD(0x640B58));
+        chatPtr = f_dwread_epd(EPD(0x640B58))
+        # (Line 78) if(unitType == header.tankDr)
+        if EUDIf()(unitType == header.tankDr):
+            # (Line 79) {
+            # (Line 80) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 81) ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07빡탱\x01 ]")
+            # (Line 82) ct.printP(targetPlayer, "\x13일반탄: 사람 잘 죽임");
+            ct.f_printP(targetPlayer, "\x13일반탄: 사람 잘 죽임")
+            # (Line 83) ct.printP(targetPlayer, "\x13특수탄: 지형도 잘 부숨");
+            ct.f_printP(targetPlayer, "\x13특수탄: 지형도 잘 부숨")
+            # (Line 84) ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
+            ct.f_printP(targetPlayer, "\x03특징: \x01길 못찾음")
+            # (Line 85) }
+            # (Line 87) else if(unitType == header.tankRe)
+        if EUDElseIf()(unitType == header.tankRe):
+            # (Line 88) {
+            # (Line 89) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 90) ct.printP(targetPlayer, "\x13[ \x07립탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07립탱\x01 ]")
+            # (Line 91) ct.printP(targetPlayer, "\x13일반탄: 사람 좀 죽임");
+            ct.f_printP(targetPlayer, "\x13일반탄: 사람 좀 죽임")
+            # (Line 92) ct.printP(targetPlayer, "\x13특수탄: 지형은 잘 부숨");
+            ct.f_printP(targetPlayer, "\x13특수탄: 지형은 잘 부숨")
+            # (Line 93) ct.printP(targetPlayer, "\x03특징: \x01기어다님");
+            ct.f_printP(targetPlayer, "\x03특징: \x01기어다님")
+            # (Line 94) }
+            # (Line 96) else if(unitType == header.tankUr)
+        if EUDElseIf()(unitType == header.tankUr):
+            # (Line 97) {
+            # (Line 98) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 99) ct.printP(targetPlayer, "\x13[ \x07곰탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07곰탱\x01 ]")
+            # (Line 100) ct.printP(targetPlayer, "\x13일반탄: 사람 좀 죽임");
+            ct.f_printP(targetPlayer, "\x13일반탄: 사람 좀 죽임")
+            # (Line 101) ct.printP(targetPlayer, "\x13특수탄: 지랄 발광함");
+            ct.f_printP(targetPlayer, "\x13특수탄: 지랄 발광함")
+            # (Line 102) ct.printP(targetPlayer, "\x03특징: \x01귀여움");
+            ct.f_printP(targetPlayer, "\x03특징: \x01귀여움")
+            # (Line 103) }
+            # (Line 105) else if(unitType == header.tankDA)
+        if EUDElseIf()(unitType == header.tankDA):
+            # (Line 106) {
+            # (Line 107) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 108) ct.printP(targetPlayer, "\x13[ \x07빨탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07빨탱\x01 ]")
+            # (Line 109) ct.printP(targetPlayer, "\x13일반탄: 마엘스톰 검");
+            ct.f_printP(targetPlayer, "\x13일반탄: 마엘스톰 검")
+            # (Line 110) ct.printP(targetPlayer, "\x13특수탄: 지형 좀 부숨");
+            ct.f_printP(targetPlayer, "\x13특수탄: 지형 좀 부숨")
+            # (Line 111) ct.printP(targetPlayer, "\x03참고: \x01난 큰게 좋더라");
+            ct.f_printP(targetPlayer, "\x03참고: \x01난 큰게 좋더라")
+            # (Line 112) }
+            # (Line 114) else if(unitType == header.tankDe)
+        if EUDElseIf()(unitType == header.tankDe):
+            # (Line 115) {
+            # (Line 116) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 117) ct.printP(targetPlayer, "\x13[ \x07딥탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07딥탱\x01 ]")
+            # (Line 118) ct.printP(targetPlayer, "\x13일반탄: 사람 확 죽임");
+            ct.f_printP(targetPlayer, "\x13일반탄: 사람 확 죽임")
+            # (Line 119) ct.printP(targetPlayer, "\x13특수탄: 지형 꽤 부숨");
+            ct.f_printP(targetPlayer, "\x13특수탄: 지형 꽤 부숨")
+            # (Line 120) ct.printP(targetPlayer, "\x03문제: \x01디바가 울면?");
+            ct.f_printP(targetPlayer, "\x03문제: \x01디바가 울면?")
+            # (Line 121) }
+            # (Line 123) else if(unitType == header.tankST)
+        if EUDElseIf()(unitType == header.tankST):
+            # (Line 124) {
+            # (Line 125) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 126) ct.printP(targetPlayer, "\x13[ \x07시즈탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07시즈탱\x01 ]")
+            # (Line 127) ct.printP(targetPlayer, "\x13일반탄: 쾅");
+            ct.f_printP(targetPlayer, "\x13일반탄: 쾅")
+            # (Line 128) ct.printP(targetPlayer, "\x13특수탄: 콰쾅");
+            ct.f_printP(targetPlayer, "\x13특수탄: 콰쾅")
+            # (Line 129) ct.printP(targetPlayer, "\x03특징: \x01근데 시즈 못함");
+            ct.f_printP(targetPlayer, "\x03특징: \x01근데 시즈 못함")
+            # (Line 130) }
+            # (Line 132) else if(unitType == header.tankGo)
+        if EUDElseIf()(unitType == header.tankGo):
+            # (Line 133) {
+            # (Line 134) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 135) ct.printP(targetPlayer, "\x13[ \x07골탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07골탱\x01 ]")
+            # (Line 136) ct.printP(targetPlayer, "\x13일반탄: 준 저격탄");
+            ct.f_printP(targetPlayer, "\x13일반탄: 준 저격탄")
+            # (Line 137) ct.printP(targetPlayer, "\x13특수탄: 지형만 부숨");
+            ct.f_printP(targetPlayer, "\x13특수탄: 지형만 부숨")
+            # (Line 138) ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
+            ct.f_printP(targetPlayer, "\x03특징: \x01길 못찾음")
+            # (Line 139) }
+            # (Line 141) else if(unitType == header.tankVu)
+        if EUDElseIf()(unitType == header.tankVu):
+            # (Line 142) {
+            # (Line 143) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 144) ct.printP(targetPlayer, "\x13[ \x07벌탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07벌탱\x01 ]")
+            # (Line 145) ct.printP(targetPlayer, "\x13일반탄: 마인 야캐요");
+            ct.f_printP(targetPlayer, "\x13일반탄: 마인 야캐요")
+            # (Line 146) ct.printP(targetPlayer, "\x13특수탄: 지형 ㄹㅇ 잘 부숨");
+            ct.f_printP(targetPlayer, "\x13특수탄: 지형 ㄹㅇ 잘 부숨")
+            # (Line 147) ct.printP(targetPlayer, "\x03특징: \x01마인 시벌탱");
+            ct.f_printP(targetPlayer, "\x03특징: \x01마인 시벌탱")
+            # (Line 148) }
+            # (Line 150) else if(unitType == header.tankLu)
+        if EUDElseIf()(unitType == header.tankLu):
+            # (Line 151) {
+            # (Line 152) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 153) ct.printP(targetPlayer, "\x13[ \x07럴탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07럴탱\x01 ]")
+            # (Line 154) ct.printP(targetPlayer, "\x13일반탄: 탄이 다섯개!");
+            ct.f_printP(targetPlayer, "\x13일반탄: 탄이 다섯개!")
+            # (Line 155) ct.printP(targetPlayer, "\x13특수탄: 맞으면 느려짐");
+            ct.f_printP(targetPlayer, "\x13특수탄: 맞으면 느려짐")
+            # (Line 156) ct.printP(targetPlayer, "\x03특징: \x01숨어있음");
+            ct.f_printP(targetPlayer, "\x03특징: \x01숨어있음")
+            # (Line 157) }
+            # (Line 159) else if(unitType == header.tankUl)
+        if EUDElseIf()(unitType == header.tankUl):
+            # (Line 160) {
+            # (Line 161) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 162) ct.printP(targetPlayer, "\x13[ \x07울탱\x01 ]");
+            ct.f_printP(targetPlayer, "\x13[ \x07울탱\x01 ]")
+            # (Line 163) ct.printP(targetPlayer, "\x13일반탄: 사람 죽임?");
+            ct.f_printP(targetPlayer, "\x13일반탄: 사람 죽임?")
+            # (Line 164) ct.printP(targetPlayer, "\x13특수탄: 고춧가루");
+            ct.f_printP(targetPlayer, "\x13특수탄: 고춧가루")
+            # (Line 165) ct.printP(targetPlayer, "\x03상식: \x01돼지는 하늘을 못본다");
+            ct.f_printP(targetPlayer, "\x03상식: \x01돼지는 하늘을 못본다")
+            # (Line 166) }
+            # (Line 167) else
+            # (Line 168) {
+        if EUDElse()():
+            # (Line 169) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.f_printP(targetPlayer, "")
+            # (Line 170) ct.printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요");
+            ct.f_printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요")
+            # (Line 171) }
+            # (Line 172) ct.printP(targetPlayer, "");
+        EUDEndIf()
+        ct.f_printP(targetPlayer, "")
+        # (Line 173) ct.printP(targetPlayer, "\x13\x07[ L ] : \x01선택");
+        ct.f_printP(targetPlayer, "\x13\x07[ L ] : \x01선택")
+        # (Line 174) dwwrite_epd(EPD(0x640B58), chatPtr);
+        f_dwwrite_epd(EPD(0x640B58), chatPtr)
+        # (Line 175) }
+        # (Line 176) return unitType;
+    EUDEndIf()
+    EUDReturn(unitType)
+    # (Line 177) }

@@ -138,278 +138,351 @@ import customText3 as ct
 tankEpd = _CGFW(lambda: [EUDArray(6)], 1)[0]
 # (Line 10) const locList = [$L('p1'), $L('p2'), $L('p3'), $L('p4'), $L('p5'), $L('p6')];
 locList = _CGFW(lambda: [_ARR(FlattenList([GetLocationIndex('p1'), GetLocationIndex('p2'), GetLocationIndex('p3'), GetLocationIndex('p4'), GetLocationIndex('p5'), GetLocationIndex('p6')]))], 1)[0]
-# (Line 12) function toggleDisable(index);
-# (Line 13) function newTank(targetPlayer, unitType)
-# (Line 14) {
+# (Line 14) function toggleDisable(index);
+# (Line 15) function newTank(targetPlayer, unitType)
+# (Line 16) {
 @EUDFunc
 def f_newTank(targetPlayer, unitType):
-    # (Line 15) if(unitType)
+    # (Line 17) if(unitType)
     if EUDIf()(unitType):
-        # (Line 16) {
-        # (Line 17) const locID = locList[targetPlayer];
+        # (Line 18) {
+        # (Line 19) const locID = locList[targetPlayer];
         locID = locList[targetPlayer]
-        # (Line 18) tankEpd[targetPlayer] = epdread_epd(EPD(0x628438));
+        # (Line 21) tankEpd[targetPlayer] = epdread_epd(EPD(0x628438));
         _ARRW(tankEpd, targetPlayer) << (f_epdread_epd(EPD(0x628438)))
-        # (Line 19) CreateUnit(1, unitType, locID+1, targetPlayer);
+        # (Line 22) CreateUnit(1, unitType, locID+1, targetPlayer);
         DoActions(CreateUnit(1, unitType, locID + 1, targetPlayer))
-        # (Line 21) utilEud.setRemainingBuildtime(tankEpd[targetPlayer], header.maxbuildtime);
+        # (Line 24) SetMemoryEPD(tankEpd[targetPlayer]+ 0x034 / 4, SetTo, 200); //speed
+        DoActions(SetMemoryEPD(tankEpd[targetPlayer] + 0x034 // 4, SetTo, 200))
+        # (Line 25) utilEud.setRemainingBuildtime(tankEpd[targetPlayer], header.maxbuildtime); // power
         utilEud.f_setRemainingBuildtime(tankEpd[targetPlayer], header.maxbuildtime)
-        # (Line 22) tankAim.setAngle(tankEpd[targetPlayer], 300);
+        # (Line 26) tankAim.setAngle(tankEpd[targetPlayer], 300); //angle
         tankAim.f_setAngle(tankEpd[targetPlayer], 300)
-        # (Line 23) physics.setVxy(tankEpd[targetPlayer], 0, 10);
+        # (Line 27) physics.setVxy(tankEpd[targetPlayer], 0, 10); //gravity
         physics.f_setVxy(tankEpd[targetPlayer], 0, 10)
-        # (Line 25) const bullet = tankBullet.getBullet(unitType, utilEud.getDeath(targetPlayer, header.bulletQ));
+        # (Line 29) const bullet = tankBullet.getBullet(unitType, utilEud.getDeath(targetPlayer, header.bulletQ));
         bullet = tankBullet.f_getBullet(unitType, utilEud.f_getDeath(targetPlayer, header.bulletQ))
-        # (Line 26) utilEud.setBuildQueue1(tankEpd[targetPlayer], bullet);
+        # (Line 30) utilEud.setBuildQueue1(tankEpd[targetPlayer], bullet);
         utilEud.f_setBuildQueue1(tankEpd[targetPlayer], bullet)
-        # (Line 28) toggleDisable(targetPlayer, 0);
+        # (Line 32) toggleDisable(targetPlayer, 0);
         f_toggleDisable(targetPlayer, 0)
-        # (Line 29) CenterView(locID+1);
+        # (Line 33) CenterView(locID+1);
         DoActions(CenterView(locID + 1))
-        # (Line 30) }
-        # (Line 32) }
+        # (Line 34) }
+        # (Line 36) }
     EUDEndIf()
-    # (Line 34) function removeTank(targetPlayer)
-
-# (Line 35) {
-@EUDFunc
-def f_removeTank(targetPlayer):
-    # (Line 36) tankEpd[targetPlayer] = 0;
-    _ARRW(tankEpd, targetPlayer) << (0)
-    # (Line 37) }
-    # (Line 38) function getTankEpd(targetPlayer)
+    # (Line 38) function removeTank(targetPlayer)
 
 # (Line 39) {
 @EUDFunc
-def f_getTankEpd(targetPlayer):
-    # (Line 40) return tankEpd[targetPlayer];
-    EUDReturn(tankEpd[targetPlayer])
+def f_removeTank(targetPlayer):
+    # (Line 40) tankEpd[targetPlayer] = 0;
+    _ARRW(tankEpd, targetPlayer) << (0)
     # (Line 41) }
-    # (Line 43) function checkDeath(targetPlayer)
+    # (Line 42) function getTankEpd(targetPlayer)
 
-# (Line 44) {
+# (Line 43) {
+@EUDFunc
+def f_getTankEpd(targetPlayer):
+    # (Line 44) return tankEpd[targetPlayer];
+    EUDReturn(tankEpd[targetPlayer])
+    # (Line 45) }
+    # (Line 47) function checkDeath(targetPlayer)
+
+# (Line 48) {
 @EUDFunc
 def f_checkDeath(targetPlayer):
-    # (Line 45) if(Deaths(targetPlayer, Exactly, 1, utilEud.getUnitType(tankEpd[targetPlayer])))
+    # (Line 49) if(Deaths(targetPlayer, Exactly, 1, utilEud.getUnitType(tankEpd[targetPlayer])))
     if EUDIf()(Deaths(targetPlayer, Exactly, 1, utilEud.f_getUnitType(tankEpd[targetPlayer]))):
-        # (Line 46) return 1;
+        # (Line 50) return 1;
         EUDReturn(1)
-        # (Line 47) else
-        # (Line 48) return 0;
+        # (Line 51) else
+        # (Line 52) return 0;
     if EUDElse()():
         EUDReturn(0)
-        # (Line 49) }
+        # (Line 53) }
     EUDEndIf()
-    # (Line 50) function controlTank(targetPlayer)
+    # (Line 54) function controlTank(targetPlayer)
 
-# (Line 51) {// 키인식으로
+# (Line 55) {// 키인식으로
 @EUDFunc
 def f_controlTank(targetPlayer):
-    # (Line 52) const angleNum = 4; //단위
+    # (Line 56) const angleNum = 4; //단위
     angleNum = 4
-    # (Line 53) const unitEpd = getTankEpd(targetPlayer);
+    # (Line 57) const unitEpd = getTankEpd(targetPlayer);
     unitEpd = f_getTankEpd(targetPlayer)
-    # (Line 56) const power = utilEud.getRemainingBuildtime(unitEpd);
+    # (Line 58) const power = utilEud.getRemainingBuildtime(unitEpd);
     power = utilEud.f_getRemainingBuildtime(unitEpd)
-    # (Line 57) const angle = tankAim.getAngle(unitEpd);
+    # (Line 59) const angle = tankAim.getAngle(unitEpd);
     angle = tankAim.f_getAngle(unitEpd)
-    # (Line 59) const locID = $L('loc_tank');
+    # (Line 61) const locID = $L('loc_tank');
     locID = GetLocationIndex('loc_tank')
-    # (Line 60) const orderID = utilEud.getOrderID(unitEpd);
+    # (Line 62) const orderID = utilEud.getOrderID(unitEpd);
     orderID = utilEud.f_getOrderID(unitEpd)
-    # (Line 61) const keyValue = utilEud.getDeath(targetPlayer, header.keydeath);
+    # (Line 63) const keyValue = utilEud.getDeath(targetPlayer, header.keydeath);
     keyValue = utilEud.f_getDeath(targetPlayer, header.keydeath)
-    # (Line 63) if(orderID == 6)  // while moving
+    # (Line 65) if(orderID == 6)  // while moving
     if EUDIf()(orderID == 6):
-        # (Line 64) tankAim.clearAngle(targetPlayer);
+        # (Line 66) tankAim.clearAngle(targetPlayer);
         tankAim.f_clearAngle(targetPlayer)
-        # (Line 66) if(1 == keyValue)
+        # (Line 68) if(1 == keyValue)
     EUDEndIf()
     if EUDIf()(1 == keyValue):
-        # (Line 67) {// angle UP
-        # (Line 68) tankAim.setAngle(unitEpd, angle + angleNum);
+        # (Line 69) {// angle UP
+        # (Line 70) utilEud.setOrderID(unitEpd, 107);
+        utilEud.f_setOrderID(unitEpd, 107)
+        # (Line 71) tankAim.setAngle(unitEpd, angle + angleNum);
         tankAim.f_setAngle(unitEpd, angle + angleNum)
-        # (Line 69) tankAim.showLaunchAngle(unitEpd);
+        # (Line 72) tankAim.showLaunchAngle(unitEpd);
         tankAim.f_showLaunchAngle(unitEpd)
-        # (Line 70) }
-        # (Line 71) else if(2 == keyValue)
+        # (Line 73) }
+        # (Line 74) else if(2 == keyValue)
     if EUDElseIf()(2 == keyValue):
-        # (Line 72) {// angle DOWN
-        # (Line 73) tankAim.setAngle(unitEpd, angle - angleNum);
+        # (Line 75) {// angle DOWN
+        # (Line 76) utilEud.setOrderID(unitEpd, 107);
+        utilEud.f_setOrderID(unitEpd, 107)
+        # (Line 77) tankAim.setAngle(unitEpd, angle - angleNum);
         tankAim.f_setAngle(unitEpd, angle - angleNum)
-        # (Line 74) tankAim.showLaunchAngle(unitEpd);
+        # (Line 78) tankAim.showLaunchAngle(unitEpd);
         tankAim.f_showLaunchAngle(unitEpd)
-        # (Line 75) }
-        # (Line 76) else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 0, Gas))
-    if EUDElseIf()(EUDSCAnd()(4 == keyValue)(Accumulate(targetPlayer, Exactly, 0, Gas))()):
-        # (Line 77) {// shoot inital key press
-        # (Line 79) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
+        # (Line 79) }
+        # (Line 80) else if (4 == keyValue && Switch(targetPlayer, Cleared))
+    if EUDElseIf()(EUDSCAnd()(4 == keyValue)(Switch(targetPlayer, Cleared))()):
+        # (Line 81) {// shoot inital key press
+        # (Line 83) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
         utilEud.f_setRemainingBuildtime(unitEpd, header.maxbuildtime)
-        # (Line 80) SetResources(targetPlayer, SetTo, 1, Gas);
-        DoActions(SetResources(targetPlayer, SetTo, 1, Gas))
-        # (Line 82) SetDeaths(targetPlayer, SetTo, 0, 217);
-        DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
-        # (Line 83) }
-        # (Line 84) else if (4 != keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
-    if EUDElseIf()(EUDSCAnd()(4 == keyValue, neg=True)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
-        # (Line 85) {// end key press
-        # (Line 86) SetDeaths(targetPlayer, Add, 1, 217);
-        DoActions(SetDeaths(targetPlayer, Add, 1, 217))
-        # (Line 87) }
-        # (Line 88) else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
-    if EUDElseIf()(EUDSCAnd()(4 == keyValue)(Accumulate(targetPlayer, Exactly, 1, Gas))()):
-        # (Line 89) {
-        # (Line 90) utilEud.setRemainingBuildtime(unitEpd, power -2);
-        utilEud.f_setRemainingBuildtime(unitEpd, power - 2)
-        # (Line 91) SetDeaths(targetPlayer, SetTo, 0, 217);
-        DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
-        # (Line 92) }
-        # (Line 93) else if (8 == keyValue && Switch(targetPlayer, Cleared))
-    if EUDElseIf()(EUDSCAnd()(8 == keyValue)(Switch(targetPlayer, Cleared))()):
-        # (Line 94) {// change weapon
-        # (Line 96) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-        ct.f_printP(targetPlayer, "")
-        # (Line 97) ct.printP(targetPlayer, "\x13[ 무기 교체 ] ");
-        ct.f_printP(targetPlayer, "\x13[ 무기 교체 ] ")
-        # (Line 99) tankBullet.toggleBullet(unitEpd);
-        tankBullet.f_toggleBullet(unitEpd)
-        # (Line 100) SetSwitch(targetPlayer, Set);
+        # (Line 84) SetSwitch(targetPlayer, Set);
         DoActions(SetSwitch(targetPlayer, Set))
-        # (Line 101) }
-        # (Line 102) if(8 != keyValue && Switch(targetPlayer, Set))
+        # (Line 86) SetDeaths(targetPlayer, SetTo, 0, 217);
+        DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
+        # (Line 87) }
+        # (Line 88) else if (4 != keyValue && Switch(targetPlayer, Set))
+    if EUDElseIf()(EUDSCAnd()(4 == keyValue, neg=True)(Switch(targetPlayer, Set))()):
+        # (Line 89) {// shoot end key press
+        # (Line 90) SetDeaths(targetPlayer, Add, 1, 217);
+        DoActions(SetDeaths(targetPlayer, Add, 1, 217))
+        # (Line 91) }
+        # (Line 92) else if (4 == keyValue && Switch(targetPlayer, Set))
+    if EUDElseIf()(EUDSCAnd()(4 == keyValue)(Switch(targetPlayer, Set))()):
+        # (Line 93) {// shoot while pressing
+        # (Line 94) utilEud.setRemainingBuildtime(unitEpd, power -2);
+        utilEud.f_setRemainingBuildtime(unitEpd, power - 2)
+        # (Line 95) SetResources(targetPlayer, SetTo, 101-power, Gas);
+        DoActions(SetResources(targetPlayer, SetTo, 101 - power, Gas))
+        # (Line 96) SetDeaths(targetPlayer, SetTo, 0, 217);
+        DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
+        # (Line 97) }
+        # (Line 98) else if (8 == keyValue && Switch(targetPlayer+6, Cleared))
+    if EUDElseIf()(EUDSCAnd()(8 == keyValue)(Switch(targetPlayer + 6, Cleared))()):
+        # (Line 99) {// change weapon
+        # (Line 101) ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+        ct.f_printP(targetPlayer, "")
+        # (Line 102) ct.printP(targetPlayer, "\x13\x07[ \x0e무기 변경\x07 ] \x01");
+        ct.f_printP(targetPlayer, "\x13\x07[ \x0e무기 변경\x07 ] \x01")
+        # (Line 104) SetSwitch(targetPlayer+6, Set);
+        DoActions(SetSwitch(targetPlayer + 6, Set))
+        # (Line 106) SetDeaths(targetPlayer, SetTo, 6, 218);
+        DoActions(SetDeaths(targetPlayer, SetTo, 6, 218))
+        # (Line 107) tankBullet.toggleBullet(unitEpd);
+        tankBullet.f_toggleBullet(unitEpd)
+        # (Line 108) }
+        # (Line 110) if(8 != keyValue && Switch(targetPlayer+6, Set))
     EUDEndIf()
-    if EUDIf()(EUDSCAnd()(8 == keyValue, neg=True)(Switch(targetPlayer, Set))()):
-        # (Line 103) {// change weapon keydelay
-        # (Line 104) SetSwitch(targetPlayer, Clear);
-        DoActions(SetSwitch(targetPlayer, Clear))
-        # (Line 105) }
-        # (Line 108) if (Deaths(targetPlayer, AtLeast, 8, 217) || power == 0)
+    if EUDIf()(EUDSCAnd()(8 == keyValue, neg=True)(Switch(targetPlayer + 6, Set))()):
+        # (Line 111) {// change weapon keydelay
+        # (Line 112) SetDeaths(targetPlayer, Subtract, 1, 218);
+        DoActions(SetDeaths(targetPlayer, Subtract, 1, 218))
+        # (Line 114) }
+        # (Line 115) else if(8 == keyValue && Switch(targetPlayer+6, Set))
+    if EUDElseIf()(EUDSCAnd()(8 == keyValue)(Switch(targetPlayer + 6, Set))()):
+        # (Line 116) {// change weapon keydelay
+        # (Line 117) SetDeaths(targetPlayer, SetTo, 6, 218);
+        DoActions(SetDeaths(targetPlayer, SetTo, 6, 218))
+        # (Line 118) }
+        # (Line 120) if(Deaths(targetPlayer, Exactly, 0, 218) && Switch(targetPlayer+6, Set))
+    EUDEndIf()
+    if EUDIf()(EUDSCAnd()(Deaths(targetPlayer, Exactly, 0, 218))(Switch(targetPlayer + 6, Set))()):
+        # (Line 121) {// change weapon keydelay
+        # (Line 122) SetSwitch(targetPlayer+6, Clear);
+        DoActions(SetSwitch(targetPlayer + 6, Clear))
+        # (Line 123) }
+        # (Line 124) if (Deaths(targetPlayer, AtLeast, 8, 217) || power == 0)
     EUDEndIf()
     if EUDIf()(EUDSCOr()(Deaths(targetPlayer, AtLeast, 8, 217))(power == 0)()):
-        # (Line 109) {// end key press for 1sec
-        # (Line 110) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
+        # (Line 125) {// shoot key delay
+        # (Line 126) utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
         utilEud.f_setRemainingBuildtime(unitEpd, header.maxbuildtime)
-        # (Line 111) SetDeaths(targetPlayer, SetTo, 0, 217);
+        # (Line 127) SetDeaths(targetPlayer, SetTo, 0, 217);
         DoActions(SetDeaths(targetPlayer, SetTo, 0, 217))
-        # (Line 112) SetResources(targetPlayer, SetTo, 0, Gas);
-        DoActions(SetResources(targetPlayer, SetTo, 0, Gas))
-        # (Line 113) tankAim.clearAngle(targetPlayer);
+        # (Line 128) SetSwitch(targetPlayer, Clear);
+        DoActions(SetSwitch(targetPlayer, Clear))
+        # (Line 129) tankAim.clearAngle(targetPlayer);
         tankAim.f_clearAngle(targetPlayer)
-        # (Line 115) utilEud.setKillCount(unitEpd, (header.maxbuildtime+1) - power);
+        # (Line 131) utilEud.setKillCount(unitEpd, (header.maxbuildtime+1) - power);
         utilEud.f_setKillCount(unitEpd, (header.maxbuildtime + 1) - power)
-        # (Line 116) return unitEpd;
+        # (Line 132) return unitEpd;
         EUDReturn(unitEpd)
-        # (Line 117) }
-        # (Line 118) else
-        # (Line 119) return 0;
+        # (Line 133) }
+        # (Line 134) else
+        # (Line 135) return 0;
     if EUDElse()():
         EUDReturn(0)
-        # (Line 121) }
+        # (Line 137) }
     EUDEndIf()
-    # (Line 123) function renderTank()
+    # (Line 138) function reduceStasis(unitEpd);
 
-# (Line 124) {//tank physics
+# (Line 139) function renderTank()
+# (Line 140) {//tank physics
 @EUDFunc
 def f_renderTank():
-    # (Line 125) for(var i=0; i<6; i++)
+    # (Line 141) for(var i=0; i<6; i++)
     i = EUDVariable()
     i << (0)
     if EUDWhile()(i >= 6, neg=True):
         def _t2():
             i.__iadd__(1)
-        # (Line 126) {
-        # (Line 127) if(tankEpd[i])
-        if EUDIf()(tankEpd[i]):
-            # (Line 128) {
-            # (Line 129) const unitType = utilEud.getUnitType(tankEpd[i]);
-            unitType = utilEud.f_getUnitType(tankEpd[i])
-            # (Line 130) MoveLocation($L('locTank')+1, unitType, i, 'Anywhere');
-            DoActions(MoveLocation(GetLocationIndex('locTank') + 1, unitType, i, 'Anywhere'))
-            # (Line 132) if(Bring($P8, Exactly, 0, '(buildings)', $L('locTank')+1))
-            if EUDIf()(Bring(7, Exactly, 0, '(buildings)', GetLocationIndex('locTank') + 1)):
-                # (Line 133) {
-                # (Line 134) physics.renderUnit(tankEpd[i], 0);
-                physics.f_renderUnit(tankEpd[i], 0)
-                # (Line 135) }
-                # (Line 136) }
+        # (Line 142) {
+        # (Line 143) const unitEpd = tankEpd[i];
+        unitEpd = tankEpd[i]
+        # (Line 144) if(unitEpd)
+        if EUDIf()(unitEpd):
+            # (Line 145) {
+            # (Line 146) const unitType = utilEud.getUnitType(unitEpd);
+            unitType = utilEud.f_getUnitType(unitEpd)
+            # (Line 147) const player = utilEud.getPlayerID(unitEpd);
+            player = utilEud.f_getPlayerID(unitEpd)
+            # (Line 148) if(!utilEud.isAtLocation(unitEpd, $L('PlayArea')))
+            if EUDIf()(utilEud.f_isAtLocation(unitEpd, GetLocationIndex('PlayArea')), neg=True):
+                # (Line 149) {
+                # (Line 150) tankEpd[i] = 0;
+                _ARRW(tankEpd, i) << (0)
+                # (Line 151) KillUnit(unitType, player);
+                DoActions(KillUnit(unitType, player))
+                # (Line 152) RemoveUnit('(any unit)', player);
+                DoActions(RemoveUnit('(any unit)', player))
+                # (Line 153) }
+                # (Line 154) else if(player == $P12)
+            if EUDElseIf()(player == 11):
+                # (Line 155) {
+                # (Line 156) tankEpd[i] = 0;
+                _ARRW(tankEpd, i) << (0)
+                # (Line 157) RemoveUnit('(any unit)', $P12);
+                DoActions(RemoveUnit('(any unit)', 11))
+                # (Line 158) }
+                # (Line 159) MoveLocation($L('locTank')+1, unitType, i, 'Anywhere');
             EUDEndIf()
-            # (Line 137) }
+            DoActions(MoveLocation(GetLocationIndex('locTank') + 1, unitType, i, 'Anywhere'))
+            # (Line 161) if(Bring($P8, Exactly, 0, '(buildings)', $L('locTank')+1))
+            if EUDIf()(Bring(7, Exactly, 0, '(buildings)', GetLocationIndex('locTank') + 1)):
+                # (Line 162) {
+                # (Line 163) physics.renderUnit(unitEpd, 0);
+                physics.f_renderUnit(unitEpd, 0)
+                # (Line 164) }
+                # (Line 165) }
+            EUDEndIf()
+            # (Line 166) }
         EUDEndIf()
-        # (Line 138) }
+        # (Line 167) }
         EUDSetContinuePoint()
         _t2()
     EUDEndWhile()
-    # (Line 140) function selectTank()
+    # (Line 169) function randomSelect()
 
-# (Line 141) {
+# (Line 170) {
+@EUDFunc
+def f_randomSelect():
+    # (Line 171) for(var i=0; i<6; i++){
+    i = EUDVariable()
+    i << (0)
+    if EUDWhile()(i >= 6, neg=True):
+        def _t2():
+            i.__iadd__(1)
+        # (Line 172) if(Command(i, Exactly, 1, header.Flag) && !tankSelect.isListed(utilEud.getUnitType(tankEpd[i]))){
+        if EUDIf()(EUDSCAnd()(Command(i, Exactly, 1, header.Flag))(tankSelect.f_isListed(utilEud.f_getUnitType(tankEpd[i])), neg=True)()):
+            # (Line 173) SetDeaths(i, SetTo, header.List[(rand()%header.ListNum) * 3], header.tankType);
+            DoActions(SetDeaths(i, SetTo, header.List[(f_rand() % header.ListNum) * 3], header.tankType))
+            # (Line 174) RemoveUnit(header.Flag, i);
+            DoActions(RemoveUnit(header.Flag, i))
+            # (Line 175) }
+            # (Line 176) }
+        EUDEndIf()
+        # (Line 177) }
+        EUDSetContinuePoint()
+        _t2()
+    EUDEndWhile()
+    # (Line 178) function selectTank()
+
+# (Line 179) {
 @EUDFunc
 def f_selectTank():
-    # (Line 142) if(tankSelect.isSelecting())
+    # (Line 180) if(tankSelect.isSelecting())
     if EUDIf()(tankSelect.f_isSelecting()):
-        # (Line 143) {
-        # (Line 144) tankSelect.selectScreen();
+        # (Line 181) {
+        # (Line 182) tankSelect.selectScreen();
         tankSelect.f_selectScreen()
-        # (Line 145) return 0;
+        # (Line 183) return 0;
         EUDReturn(0)
-        # (Line 146) }
-        # (Line 147) else
-        # (Line 148) {
+        # (Line 184) }
+        # (Line 185) else
+        # (Line 186) {
     if EUDElse()():
-        # (Line 149) EUDPlayerLoop()();
+        # (Line 187) EUDPlayerLoop()();
         EUDPlayerLoop()()
-        # (Line 150) const p = getcurpl();
+        # (Line 188) const p = getcurpl();
         p = f_getcurpl()
-        # (Line 151) if(p<6)
+        # (Line 189) if(p<6)
         if EUDIf()(p >= 6, neg=True):
-            # (Line 152) {
-            # (Line 153) const tankType = utilEud.getDeath(p, header.tankType);
+            # (Line 190) {
+            # (Line 191) const tankType = utilEud.getDeath(p, header.tankType);
             tankType = utilEud.f_getDeath(p, header.tankType)
-            # (Line 154) if(tankType) // 0 or sth
+            # (Line 192) if(tankType) // 0 or sth
             if EUDIf()(tankType):
-                # (Line 155) {
-                # (Line 156) newTank(p, tankType);
+                # (Line 193) {
+                # (Line 194) newTank(p, tankType);
                 f_newTank(p, tankType)
-                # (Line 157) }
-                # (Line 159) }
+                # (Line 195) }
+                # (Line 196) }
             EUDEndIf()
-            # (Line 160) EUDEndPlayerLoop();
+            # (Line 197) EUDEndPlayerLoop();
         EUDEndIf()
         EUDEndPlayerLoop()
-        # (Line 161) return 1;
+        # (Line 198) return 1;
         EUDReturn(1)
-        # (Line 162) }
-        # (Line 163) }
+        # (Line 199) }
+        # (Line 200) }
     EUDEndIf()
-    # (Line 165) function shootMissile(index)
+    # (Line 202) function shootMissile(index)
 
-# (Line 166) {
+# (Line 203) {
 @EUDFunc
 def f_shootMissile(index):
-    # (Line 167) tankBullet.shoot(tankEpd[index]);
+    # (Line 204) tankBullet.shoot(tankEpd[index]);
     tankBullet.f_shoot(tankEpd[index])
-    # (Line 168) }
-    # (Line 170) function toggleDisable(index, status)
+    # (Line 205) }
+    # (Line 207) function toggleDisable(index, status)
 
-# (Line 171) {
+# (Line 208) {
 @EUDFunc
 def f_toggleDisable(index, status):
-    # (Line 172) const unitEpd = tankEpd[index];
+    # (Line 209) const unitEpd = tankEpd[index];
     unitEpd = tankEpd[index]
-    # (Line 173) const statusFlag = dwread_epd(unitEpd + 0x0DC / 4);
+    # (Line 210) const statusFlag = dwread_epd(unitEpd + 0x0DC / 4);
     statusFlag = f_dwread_epd(unitEpd + 0x0DC // 4)
-    # (Line 174) const disableFlag = 0x1000;
+    # (Line 211) const disableFlag = 0x1000;
     disableFlag = 0x1000
-    # (Line 176) if(statusFlag == (statusFlag | disableFlag) && status == 1)
+    # (Line 212) utilEud.setOrderID(unitEpd, 107); //hold
+    utilEud.f_setOrderID(unitEpd, 107)
+    # (Line 213) if(statusFlag == (statusFlag | disableFlag) && status == 1)
     if EUDIf()(EUDSCAnd()(statusFlag == (statusFlag | disableFlag))(status == 1)()):
-        # (Line 177) {// isDisabled -> enable
-        # (Line 179) SetMemoryEPD(unitEpd + 0x0DC / 4, Subtract, disableFlag);
+        # (Line 214) {// isDisabled -> enable
+        # (Line 216) SetMemoryEPD(unitEpd + 0x0DC / 4, Subtract, disableFlag);
         DoActions(SetMemoryEPD(unitEpd + 0x0DC // 4, Subtract, disableFlag))
-        # (Line 180) }
-        # (Line 181) else if(status == 0)
+        # (Line 217) }
+        # (Line 218) else if(status == 0)
     if EUDElseIf()(status == 0):
-        # (Line 182) {// isNormal -> disable
-        # (Line 183) SetMemoryEPD(unitEpd + 0x0DC / 4, SetTo, statusFlag | disableFlag);
+        # (Line 219) {// isNormal -> disable
+        # (Line 220) SetMemoryEPD(unitEpd + 0x0DC / 4, SetTo, statusFlag | disableFlag);
         DoActions(SetMemoryEPD(unitEpd + 0x0DC // 4, SetTo, statusFlag | disableFlag))
-        # (Line 184) }
-        # (Line 185) }
+        # (Line 221) }
+        # (Line 222) }
     EUDEndIf()

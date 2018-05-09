@@ -142,10 +142,10 @@ def f_memoryEdit():
     DoActions(SetMemory(0x519578, SetTo, 4344512))
     # (Line 11) SetMemory(0x51957C, SetTo, 4354656);
     DoActions(SetMemory(0x51957C, SetTo, 4354656))
-    # (Line 12) SetMemory(0x51968C, SetTo, 4344512);
-    DoActions(SetMemory(0x51968C, SetTo, 4344512))
-    # (Line 13) SetMemory(0x519690, SetTo, 4354656);
-    DoActions(SetMemory(0x519690, SetTo, 4354656))
+    # (Line 12) SetMemory(0x5195CC, SetTo, 4344512);
+    DoActions(SetMemory(0x5195CC, SetTo, 4344512))
+    # (Line 13) SetMemory(0x5195D0, SetTo, 4354656);
+    DoActions(SetMemory(0x5195D0, SetTo, 4354656))
     # (Line 14) SetMemory(0x519698, SetTo, 4344512);
     DoActions(SetMemory(0x519698, SetTo, 4344512))
     # (Line 15) SetMemory(0x51969C, SetTo, 4354656);
@@ -166,78 +166,182 @@ def f_memoryEdit():
     DoActions(SetMemory(0x519878, SetTo, 4344512))
     # (Line 23) SetMemory(0x51987C, SetTo, 4354656);
     DoActions(SetMemory(0x51987C, SetTo, 4354656))
-    # (Line 24) SetMemory(0x661E90, SetTo, 65537);
+    # (Line 24) SetMemory(0x6566F8, SetTo, 369754376);
+    DoActions(SetMemory(0x6566F8, SetTo, 369754376))
+    # (Line 25) SetMemory(0x656704, SetTo, 16780033);
+    DoActions(SetMemory(0x656704, SetTo, 16780033))
+    # (Line 26) SetMemory(0x656EF4, SetTo, 327780);
+    DoActions(SetMemory(0x656EF4, SetTo, 327780))
+    # (Line 27) SetMemory(0x656F28, SetTo, 20);
+    DoActions(SetMemory(0x656F28, SetTo, 20))
+    # (Line 28) SetMemory(0x65725C, SetTo, 50594306);
+    DoActions(SetMemory(0x65725C, SetTo, 50594306))
+    # (Line 29) SetMemory(0x657278, SetTo, 50528770);
+    DoActions(SetMemory(0x657278, SetTo, 50528770))
+    # (Line 30) SetMemory(0x660FC8, SetTo, 1094795585);
+    DoActions(SetMemory(0x660FC8, SetTo, 1094795585))
+    # (Line 31) SetMemory(0x661004, SetTo, 1103446469);
+    DoActions(SetMemory(0x661004, SetTo, 1103446469))
+    # (Line 32) SetMemory(0x661940, SetTo, 65537);
+    DoActions(SetMemory(0x661940, SetTo, 65537))
+    # (Line 33) SetMemory(0x661944, SetTo, 65537);
+    DoActions(SetMemory(0x661944, SetTo, 65537))
+    # (Line 34) SetMemory(0x661A60, SetTo, 524296);
+    DoActions(SetMemory(0x661A60, SetTo, 524296))
+    # (Line 35) SetMemory(0x661A64, SetTo, 524296);
+    DoActions(SetMemory(0x661A64, SetTo, 524296))
+    # (Line 36) SetMemory(0x661E90, SetTo, 65537);
     DoActions(SetMemory(0x661E90, SetTo, 65537))
-    # (Line 25) SetMemory(0x661E94, SetTo, 65537);
+    # (Line 37) SetMemory(0x661E94, SetTo, 65537);
     DoActions(SetMemory(0x661E94, SetTo, 65537))
-    # (Line 26) SetMemory(0x663180, SetTo, 68293124);
+    # (Line 38) SetMemory(0x66291C, SetTo, 131074);
+    DoActions(SetMemory(0x66291C, SetTo, 131074))
+    # (Line 39) SetMemory(0x662BC4, SetTo, 65537);
+    DoActions(SetMemory(0x662BC4, SetTo, 65537))
+    # (Line 40) SetMemory(0x663180, SetTo, 68293124);
     DoActions(SetMemory(0x663180, SetTo, 68293124))
-    # (Line 27) SetMemory(0x66318C, SetTo, 67372050);
-    DoActions(SetMemory(0x66318C, SetTo, 67372050))
-    # (Line 28) SetMemory(0x663228, SetTo, 67375620);
+    # (Line 41) SetMemory(0x663228, SetTo, 67375620);
     DoActions(SetMemory(0x663228, SetTo, 67375620))
-    # (Line 29) SetMemory(0x664148, SetTo, 403767428);
+    # (Line 42) SetMemory(0x664080, SetTo, 402718724);
+    DoActions(SetMemory(0x664080, SetTo, 402718724))
+    # (Line 43) SetMemory(0x664084, SetTo, 404816388);
+    DoActions(SetMemory(0x664084, SetTo, 404816388))
+    # (Line 44) SetMemory(0x66409C, SetTo, 1476460556);
+    DoActions(SetMemory(0x66409C, SetTo, 1476460556))
+    # (Line 45) SetMemory(0x6640B4, SetTo, 402653188);
+    DoActions(SetMemory(0x6640B4, SetTo, 402653188))
+    # (Line 46) SetMemory(0x6640C0, SetTo, 404816452);
+    DoActions(SetMemory(0x6640C0, SetTo, 404816452))
+    # (Line 47) SetMemory(0x664148, SetTo, 403767428);
     DoActions(SetMemory(0x664148, SetTo, 403767428))
-    # (Line 30) SetMemory(0x6642A4, SetTo, 86179969);
+    # (Line 48) SetMemory(0x6642A4, SetTo, 86179969);
     DoActions(SetMemory(0x6642A4, SetTo, 86179969))
-    # (Line 31) SetMemory(0x6643E4, SetTo, 545261572);
+    # (Line 49) SetMemory(0x6643E4, SetTo, 545261572);
     DoActions(SetMemory(0x6643E4, SetTo, 545261572))
-    # (Line 32) SetMemory(0x664500, SetTo, 1833537616);
-    DoActions(SetMemory(0x664500, SetTo, 1833537616))
-    # (Line 33) SetMemory(0x66450C, SetTo, 1381390670);
+    # (Line 50) SetMemory(0x6644F8, SetTo, 1264058882);
+    DoActions(SetMemory(0x6644F8, SetTo, 1264058882))
+    # (Line 51) SetMemory(0x6644FC, SetTo, 39014988);
+    DoActions(SetMemory(0x6644FC, SetTo, 39014988))
+    # (Line 52) SetMemory(0x664500, SetTo, 1833538128);
+    DoActions(SetMemory(0x664500, SetTo, 1833538128))
+    # (Line 53) SetMemory(0x664508, SetTo, 1481394946);
+    DoActions(SetMemory(0x664508, SetTo, 1481394946))
+    # (Line 54) SetMemory(0x66450C, SetTo, 1381390670);
     DoActions(SetMemory(0x66450C, SetTo, 1381390670))
-    # (Line 34) SetMemory(0x664514, SetTo, 1431586455);
-    DoActions(SetMemory(0x664514, SetTo, 1431586455))
-    # (Line 35) SetMemory(0x664520, SetTo, 3423339777);
+    # (Line 55) SetMemory(0x664514, SetTo, 1431586448);
+    DoActions(SetMemory(0x664514, SetTo, 1431586448))
+    # (Line 56) SetMemory(0x664520, SetTo, 3423339777);
     DoActions(SetMemory(0x664520, SetTo, 3423339777))
-    # (Line 36) SetMemory(0x664524, SetTo, 2701437603);
-    DoActions(SetMemory(0x664524, SetTo, 2701437603))
-    # (Line 37) SetMemory(0x664548, SetTo, 791097219);
+    # (Line 57) SetMemory(0x664524, SetTo, 2701436579);
+    DoActions(SetMemory(0x664524, SetTo, 2701436579))
+    # (Line 58) SetMemory(0x664548, SetTo, 791097219);
     DoActions(SetMemory(0x664548, SetTo, 791097219))
-    # (Line 38) SetMemory(0x6662D8, SetTo, 8782267);
+    # (Line 59) SetMemory(0x6645D0, SetTo, 2189534847);
+    DoActions(SetMemory(0x6645D0, SetTo, 2189534847))
+    # (Line 60) SetMemory(0x6662D8, SetTo, 8782267);
     DoActions(SetMemory(0x6662D8, SetTo, 8782267))
-    # (Line 39) SetMemory(0x6662DC, SetTo, 7996367);
+    # (Line 61) SetMemory(0x6662DC, SetTo, 7996367);
     DoActions(SetMemory(0x6662DC, SetTo, 7996367))
-    # (Line 40) SetMemory(0x6662E4, SetTo, 34275465);
+    # (Line 62) SetMemory(0x6662E4, SetTo, 34275465);
     DoActions(SetMemory(0x6662E4, SetTo, 34275465))
-    # (Line 41) SetMemory(0x666320, SetTo, 35586265);
+    # (Line 63) SetMemory(0x6662F4, SetTo, 10158462);
+    DoActions(SetMemory(0x6662F4, SetTo, 10158462))
+    # (Line 64) SetMemory(0x666320, SetTo, 35586265);
     DoActions(SetMemory(0x666320, SetTo, 35586265))
-    # (Line 42) SetMemory(0x66633C, SetTo, 16187936);
+    # (Line 65) SetMemory(0x66633C, SetTo, 16187936);
     DoActions(SetMemory(0x66633C, SetTo, 16187936))
-    # (Line 43) SetMemory(0x6663A8, SetTo, 26084310);
+    # (Line 66) SetMemory(0x6663A8, SetTo, 26084310);
     DoActions(SetMemory(0x6663A8, SetTo, 26084310))
-    # (Line 44) SetMemory(0x66652C, SetTo, 63177629);
+    # (Line 67) SetMemory(0x66652C, SetTo, 63177629);
     DoActions(SetMemory(0x66652C, SetTo, 63177629))
-    # (Line 45) SetMemory(0x669E30, SetTo, 526344);
+    # (Line 68) SetMemory(0x669E30, SetTo, 526344);
     DoActions(SetMemory(0x669E30, SetTo, 526344))
-    # (Line 46) SetMemory(0x66A1BC, SetTo, 8);
+    # (Line 69) SetMemory(0x66A1BC, SetTo, 8);
     DoActions(SetMemory(0x66A1BC, SetTo, 8))
-    # (Line 47) SetMemory(0x66F244, SetTo, 149);
-    DoActions(SetMemory(0x66F244, SetTo, 149))
-    # (Line 48) SetMemory(0x66F334, SetTo, 89);
+    # (Line 70) SetMemory(0x66F334, SetTo, 89);
     DoActions(SetMemory(0x66F334, SetTo, 89))
-    # (Line 49) SetMemory(0x66F428, SetTo, 89);
-    DoActions(SetMemory(0x66F428, SetTo, 89))
-    # (Line 50) SetMemory(0x66F430, SetTo, 89);
+    # (Line 71) SetMemory(0x66F430, SetTo, 89);
     DoActions(SetMemory(0x66F430, SetTo, 89))
-    # (Line 51) SetMemory(0x66F43C, SetTo, 89);
+    # (Line 72) SetMemory(0x66F43C, SetTo, 89);
     DoActions(SetMemory(0x66F43C, SetTo, 89))
-    # (Line 52) SetMemory(0x66F474, SetTo, 89);
+    # (Line 73) SetMemory(0x66F454, SetTo, 89);
+    DoActions(SetMemory(0x66F454, SetTo, 89))
+    # (Line 74) SetMemory(0x66F474, SetTo, 89);
     DoActions(SetMemory(0x66F474, SetTo, 89))
-    # (Line 53) SetMemory(0x66F488, SetTo, 89);
+    # (Line 75) SetMemory(0x66F488, SetTo, 89);
     DoActions(SetMemory(0x66F488, SetTo, 89))
-    # (Line 54) SetMemory(0x66F4C4, SetTo, 89);
+    # (Line 76) SetMemory(0x66F48C, SetTo, 89);
+    DoActions(SetMemory(0x66F48C, SetTo, 89))
+    # (Line 77) SetMemory(0x66F4C4, SetTo, 89);
     DoActions(SetMemory(0x66F4C4, SetTo, 89))
-    # (Line 55) SetMemory(0x66F4C8, SetTo, 89);
+    # (Line 78) SetMemory(0x66F4C8, SetTo, 89);
     DoActions(SetMemory(0x66F4C8, SetTo, 89))
-    # (Line 56) SetMemory(0x66F4F0, SetTo, 89);
-    DoActions(SetMemory(0x66F4F0, SetTo, 89))
-    # (Line 57) SetMemory(0x66FB50, SetTo, 383);
+    # (Line 79) SetMemory(0x66FB50, SetTo, 383);
     DoActions(SetMemory(0x66FB50, SetTo, 383))
-    # (Line 58) SetMemory(0x66FB58, SetTo, 89);
+    # (Line 80) SetMemory(0x66FB58, SetTo, 89);
     DoActions(SetMemory(0x66FB58, SetTo, 89))
-    # (Line 59) SetMemory(0x66FB84, SetTo, 89);
+    # (Line 81) SetMemory(0x66FB84, SetTo, 89);
     DoActions(SetMemory(0x66FB84, SetTo, 89))
-    # (Line 60) SetMemory(0x6CA418, SetTo, 19005793);
-    DoActions(SetMemory(0x6CA418, SetTo, 19005793))
-    # (Line 61) }
+    # (Line 82) SetMemory(0x6C985C, SetTo, 131072);
+    DoActions(SetMemory(0x6C985C, SetTo, 131072))
+    # (Line 83) SetMemory(0x6C9864, SetTo, 33554432);
+    DoActions(SetMemory(0x6C9864, SetTo, 33554432))
+    # (Line 84) SetMemory(0x6C9880, SetTo, 0);
+    DoActions(SetMemory(0x6C9880, SetTo, 0))
+    # (Line 85) SetMemory(0x6C9884, SetTo, 131328);
+    DoActions(SetMemory(0x6C9884, SetTo, 131328))
+    # (Line 86) SetMemory(0x6C98A0, SetTo, 131584);
+    DoActions(SetMemory(0x6C98A0, SetTo, 131584))
+    # (Line 87) SetMemory(0x6C98A8, SetTo, 33554432);
+    DoActions(SetMemory(0x6C98A8, SetTo, 33554432))
+    # (Line 88) SetMemory(0x6C9910, SetTo, 2);
+    DoActions(SetMemory(0x6C9910, SetTo, 2))
+    # (Line 89) SetMemory(0x6C9920, SetTo, 16843008);
+    DoActions(SetMemory(0x6C9920, SetTo, 16843008))
+    # (Line 90) SetMemory(0x6C9C80, SetTo, 4391012);
+    DoActions(SetMemory(0x6C9C80, SetTo, 4391012))
+    # (Line 91) SetMemory(0x6C9C94, SetTo, 65636);
+    DoActions(SetMemory(0x6C9C94, SetTo, 65636))
+    # (Line 92) SetMemory(0x6C9CC8, SetTo, 27983972);
+    DoActions(SetMemory(0x6C9CC8, SetTo, 27983972))
+    # (Line 93) SetMemory(0x6C9CD4, SetTo, 6553627);
+    DoActions(SetMemory(0x6C9CD4, SetTo, 6553627))
+    # (Line 94) SetMemory(0x6C9CDC, SetTo, 10);
+    DoActions(SetMemory(0x6C9CDC, SetTo, 10))
+    # (Line 95) SetMemory(0x6C9D0C, SetTo, 6553601);
+    DoActions(SetMemory(0x6C9D0C, SetTo, 6553601))
+    # (Line 96) SetMemory(0x6C9D1C, SetTo, 65636);
+    DoActions(SetMemory(0x6C9D1C, SetTo, 65636))
+    # (Line 97) SetMemory(0x6C9DEC, SetTo, 10485860);
+    DoActions(SetMemory(0x6C9DEC, SetTo, 10485860))
+    # (Line 98) SetMemory(0x6C9E08, SetTo, 43712612);
+    DoActions(SetMemory(0x6C9E08, SetTo, 43712612))
+    # (Line 99) SetMemory(0x6C9E24, SetTo, 335554600);
+    DoActions(SetMemory(0x6C9E24, SetTo, 335554600))
+    # (Line 100) SetMemory(0x6C9E68, SetTo, 673720340);
+    DoActions(SetMemory(0x6C9E68, SetTo, 673720340))
+    # (Line 101) SetMemory(0x6C9E70, SetTo, 220735528);
+    DoActions(SetMemory(0x6C9E70, SetTo, 220735528))
+    # (Line 102) SetMemory(0x6C9F08, SetTo, 100);
+    DoActions(SetMemory(0x6C9F08, SetTo, 100))
+    # (Line 103) SetMemory(0x6C9F30, SetTo, 100);
+    DoActions(SetMemory(0x6C9F30, SetTo, 100))
+    # (Line 104) SetMemory(0x6C9F98, SetTo, 100);
+    DoActions(SetMemory(0x6C9F98, SetTo, 100))
+    # (Line 105) SetMemory(0x6C9FB4, SetTo, 100);
+    DoActions(SetMemory(0x6C9FB4, SetTo, 100))
+    # (Line 106) SetMemory(0x6C9FC0, SetTo, 10);
+    DoActions(SetMemory(0x6C9FC0, SetTo, 10))
+    # (Line 107) SetMemory(0x6CA024, SetTo, 100);
+    DoActions(SetMemory(0x6CA024, SetTo, 100))
+    # (Line 108) SetMemory(0x6CA040, SetTo, 100);
+    DoActions(SetMemory(0x6CA040, SetTo, 100))
+    # (Line 109) SetMemory(0x6CA058, SetTo, 100);
+    DoActions(SetMemory(0x6CA058, SetTo, 100))
+    # (Line 110) SetMemory(0x6CA1E0, SetTo, 100);
+    DoActions(SetMemory(0x6CA1E0, SetTo, 100))
+    # (Line 111) SetMemory(0x6CA1E4, SetTo, 100);
+    DoActions(SetMemory(0x6CA1E4, SetTo, 100))
+    # (Line 112) SetMemory(0x6CA218, SetTo, 100);
+    DoActions(SetMemory(0x6CA218, SetTo, 100))
+    # (Line 114) }

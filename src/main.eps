@@ -9,14 +9,16 @@ EUD Draft
 CustomText
 http://cafe.naver.com/edac/64676
 etc.
+//a무기 설명, 약한 바람
 ---------------------------------------------*/
+import header;
+import physics;
 import eudEdit;
 import tank.tankMain;
 import tank.tankAim;
 import tank.tankBullet;
 import util.utilEud;
-import header;
-import physics;
+import sound.emplayer;
 import customText3 as ct; 
 
 //0 if test
@@ -37,13 +39,19 @@ function getPlayerText(turnPlayer);
 function getRandomTurn();
 function playerDeath();
 function teamVictory();
+function indiVictory();
 function beforeTriggerExec() 
 {
-
 	const turnPlayer = turnArray[turnPointer];
-	//탱크 선택 중에는 0
 	if(gameState == 0)
-	{// 선택 끝나면 탱크 생성 이후 1
+	{//start select
+		SetCountdownTimer(SetTo, 40);
+		gameState = 11;
+	}
+	if(gameState == 11)
+	{
+		if(CountdownTimer(Exactly, 0))
+			tankMain.randomSelect();
 		if(tankMain.selectTank())
 		{
 			gameState = 1;
@@ -56,7 +64,11 @@ function beforeTriggerExec()
 	}
 	if(gameState == 10)
 	{
-
+		if(!RELEASE) 
+		{//create dummy
+			for(var i=1; i<6; i++)
+				CreateUnit(1, 15, tankMain.locList[i]+1, $P8);
+		}
 		gameState = 2;
 	}
 	if(gameState == 2)
@@ -66,7 +78,7 @@ function beforeTriggerExec()
 		{//pre control
 			if(preTurn == turnPlayer && RELEASE) 
 			{// time end
-				//init
+				//remove info
 				SetDeaths(turnPlayer, SetTo, 0, 217);
         		SetResources(turnPlayer, SetTo, 0, Gas);
 				SetDeaths(turnPlayer, SetTo, 0, header.shootNum);
@@ -77,12 +89,19 @@ function beforeTriggerExec()
 			}
 			if(turnPlayer !=7 && playerexist(turnPlayer))
 			{
+				//remove pre info
+				SetSwitch(preTurn, Clear);
+				SetDeaths(preTurn, SetTo, 0, 217);
+				SetDeaths(preTurn, SetTo, 0, header.shootNum);
 				// random wind
-				wind = (rand()%22)/2;
+				wind = (rand()%44)/4;
+				// clear map
+				RemoveUnitAt(All, '(men)', $L('PlayArea')+1, $P7);
 				SetCountdownTimer(SetTo, 40);
 				tankMain.toggleDisable(turnPlayer, 1);
+				// center view
 				MoveLocation($L('loc1')+1, '(men)', turnPlayer, $L('PlayArea')+1);
-				CenterView($L('loc1')+1);
+				utilEud.CenterViewAll($L('loc1'));
 			}
 			else 
 			{// dead or none player
@@ -96,19 +115,14 @@ function beforeTriggerExec()
 		{//start control
 			preTurn = turnPlayer;
 			//start texing
+			emplayer.timeAlert();
 			const chatPtr = dwread_epd(EPD(0x640B58));
 			displayWind(wind);
 			getPlayerText(turnPlayer);
 			ct.printP(ct.cp, "\x13\x01차례");
 			gameInfo(turnPlayer);
 			const check = tankMain.controlTank(turnPlayer);
-			//if(check == -1)
-			//{// error
-			//	gameState = 4;
-			//	SetCountdownTimer(SetTo, 0);
-			//} else
-			if (check == 0){}
-			else
+			if (check)
 			{//goto shoot state
 				gameState = 3;
 				SetCountdownTimer(SetTo, 0);
@@ -126,7 +140,7 @@ function beforeTriggerExec()
 		const shootChance = utilEud.getDeath(turnPlayer, header.shootNum);
 		if(shootChance > 0 && CountdownTimer(Exactly, 0))
 		{
-			SetCountdownTimer(SetTo, 5);
+			SetCountdownTimer(SetTo, 9);
 			tankMain.shootMissile(turnPlayer);
 			SetDeaths(turnPlayer, Subtract, 1, header.shootNum);
 		}
@@ -147,18 +161,28 @@ function beforeTriggerExec()
 	if(gameState >= 2) 
 	{
 		playerDeath();
-		if(RELEASE) teamVictory();
+		//if(RELEASE) teamVictory();
+		if(RELEASE) indiVictory();
 	}
 	EUDPlayerLoop()();
-	SetAllianceStatus($AllPlayers, Ally);
+	if(getcurpl() != $P8)
+		SetAllianceStatus($Force1, Ally);
 	EUDEndPlayerLoop();
-
 	// 물리엔진
 	tankMain.renderTank();	 
 	tankBullet.renderBullet(wind);
 	// 바람, 아이템, 총알 별 데미지 및 이펙트
 }
 
+function indiVictory()
+{
+	if(Command($Force1, Exactly, 1, '(men)'))
+	{
+		EUDPlayerLoop()();
+		Victory();
+		EUDEndPlayerLoop();
+	}
+}
 function teamVictory()
 {
 	if(Command($Force1, Exactly, 0, '(men)') || Command($Force3, Exactly, 0, '(men)'))
@@ -169,20 +193,11 @@ function teamVictory()
 	}
 }
 
-function gameInfo(targetPlayer)
-{
-	ct.printP(targetPlayer, "\x07[조작법]");
-	ct.printP(targetPlayer, "\x07[I],[K]: \x01각도");
-	ct.printP(targetPlayer, "\x07[J]: \x01발사파워 (꾹 누름)");
-	ct.printP(targetPlayer, "\x07[L]: \x01무기교체 ");
-	ct.printP(targetPlayer, "\x01이동: \x01그냥 우클릭 무브해");
-
-}
 function playerDeath()
 {
 	for(var i=0; i<6; i++)
 	{
-		if(turnArray[i] != 7 )
+		if(turnArray[i] != 7)
 		{
 			if(Bring(turnArray[i], Exactly, 0, '(men)', $L('PlayArea')+1))
 			{
@@ -228,6 +243,15 @@ function getRandomTurn()
 	return 1;
 }
 
+function gameInfo(targetPlayer)
+{
+	ct.printP(targetPlayer, "\x07[조작법]");
+	ct.printP(targetPlayer, "\x07[I],[K]: \x01각도");
+	ct.printP(targetPlayer, "\x07[J]: \x01발사파워 (꾹 누름)");
+	ct.printP(targetPlayer, "\x07[L]: \x01무기교체 ");
+	ct.printP(targetPlayer, "\x01이동: \x01그냥 우클릭 무브해");
+
+}
 function getPlayerText(turnPlayer)
 {
 	//const chatPtr = dwread_epd(EPD(0x640B58));
@@ -238,6 +262,7 @@ function getPlayerText(turnPlayer)
   	else if(turnPlayer == 3) ct.printP(ct.cp, "\x13\x10보라\x01");
   	else if(turnPlayer == 4) ct.printP(ct.cp, "\x13\x11주황\x01");
   	else if(turnPlayer == 5) ct.printP(ct.cp, "\x13\x15갈색\x01");
+  	else ct.printP(ct.cp, "\x13\x01예비");
 	//dwwrite_epd(EPD(0x640B58), chatPtr);
 }
 

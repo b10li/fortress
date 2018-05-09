@@ -1,60 +1,63 @@
+import header;
 var weaponSaver = 0;
 const ap = 30;
 const weaponList = [
-//  No.,   graphic, splash, damage, type(3 normal, 4 ignore armor) -- hp 100
-    60,     156,    20, ap+ 37,      3,
-    70,     152,   	 7,     50,      4,
+//  No.,                    graphic, splash, damage, type   effectUnit
+    header.List[0*3+1],     156,    24, ap+ 27,      3,     -1,//corsair
+    header.List[0*3+2],     152,   	 7,     50,      4,     -1,//scout
 
-    71,     152,    30,     30,      4,
-    69,     150,    20,     35,      4,
+    header.List[1*3+1],     150,    30, ap+ 10,      3,     -1,//shuttle
+    header.List[1*3+2],     152,    32,     30,      4,     -1,//arbiter
 
-    94,     142,    30,     34,      4,
-    95,     142,    30,	ap+	25,      3,
+    header.List[2*3+1],     172,    30, ap+ 15,      3,     -1,//rhyno
+    header.List[2*3+2],     172,    28,     34,      4,     -1,//kakaru
 
-    72,     172,    30, ap+ 36,      3,
-    80,     142,    10,     60,      4,
+    header.List[3*3+1],     172,    44, ap+ 26,      3,     -1,//carrier
+    header.List[3*3+2],     142,    10,     35,      4,     16,//mojo
 
-    43,     205,    40, ap+ 15,      3,
-    44,     172,     5,     60,      4,
+    header.List[4*3+1],     205,    40, ap+ 10,      3,     -1,//mutal
+    header.List[4*3+2],     171,     5,     60,      4,     -1,//guard
 
-    12,     142,    25,     30,      4,
-    8,      150,    27, ap+ 35,      3,
+    header.List[5*3+1],     150,    27, ap+ 25,      3,     -1,//wraith
+    header.List[5*3+2],     142,    25,     35,      4,     -1,//battle
 
-    9,      143,    20, ap+ 20,      3,
-    28,     143,    10,     65,      4,
+    header.List[6*3+1],     143,    48, ap+  2,      3,     0, //SV
+    header.List[6*3+2],     143,     3,     65,      4,     -1,//battle H
 
-    11,     150,   	64, ap+ 10,      3,
-    21,     143,    20,     10,      4,
+    header.List[7*3+1],     150,   	64, ap+  5,      3,     -1,//drop
+    header.List[7*3+2],     143,    1,       0,      4,     -1,//mine H wraith
 
-    45,     142,   	50, ap+ 25,      3,
-    47,     142,   	 5,      7,      4,
+    header.List[8*3+1],     171,   	32, ap+ 15,      3,     1,//queen
+    header.List[8*3+2],     142,   	 5,      7,      4,     -1,//scourge spine
 
-    42,     205,   	64,     21,      4,
-    57,     172,     1, ap+  1,      4
+    header.List[9*3+1],     172,    10, ap+  3,      3,     7,//over H
+    header.List[9*3+2],     205,   	34,     21,      4,     -1//over
+
     ];
+
 function setWeapon(unitType)
 {
     for(var i=0; i<20; i++)
     {
-        const index = i*5;
+        const index = i*6;
         if(weaponList[index] == unitType)
         {
-
             if(weaponSaver != weaponList[index])
             {
                 weaponSaver = weaponList[index];
                 // graphic
                 dwwrite(0x6564E0 + 1992 + 54 * 4, weaponList[index +1]);
                 // o,m,i splash
-                wwrite(0x6564E0 + 4768 + 54 * 2, weaponList[index +2]);
-                wwrite(0x6564E0 + 3048 + 54 * 2, weaponList[index +2]+10);
-                wwrite(0x6564E0 + 936 + 54 * 2, weaponList[index +2]+20);
+                wwrite(0x6564E0 + 4768  + 54 * 2, weaponList[index +2]+40);
+                wwrite(0x6564E0 + 3048  + 54 * 2, weaponList[index +2]+20);
+                wwrite(0x6564E0 + 936   + 54 * 2, weaponList[index +2]);
                 // damage amount
-                wwrite(0x6564E0 + 2512 + 54 * 2, weaponList[index+3]);
+                wwrite(0x6564E0 + 2512  + 54 * 2, weaponList[index +3]);
                 // damage type
-                bwrite(0x6564E0 + 3448 + 54 * 1, weaponList[index+4]);
+                bwrite(0x6564E0 + 3448  + 54 * 1, weaponList[index +4]);
             }
-            return;
+            //return unitType
+            return weaponList[index+5];
         }
     }
 }

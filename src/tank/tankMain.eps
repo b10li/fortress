@@ -9,18 +9,22 @@ import customText3 as ct;
 const tankEpd = EUDArray(6);
 const locList = [$L('p1'), $L('p2'), $L('p3'), $L('p4'), $L('p5'), $L('p6')];
 
+
+// 기모으다가 시간 끝나면생기는 버그   
 function toggleDisable(index);
 function newTank(targetPlayer, unitType)
 {
     if(unitType)
     {
         const locID = locList[targetPlayer];
+
         tankEpd[targetPlayer] = epdread_epd(EPD(0x628438));
         CreateUnit(1, unitType, locID+1, targetPlayer);
         //initialize
-        utilEud.setRemainingBuildtime(tankEpd[targetPlayer], header.maxbuildtime);
-        tankAim.setAngle(tankEpd[targetPlayer], 300);
-        physics.setVxy(tankEpd[targetPlayer], 0, 10);
+        SetMemoryEPD(tankEpd[targetPlayer]+ 0x034 / 4, SetTo, 200); //speed
+        utilEud.setRemainingBuildtime(tankEpd[targetPlayer], header.maxbuildtime); // power
+        tankAim.setAngle(tankEpd[targetPlayer], 300); //angle
+        physics.setVxy(tankEpd[targetPlayer], 0, 10); //gravity
         // change ui
         const bullet = tankBullet.getBullet(unitType, utilEud.getDeath(targetPlayer, header.bulletQ));
         utilEud.setBuildQueue1(tankEpd[targetPlayer], bullet);
@@ -51,8 +55,6 @@ function controlTank(targetPlayer)
 {// 키인식으로 
     const angleNum = 4; //단위
     const unitEpd = getTankEpd(targetPlayer);
-    //prevent Error
-    //if(unitEpd == 0) return -1;
     const power = utilEud.getRemainingBuildtime(unitEpd);
     const angle = tankAim.getAngle(unitEpd);
 
@@ -65,51 +67,65 @@ function controlTank(targetPlayer)
 
     if(1 == keyValue)
     {// angle UP
+    	utilEud.setOrderID(unitEpd, 107);
         tankAim.setAngle(unitEpd, angle + angleNum);
         tankAim.showLaunchAngle(unitEpd);
     }
     else if(2 == keyValue)
     {// angle DOWN
+    	utilEud.setOrderID(unitEpd, 107);
         tankAim.setAngle(unitEpd, angle - angleNum);
         tankAim.showLaunchAngle(unitEpd);
     }
-    else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 0, Gas))
+    else if (4 == keyValue && Switch(targetPlayer, Cleared))
     {// shoot inital key press
         //initialize 
         utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
-        SetResources(targetPlayer, SetTo, 1, Gas);
+        SetSwitch(targetPlayer, Set);
         //key delay
         SetDeaths(targetPlayer, SetTo, 0, 217);
     }
-    else if (4 != keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
-    {// end key press 
+    else if (4 != keyValue && Switch(targetPlayer, Set))
+    {// shoot end key press 
         SetDeaths(targetPlayer, Add, 1, 217);
     }
-    else if (4 == keyValue && Accumulate(targetPlayer, Exactly, 1, Gas))
-    {
+    else if (4 == keyValue && Switch(targetPlayer, Set))
+    {// shoot while pressing
         utilEud.setRemainingBuildtime(unitEpd, power -2);
+        SetResources(targetPlayer, SetTo, 101-power, Gas);
         SetDeaths(targetPlayer, SetTo, 0, 217);
     }
-    else if (8 == keyValue && Switch(targetPlayer, Cleared))
+    else if (8 == keyValue && Switch(targetPlayer+6, Cleared))
     {// change weapon
         //const chatPtr = dwread_epd(EPD(0x640B58));
         ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-        ct.printP(targetPlayer, "\x13[ 무기 교체 ] ");
+        ct.printP(targetPlayer, "\x13\x07[ \x0e무기 변경\x07 ] \x01");
         //dwwrite_epd(EPD(0x640B58), chatPtr);
+        SetSwitch(targetPlayer+6, Set);
+        //L key delay
+        SetDeaths(targetPlayer, SetTo, 6, 218);
         tankBullet.toggleBullet(unitEpd);
-        SetSwitch(targetPlayer, Set);
     }
-    if(8 != keyValue && Switch(targetPlayer, Set))
+
+    if(8 != keyValue && Switch(targetPlayer+6, Set))
     {// change weapon keydelay
-        SetSwitch(targetPlayer, Clear);
+    	SetDeaths(targetPlayer, Subtract, 1, 218);
+        //SetSwitch(targetPlayer+6, Clear);
     }
-
-
+    else if(8 == keyValue && Switch(targetPlayer+6, Set))
+    {// change weapon keydelay
+    	SetDeaths(targetPlayer, SetTo, 6, 218);
+    }
+    
+    if(Deaths(targetPlayer, Exactly, 0, 218) && Switch(targetPlayer+6, Set))
+    {// change weapon keydelay
+    	SetSwitch(targetPlayer+6, Clear);
+    }
     if (Deaths(targetPlayer, AtLeast, 8, 217) || power == 0)
-    {// end key press for 1sec
+    {// shoot key delay
         utilEud.setRemainingBuildtime(unitEpd, header.maxbuildtime);
         SetDeaths(targetPlayer, SetTo, 0, 217);
-        SetResources(targetPlayer, SetTo, 0, Gas);
+        SetSwitch(targetPlayer, Clear);
         tankAim.clearAngle(targetPlayer);
         // temp storage
         utilEud.setKillCount(unitEpd, (header.maxbuildtime+1) - power); 
@@ -119,24 +135,46 @@ function controlTank(targetPlayer)
         return 0;
     
 }
-
+function reduceStasis(unitEpd);
 function renderTank()
 {//tank physics
     for(var i=0; i<6; i++)
     {
-        if(tankEpd[i])
+        const unitEpd = tankEpd[i];
+        if(unitEpd)
         {
-            const unitType = utilEud.getUnitType(tankEpd[i]);
+            const unitType = utilEud.getUnitType(unitEpd);
+            const player = utilEud.getPlayerID(unitEpd);
+            if(!utilEud.isAtLocation(unitEpd, $L('PlayArea')))
+            {
+                tankEpd[i] = 0;
+                KillUnit(unitType, player);
+                RemoveUnit('(any unit)', player);
+            }
+            else if(player == $P12)
+            {
+                tankEpd[i] = 0;
+                RemoveUnit('(any unit)', $P12);
+            }
             MoveLocation($L('locTank')+1, unitType, i, 'Anywhere');
             //collision
             if(Bring($P8, Exactly, 0, '(buildings)', $L('locTank')+1))
             {
-                physics.renderUnit(tankEpd[i], 0);
+                physics.renderUnit(unitEpd, 0);
             }
         }
     }
 }
 
+function randomSelect()
+{
+    for(var i=0; i<6; i++){
+        if(Command(i, Exactly, 1, header.Flag) && !tankSelect.isListed(utilEud.getUnitType(tankEpd[i]))){
+            SetDeaths(i, SetTo, header.List[(rand()%header.ListNum) * 3], header.tankType);
+            RemoveUnit(header.Flag, i);
+        }
+    }
+}
 function selectTank()
 {
     if(tankSelect.isSelecting())
@@ -154,8 +192,7 @@ function selectTank()
             if(tankType) // 0 or sth
             {
                 newTank(p, tankType);
-            }
-            
+            }     
         }
         EUDEndPlayerLoop();
         return 1;
@@ -172,7 +209,7 @@ function toggleDisable(index, status)
     const unitEpd = tankEpd[index];
     const statusFlag = dwread_epd(unitEpd + 0x0DC / 4);
     const disableFlag = 0x1000;
-
+    utilEud.setOrderID(unitEpd, 107); //hold
     if(statusFlag == (statusFlag | disableFlag) && status == 1)
     {// isDisabled -> enable
 

@@ -82,3 +82,22 @@ function getRemainingBuildtime(unitEpd)
 {
     return wread_epd(unitEpd + 0x0AC / 4,  0x0AC % 4);
 }
+
+function CenterViewAll(locID)
+{
+    EUDPlayerLoop()();
+    CenterView(locID+1);
+    EUDEndPlayerLoop();
+}
+
+function isAtLocation(unitEpd, locID)
+{
+    const x, y = getUnitXY(unitEpd);
+    const l = dwread_epd(EPD(0x58DC60) + 5 * locID);
+    const t = dwread_epd(EPD(0x58DC60) + 5 * locID + 1);
+    const r = dwread_epd(EPD(0x58DC60) + 5 * locID + 2);
+    const d = dwread_epd(EPD(0x58DC60) + 5 * locID + 3);
+
+    if(x > l && y > t && x < r && y < d) return 1;
+    else return 0;
+}

@@ -1,0 +1,24 @@
+import bgmplayer_data;
+
+function time() {
+    return -dwread_epd(EPD(0x51CE8C));
+}
+
+var dsttimer;
+
+function startTimer(duration) {
+    dsttimer = time() + duration - 42;
+}
+
+function isTimerHit() {
+    if(dsttimer <= time()) return 1;
+    else return 0;
+}
+
+function bgmloop() {
+    if(isTimerHit()) {
+        startTimer(54857);
+        SetCurrentPlayer(getuserplayerid());
+        PlayWAV('staredit\\wav\\bgmmain.wav');
+    }
+}

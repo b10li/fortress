@@ -132,8 +132,10 @@ from tank import tankAim
 from tank import tankWeapon
 # (Line 6) import physics;
 import physics
-# (Line 9) const TOPSPEED = 30;
-TOPSPEED = _CGFW(lambda: [30], 1)[0]
+# (Line 7) import sound.emplayer;
+from sound import emplayer
+# (Line 9) const TOPSPEED = 46;
+TOPSPEED = _CGFW(lambda: [46], 1)[0]
 # (Line 10) const BOTSPEED = 2;
 BOTSPEED = _CGFW(lambda: [2], 1)[0]
 # (Line 12) const gravity = 1;
@@ -204,291 +206,266 @@ def f_renderBullet(wind):
             unitEpd = pTargetArray[i]
             # (Line 43) const unitType = utilEud.getUnitType(unitEpd);
             unitType = utilEud.f_getUnitType(unitEpd)
-            # (Line 44) physics.renderUnit(unitEpd, 1);
+            # (Line 45) physics.renderUnit(unitEpd, 1);
             physics.f_renderUnit(unitEpd, 1)
-            # (Line 45) MoveLocation(locID+1, unitType, $P7, $L('locDst')+1);
+            # (Line 46) MoveLocation(locID+1, unitType, $P7, $L('locDst')+1);
             DoActions(MoveLocation(locID + 1, unitType, 6, GetLocationIndex('locDst') + 1))
-            # (Line 46) if(pTargetArray[0]) CenterView(locID+1);
+            # (Line 47) if(pTargetArray[0]) utilEud.CenterViewAll(locID);
             if EUDIf()(pTargetArray[0]):
-                DoActions(CenterView(locID + 1))
-                # (Line 48) if(Bring($P8, AtLeast, 1, '(buildings)', locID+1)
+                utilEud.CenterViewAll(locID)
+                # (Line 50) if(Bring($P8, AtLeast, 1, '(buildings)', locID+1)
             EUDEndIf()
             _t5 = EUDIf()
-            # (Line 49) || Bring($Force1, AtLeast, 1, '(men)', locID+1)
-            # (Line 50) || Bring($Force3, AtLeast, 1, '(men)', locID+1))
-            if _t5(EUDSCOr()(Bring(7, AtLeast, 1, '(buildings)', locID + 1))(Bring(18, AtLeast, 1, '(men)', locID + 1))(Bring(20, AtLeast, 1, '(men)', locID + 1))()):
-                # (Line 51) {
-                # (Line 52) popmid(unitEpd);
+            # (Line 51) || Bring($Force1, AtLeast, 1, '(men)', locID+1)
+            # (Line 52) /*|| Bring($Force3, AtLeast, 1, '(men)', locID+1)*/)
+            if _t5(EUDSCOr()(Bring(7, AtLeast, 1, '(buildings)', locID + 1))(Bring(18, AtLeast, 1, '(men)', locID + 1))()):
+                # (Line 53) {//collision
+                # (Line 54) popmid(unitEpd);
                 f_popmid(unitEpd)
-                # (Line 53) RemoveUnitAt(1, '(men)', locID+1, $P7);
-                DoActions(RemoveUnitAt(1, '(men)', locID + 1, 6))
-                # (Line 54) boom(unitType, locID);
-                f_boom(unitType, locID)
-                # (Line 55) }
-                # (Line 56) else
-                # (Line 57) {
-            if EUDElse()():
-                # (Line 58) var vx, vy = physics.getVxy(unitEpd);
-                vx, vy = _MVAR([physics.f_getVxy(unitEpd)])
-                # (Line 60) vx = speedLimit(vx);
-                vx << (f_speedLimit(vx))
-                # (Line 61) vy = speedLimit(vy);
-                vy << (f_speedLimit(vy))
-                # (Line 62) const nw = 2- wind/2;
-                nw = 2 - wind // 2
-                # (Line 64) if(framebool == 0) physics.setVxy(unitEpd, vx, vy + gravity);
-                if EUDIf()(framebool == 0):
-                    physics.f_setVxy(unitEpd, vx, vy + gravity)
-                    # (Line 65) else if(framebool == 1) physics.setVxy(unitEpd, vx, vy);
-                if EUDElseIf()(framebool == 1):
-                    physics.f_setVxy(unitEpd, vx, vy)
-                    # (Line 66) else if(framebool == 2) physics.setVxy(unitEpd, vx, vy);
-                if EUDElseIf()(framebool == 2):
-                    physics.f_setVxy(unitEpd, vx, vy)
-                    # (Line 67) else physics.setVxy(unitEpd, vx + nw, vy + gravity);
+                # (Line 55) if(unitType == header.List[2*3+1]
+                _t6 = EUDIf()
+                # (Line 56) || unitType == header.List[2*3+2]
+                # (Line 57) || unitType == header.List[9*3+1])
+                if _t6(EUDSCOr()(unitType == header.List[2 * 3 + 1])(unitType == header.List[2 * 3 + 2])(unitType == header.List[9 * 3 + 1])()):
+                    # (Line 58) {
+                    # (Line 59) KillUnit(unitType, $P7);
+                    DoActions(KillUnit(unitType, 6))
+                    # (Line 60) }
+                    # (Line 61) else RemoveUnitAt(1, '(men)', locID+1, $P7);
                 if EUDElse()():
-                    physics.f_setVxy(unitEpd, vx + nw, vy + gravity)
-                    # (Line 68) framebool = (framebool+1)%4;
+                    DoActions(RemoveUnitAt(1, '(men)', locID + 1, 6))
+                    # (Line 63) if(unitType == header.List[7*3+2])
                 EUDEndIf()
-                framebool << ((framebool + 1) % 4)
-                # (Line 69) }
-                # (Line 70) }
+                if EUDIf()(unitType == header.List[7 * 3 + 2]):
+                    # (Line 64) CreateUnitWithProperties(1, 13, locID+1, $P8, UnitProperty(invincible = true));
+                    DoActions(CreateUnitWithProperties(1, 13, locID + 1, 7, UnitProperty(invincible=True)))
+                    # (Line 65) else if(unitType == header.List[9*3+2])
+                if EUDElseIf()(unitType == header.List[9 * 3 + 2]):
+                    # (Line 66) {//overlord
+                    # (Line 67) const gasEpd = epdread_epd(EPD(0x628438));
+                    gasEpd = f_epdread_epd(EPD(0x628438))
+                    # (Line 68) CreateUnitWithProperties(1, 84, locID+1, $P8, UnitProperty(invincible = true));
+                    DoActions(CreateUnitWithProperties(1, 84, locID + 1, 7, UnitProperty(invincible=True)))
+                    # (Line 69) bwrite_epd(gasEpd + 0x118 / 4,  0x118 % 4, 1000);
+                    f_bwrite_epd(gasEpd + 0x118 // 4, 0x118 % 4, 1000)
+                    # (Line 70) wwrite_epd(gasEpd + 0x110 / 4,  0x110 % 4, 1010);
+                    f_wwrite_epd(gasEpd + 0x110 // 4, 0x110 % 4, 1010)
+                    # (Line 71) }
+                    # (Line 72) else boom(unitType, locID);
+                if EUDElse()():
+                    f_boom(unitType, locID)
+                    # (Line 73) }
+                EUDEndIf()
+                # (Line 74) else if(!utilEud.isAtLocation(unitEpd, $L('PlayArea')))
+            if EUDElseIf()(utilEud.f_isAtLocation(unitEpd, GetLocationIndex('PlayArea')), neg=True):
+                # (Line 75) {// out of playarea
+                # (Line 76) popmid(unitEpd);
+                f_popmid(unitEpd)
+                # (Line 77) RemoveUnitAt(1, '(men)', locID+1, $P7);
+                DoActions(RemoveUnitAt(1, '(men)', locID + 1, 6))
+                # (Line 78) }
+                # (Line 79) else
+                # (Line 80) {
+            if EUDElse()():
+                # (Line 81) var vx, vy = physics.getVxy(unitEpd);
+                vx, vy = _MVAR([physics.f_getVxy(unitEpd)])
+                # (Line 83) vx = speedLimit(vx);
+                vx << (f_speedLimit(vx))
+                # (Line 84) vy = speedLimit(vy);
+                vy << (f_speedLimit(vy))
+                # (Line 86) var nw, ng;
+                nw, ng = EUDCreateVariables(2)
+                # (Line 88) if(framebool % 2) ng = 0;
+                if EUDIf()(framebool % 2):
+                    ng << (0)
+                    # (Line 89) else ng = 1;
+                if EUDElse()():
+                    ng << (1)
+                    # (Line 90) if(framebool == 0) nw = 2- wind/2;
+                EUDEndIf()
+                if EUDIf()(framebool == 0):
+                    nw << (2 - wind // 2)
+                    # (Line 91) else nw = 0;
+                if EUDElse()():
+                    nw << (0)
+                    # (Line 92) physics.setVxy(unitEpd, vx + nw, vy + gravity);
+                EUDEndIf()
+                physics.f_setVxy(unitEpd, vx + nw, vy + gravity)
+                # (Line 93) }
+                # (Line 94) }
             EUDEndIf()
-            # (Line 71) }
+            # (Line 95) }
         EUDEndIf()
-        # (Line 72) }
+        # (Line 96) framebool = (framebool+1)%6;
         EUDSetContinuePoint()
         _t2()
     EUDEndWhile()
-    # (Line 73) function speedLimit(v)
+    framebool << ((framebool + 1) % 6)
+    # (Line 97) }
+    # (Line 98) function speedLimit(v)
 
-# (Line 74) {
+# (Line 99) {
 @EUDFunc
 def f_speedLimit(v):
-    # (Line 75) if(utilMath.abs(v) > (TOPSPEED + BOTSPEED))
+    # (Line 100) if(utilMath.abs(v) > (TOPSPEED + BOTSPEED))
     if EUDIf()(utilMath.f_abs(v) <= (TOPSPEED + BOTSPEED), neg=True):
-        # (Line 76) {
-        # (Line 77) if(v >= 0x80000000) v = -(TOPSPEED + BOTSPEED);
+        # (Line 101) {
+        # (Line 102) if(v >= 0x80000000) v = -(TOPSPEED + BOTSPEED);
         if EUDIf()(v >= 0x80000000):
             v << (-(TOPSPEED + BOTSPEED))
-            # (Line 78) else v = (TOPSPEED + BOTSPEED);
+            # (Line 103) else v = (TOPSPEED + BOTSPEED);
         if EUDElse()():
             v << ((TOPSPEED + BOTSPEED))
-            # (Line 79) }
+            # (Line 104) }
         EUDEndIf()
-        # (Line 80) return v;
+        # (Line 105) return v;
     EUDEndIf()
     EUDReturn(v)
-    # (Line 81) }
-    # (Line 84) function getBullet(unitType, num);
+    # (Line 106) }
+    # (Line 110) function getBullet(unitType, num);
 
-# (Line 85) function toggleBullet(unitEpd)
-# (Line 86) {
-@EUDFunc
-def f_toggleBullet(unitEpd):
-    # (Line 87) const unitType = utilEud.getUnitType(unitEpd);
-    unitType = utilEud.f_getUnitType(unitEpd)
-    # (Line 88) const player = utilEud.getPlayerID(unitEpd);
-    player = utilEud.f_getPlayerID(unitEpd)
-    # (Line 90) const nextQ = (utilEud.getDeath(player, header.bulletQ)+1)%2;
-    nextQ = (utilEud.f_getDeath(player, header.bulletQ) + 1) % 2
-    # (Line 91) SetDeaths(player, SetTo, nextQ, header.bulletQ);
-    DoActions(SetDeaths(player, SetTo, nextQ, header.bulletQ))
-    # (Line 92) const bullet = getBullet(unitType, nextQ);
-    bullet = f_getBullet(unitType, nextQ)
-    # (Line 94) utilEud.setBuildQueue1(unitEpd, bullet);
-    utilEud.f_setBuildQueue1(unitEpd, bullet)
-    # (Line 95) }
-    # (Line 97) function makeBullet(unitType, x, y, angle, speed)
-
-# (Line 98) {
-@EUDFunc
-def f_makeBullet(unitType, x, y, angle, speed):
-    # (Line 99) const locID = $L('locBullet');
-    locID = GetLocationIndex('locBullet')
-    # (Line 100) utilEud.moveLocationXY(locID, x, y);
-    utilEud.f_moveLocationXY(locID, x, y)
-    # (Line 101) const unitEpd = epdread_epd(EPD(0x628438));
-    unitEpd = f_epdread_epd(EPD(0x628438))
-    # (Line 102) CreateUnit(1, unitType, locID+1, $P7);
-    DoActions(CreateUnit(1, unitType, locID + 1, 6))
-    # (Line 105) const changedSpeed = TOPSPEED * speed/100 + BOTSPEED;
-    changedSpeed = TOPSPEED * speed // 100 + BOTSPEED
-    # (Line 106) const vx, vy = lengthdir(changedSpeed, angle);
-    vx, vy = List2Assignable([f_lengthdir(changedSpeed, angle)])
-    # (Line 107) physics.setVxy(unitEpd, vx, vy);
-    physics.f_setVxy(unitEpd, vx, vy)
-    # (Line 108) push(unitEpd);
-    f_push(unitEpd)
-    # (Line 109) }
-    # (Line 111) function shoot(unitEpd)
-
+# (Line 111) function toggleBullet(unitEpd)
 # (Line 112) {
 @EUDFunc
-def f_shoot(unitEpd):
-    # (Line 113) const x, y = utilEud.getUnitXY(unitEpd);
-    x, y = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
-    # (Line 115) const speed = utilEud.getKillCount(unitEpd); //killcount
-    speed = utilEud.f_getKillCount(unitEpd)
-    # (Line 116) const angle = tankAim.getAngle(unitEpd);
-    angle = tankAim.f_getAngle(unitEpd)
-    # (Line 117) const dx, dy = lengthdir(32, angle);
-    dx, dy = List2Assignable([f_lengthdir(32, angle)])
-    # (Line 118) const targetPlayer = utilEud.getPlayerID(unitEpd);
-    targetPlayer = utilEud.f_getPlayerID(unitEpd)
-    # (Line 119) const unitType = utilEud.getUnitType(unitEpd);
+def f_toggleBullet(unitEpd):
+    # (Line 113) const unitType = utilEud.getUnitType(unitEpd);
     unitType = utilEud.f_getUnitType(unitEpd)
-    # (Line 120) const bullet = getBullet(unitType, utilEud.getDeath(targetPlayer, header.bulletQ));
+    # (Line 114) const player = utilEud.getPlayerID(unitEpd);
+    player = utilEud.f_getPlayerID(unitEpd)
+    # (Line 116) const nextQ = (utilEud.getDeath(player, header.bulletQ)+1)%2;
+    nextQ = (utilEud.f_getDeath(player, header.bulletQ) + 1) % 2
+    # (Line 117) SetDeaths(player, SetTo, nextQ, header.bulletQ);
+    DoActions(SetDeaths(player, SetTo, nextQ, header.bulletQ))
+    # (Line 118) const bullet = getBullet(unitType, nextQ);
+    bullet = f_getBullet(unitType, nextQ)
+    # (Line 120) utilEud.setBuildQueue1(unitEpd, bullet);
+    utilEud.f_setBuildQueue1(unitEpd, bullet)
+    # (Line 121) }
+    # (Line 123) function makeBullet(unitType, x, y, angle, speed)
+
+# (Line 124) {
+@EUDFunc
+def f_makeBullet(unitType, x, y, angle, speed):
+    # (Line 125) const locID = $L('locBullet');
+    locID = GetLocationIndex('locBullet')
+    # (Line 126) utilEud.moveLocationXY(locID, x, y);
+    utilEud.f_moveLocationXY(locID, x, y)
+    # (Line 127) const unitEpd = epdread_epd(EPD(0x628438));
+    unitEpd = f_epdread_epd(EPD(0x628438))
+    # (Line 128) CreateUnitWithProperties(1, unitType, locID+1, $P7, UnitProperty(invincible=true));
+    DoActions(CreateUnitWithProperties(1, unitType, locID + 1, 6, UnitProperty(invincible=True)))
+    # (Line 131) const changedSpeed = TOPSPEED * speed/100 + BOTSPEED;
+    changedSpeed = TOPSPEED * speed // 100 + BOTSPEED
+    # (Line 132) const vx, vy = lengthdir(changedSpeed, angle);
+    vx, vy = List2Assignable([f_lengthdir(changedSpeed, angle)])
+    # (Line 133) physics.setVxy(unitEpd, vx, vy);
+    physics.f_setVxy(unitEpd, vx, vy)
+    # (Line 134) push(unitEpd);
+    f_push(unitEpd)
+    # (Line 135) }
+    # (Line 137) function shoot(unitEpd)
+
+# (Line 138) {
+@EUDFunc
+def f_shoot(unitEpd):
+    # (Line 139) const x, y = utilEud.getUnitXY(unitEpd);
+    x, y = List2Assignable([utilEud.f_getUnitXY(unitEpd)])
+    # (Line 141) const speed = utilEud.getKillCount(unitEpd); //killcount
+    speed = utilEud.f_getKillCount(unitEpd)
+    # (Line 142) const angle = tankAim.getAngle(unitEpd);
+    angle = tankAim.f_getAngle(unitEpd)
+    # (Line 144) const targetPlayer = utilEud.getPlayerID(unitEpd);
+    targetPlayer = utilEud.f_getPlayerID(unitEpd)
+    # (Line 145) const unitType = utilEud.getUnitType(unitEpd);
+    unitType = utilEud.f_getUnitType(unitEpd)
+    # (Line 146) const bullet = getBullet(unitType, utilEud.getDeath(targetPlayer, header.bulletQ));
     bullet = f_getBullet(unitType, utilEud.f_getDeath(targetPlayer, header.bulletQ))
-    # (Line 122) if(bullet == 47)
-    if EUDIf()(bullet == 47):
-        # (Line 123) {
-        # (Line 124) for (var i=1; i<4; i++){
+    # (Line 148) emplayer.shootEffectMusic(bullet);
+    emplayer.f_shootEffectMusic(bullet)
+    # (Line 150) var dx, dy = lengthdir(32, angle);
+    dx, dy = _MVAR([f_lengthdir(32, angle)])
+    # (Line 151) makeBullet(bullet, x+dx, y+dy, angle, speed);
+    f_makeBullet(bullet, x + dx, y + dy, angle, speed)
+    # (Line 152) if(bullet == header.List[8*3+2]) // tankLu 2
+    if EUDIf()(bullet == header.List[8 * 3 + 2]):
+        # (Line 153) {
+        # (Line 154) for (var i=1; i<4; i++)
         i = EUDVariable()
         i << (1)
         if EUDWhile()(i >= 4, neg=True):
             def _t3():
                 i.__iadd__(1)
-            # (Line 125) makeBullet(bullet, x+dx, y+dy, angle+i, speed);
-            f_makeBullet(bullet, x + dx, y + dy, angle + i, speed)
-            # (Line 126) }
-            # (Line 127) }
+            # (Line 155) {
+            # (Line 156) dx, dy = lengthdir(32 + i*8, angle);
+            _SV([dx, dy], [f_lengthdir(32 + i * 8, angle)])
+            # (Line 157) makeBullet(bullet, x+dx, y+dy, angle, speed);
+            f_makeBullet(bullet, x + dx, y + dy, angle, speed)
+            # (Line 158) }
+            # (Line 159) }
             EUDSetContinuePoint()
             _t3()
         EUDEndWhile()
-        # (Line 128) if(unitType == header.Devourer) makeBullet(bullet, x+dx, y+dy + 32, angle, speed);
+        # (Line 160) }
     EUDEndIf()
-    if EUDIf()(unitType == header.Devourer):
-        f_makeBullet(bullet, x + dx, y + dy + 32, angle, speed)
-        # (Line 129) makeBullet(bullet, x+dx, y+dy, angle, speed);
-    EUDEndIf()
-    f_makeBullet(bullet, x + dx, y + dy, angle, speed)
-    # (Line 130) }
-    # (Line 132) function getWeapon(unitType);
+    # (Line 161) function boom(unitType, locID)
 
-# (Line 133) function boom(unitType, locID)
-# (Line 134) {
+# (Line 162) {
 @EUDFunc
 def f_boom(unitType, locID):
-    # (Line 135) const bombUnit = 50;
+    # (Line 163) const bombUnit = 50;
     bombUnit = 50
-    # (Line 137) tankWeapon.setWeapon(unitType);
-    tankWeapon.f_setWeapon(unitType)
-    # (Line 139) const unitEpd = epdread_epd(EPD(0x628438));
+    # (Line 165) const effectUnit = tankWeapon.setWeapon(unitType);
+    effectUnit = tankWeapon.f_setWeapon(unitType)
+    # (Line 167) const unitEpd = epdread_epd(EPD(0x628438));
     unitEpd = f_epdread_epd(EPD(0x628438))
-    # (Line 141) CreateUnitWithProperties(1, bombUnit, locID+1, $P7, UnitProperty(invincible=true));
+    # (Line 169) CreateUnitWithProperties(1, bombUnit, locID+1, $P7, UnitProperty(invincible=true));
     DoActions(CreateUnitWithProperties(1, bombUnit, locID + 1, 6, UnitProperty(invincible=True)))
-    # (Line 142) const unitPos = dwread_epd(unitEpd + 0x28/4);
+    # (Line 170) const unitPos = dwread_epd(unitEpd + 0x28/4);
     unitPos = f_dwread_epd(unitEpd + 0x28 // 4)
-    # (Line 144) dwwrite_epd(unitEpd + 0x58/4, unitPos);
+    # (Line 172) dwwrite_epd(unitEpd + 0x58/4, unitPos);
     f_dwwrite_epd(unitEpd + 0x58 // 4, unitPos)
-    # (Line 145) utilEud.setOrderID(unitEpd, 135);
+    # (Line 173) utilEud.setOrderID(unitEpd, 135);
     utilEud.f_setOrderID(unitEpd, 135)
-    # (Line 146) }
-    # (Line 148) function getBullet(unitType, num)
+    # (Line 174) if(effectUnit != -1)
+    if EUDIf()(effectUnit == -1, neg=True):
+        # (Line 175) {
+        # (Line 176) const effectEpd = epdread_epd(EPD(0x628438));
+        effectEpd = f_epdread_epd(EPD(0x628438))
+        # (Line 177) CreateUnitWithProperties(1, effectUnit, locID+1, $P7, UnitProperty(invincible=true));
+        DoActions(CreateUnitWithProperties(1, effectUnit, locID + 1, 6, UnitProperty(invincible=True)))
+        # (Line 178) dwwrite_epd(effectEpd + 0x58/4, unitPos);
+        f_dwwrite_epd(effectEpd + 0x58 // 4, unitPos)
+        # (Line 179) utilEud.setOrderID(effectEpd, 135);
+        utilEud.f_setOrderID(effectEpd, 135)
+        # (Line 180) }
+        # (Line 181) }
+    EUDEndIf()
+    # (Line 183) function getBullet(unitType, num)
 
-# (Line 149) {
+# (Line 184) {
 @EUDFunc
 def f_getBullet(unitType, num):
-    # (Line 150) if(unitType == header.Dragoon){
-    if EUDIf()(unitType == header.Dragoon):
-        # (Line 151) if(num) return 60;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(60)
-            # (Line 152) else    return 70;   //bullet2
-        if EUDElse()():
-            EUDReturn(70)
-            # (Line 153) }
+    # (Line 185) for (var i = 0; i<header.ListNum; i++)
+    i = EUDVariable()
+    i << (0)
+    if EUDWhile()(i >= header.ListNum, neg=True):
+        def _t2():
+            i.__iadd__(1)
+        # (Line 186) {
+        # (Line 187) const index = i*3;
+        index = i * 3
+        # (Line 188) if(header.List[index] == unitType)
+        if EUDIf()(header.List[index] == unitType):
+            # (Line 189) if(num) return header.List[index+1];
+            if EUDIf()(num):
+                EUDReturn(header.List[index + 1])
+                # (Line 190) else return header.List[index+2];
+            if EUDElse()():
+                EUDReturn(header.List[index + 2])
+                # (Line 191) }
+            EUDEndIf()
         EUDEndIf()
-        # (Line 154) else if(unitType == header.Reaver){
-    if EUDElseIf()(unitType == header.Reaver):
-        # (Line 155) if(num) return 71;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(71)
-            # (Line 156) else    return 69;   //bullet2
-        if EUDElse()():
-            EUDReturn(69)
-            # (Line 157) }
-        EUDEndIf()
-        # (Line 158) else if(unitType == header.Ursadon){
-    if EUDElseIf()(unitType == header.Ursadon):
-        # (Line 159) if(num) return 94;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(94)
-            # (Line 160) else    return 95;   //bullet2
-        if EUDElse()():
-            EUDReturn(95)
-            # (Line 161) }
-        EUDEndIf()
-        # (Line 162) else if(unitType == header.Darchon){
-    if EUDElseIf()(unitType == header.Darchon):
-        # (Line 163) if(num) return 72;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(72)
-            # (Line 164) else    return 80;   //bullet2
-        if EUDElse()():
-            EUDReturn(80)
-            # (Line 165) }
-        EUDEndIf()
-        # (Line 166) else if(unitType == header.Devourer){
-    if EUDElseIf()(unitType == header.Devourer):
-        # (Line 167) if(num) return 43;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(43)
-            # (Line 168) else    return 44;   //bullet2
-        if EUDElse()():
-            EUDReturn(44)
-            # (Line 169) }
-        EUDEndIf()
-        # (Line 170) else if(unitType == header.Tank){
-    if EUDElseIf()(unitType == header.Tank):
-        # (Line 171) if(num) return 12;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(12)
-            # (Line 172) else    return 8;   //bullet2
-        if EUDElse()():
-            EUDReturn(8)
-            # (Line 173) }
-        EUDEndIf()
-        # (Line 174) else if(unitType == header.Goliath){
-    if EUDElseIf()(unitType == header.Goliath):
-        # (Line 175) if(num) return 9;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(9)
-            # (Line 176) else    return 28;   //bullet2
-        if EUDElse()():
-            EUDReturn(28)
-            # (Line 177) }
-        EUDEndIf()
-        # (Line 178) else if(unitType == header.Vulture){
-    if EUDElseIf()(unitType == header.Vulture):
-        # (Line 179) if(num) return 11;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(11)
-            # (Line 180) else    return 21;   //bullet2
-        if EUDElse()():
-            EUDReturn(21)
-            # (Line 181) }
-        EUDEndIf()
-        # (Line 182) else if(unitType == header.Lurker){
-    if EUDElseIf()(unitType == header.Lurker):
-        # (Line 183) if(num) return 45;   //bullet1
-        if EUDIf()(num):
-            EUDReturn(45)
-            # (Line 184) else    return 47;   //bullet2
-        if EUDElse()():
-            EUDReturn(47)
-            # (Line 185) }
-        EUDEndIf()
-        # (Line 186) else if(unitType == header.Ultralisk){
-    if EUDElseIf()(unitType == header.Ultralisk):
-        # (Line 187) if(num) return 42;   //bullet1 overlord
-        if EUDIf()(num):
-            EUDReturn(42)
-            # (Line 188) else    return 57;   //bullet2
-        if EUDElse()():
-            EUDReturn(57)
-            # (Line 189) }
-        EUDEndIf()
-        # (Line 190) }
-    EUDEndIf()
+        # (Line 192) }
+        EUDSetContinuePoint()
+        _t2()
+    EUDEndWhile()

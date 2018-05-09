@@ -132,25 +132,38 @@ Flag = _CGFW(lambda: [215], 1)[0]
 shootNum = _CGFW(lambda: [23], 1)[0]
 # (Line 10) const maxbuildtime = 100;
 maxbuildtime = _CGFW(lambda: [100], 1)[0]
-# (Line 12) const Dragoon 	= 66;
-Dragoon = _CGFW(lambda: [66], 1)[0]
-# (Line 13) const Reaver 	= 83;
-Reaver = _CGFW(lambda: [83], 1)[0]
-# (Line 14) const Ursadon 	= 96;
-Ursadon = _CGFW(lambda: [96], 1)[0]
-# (Line 15) const Darchon 	= 63;
-Darchon = _CGFW(lambda: [63], 1)[0]
-# (Line 16) const Devourer 	= 46;
-Devourer = _CGFW(lambda: [46], 1)[0]
-# (Line 17) const Tank 		= 5;
-Tank = _CGFW(lambda: [5], 1)[0]
-# (Line 18) const Goliath 	= 3;
-Goliath = _CGFW(lambda: [3], 1)[0]
-# (Line 19) const Vulture 	= 2;
-Vulture = _CGFW(lambda: [2], 1)[0]
-# (Line 20) const Lurker 	= 103;
-Lurker = _CGFW(lambda: [103], 1)[0]
-# (Line 21) const Ultralisk = 39;
-Ultralisk = _CGFW(lambda: [39], 1)[0]
-# (Line 23) const List = [66, 83, 96, 63, 46, 5, 3, 2, 103, 39];
-List = _CGFW(lambda: [_ARR(FlattenList([66, 83, 96, 63, 46, 5, 3, 2, 103, 39]))], 1)[0]
+# (Line 12) const tankDr = 66;
+tankDr = _CGFW(lambda: [66], 1)[0]
+# (Line 13) const tankRe = 83;
+tankRe = _CGFW(lambda: [83], 1)[0]
+# (Line 14) const tankUr = 96;
+tankUr = _CGFW(lambda: [96], 1)[0]
+# (Line 15) const tankDA = 63;
+tankDA = _CGFW(lambda: [63], 1)[0]
+# (Line 16) const tankDe = 46;
+tankDe = _CGFW(lambda: [46], 1)[0]
+# (Line 17) const tankST = 5;
+tankST = _CGFW(lambda: [5], 1)[0]
+# (Line 18) const tankGo = 3;
+tankGo = _CGFW(lambda: [3], 1)[0]
+# (Line 19) const tankVu = 2;
+tankVu = _CGFW(lambda: [2], 1)[0]
+# (Line 20) const tankLu = 103;
+tankLu = _CGFW(lambda: [103], 1)[0]
+# (Line 21) const tankUl = 39;
+tankUl = _CGFW(lambda: [39], 1)[0]
+# (Line 23) const ListNum = 10;
+ListNum = _CGFW(lambda: [10], 1)[0]
+# (Line 24) const List = [
+# (Line 26) tankDr,	60,	70, //0 1 2
+# (Line 27) tankRe,	69, 71,
+# (Line 28) tankUr,	95,	94,
+# (Line 29) tankDA,	72,	80,
+# (Line 30) tankDe,	43,	44,
+# (Line 31) tankST,	8, 	12,
+# (Line 32) tankGo,	9,	28,
+# (Line 33) tankVu,	11,	21,
+# (Line 34) tankLu,	45,	47,
+# (Line 35) tankUl,	57, 42	 //27 28 29
+# (Line 36) ];
+List = _CGFW(lambda: [_ARR(FlattenList([tankDr, 60, 70, tankRe, 69, 71, tankUr, 95, 94, tankDA, 72, 80, tankDe, 43, 44, tankST, 8, 12, tankGo, 9, 28, tankVu, 11, 21, tankLu, 45, 47, tankUl, 57, 42]))], 1)[0]

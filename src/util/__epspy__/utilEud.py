@@ -267,3 +267,38 @@ def f_getRemainingBuildtime(unitEpd):
     # (Line 83) return wread_epd(unitEpd + 0x0AC / 4,  0x0AC % 4);
     EUDReturn(f_wread_epd(unitEpd + 0x0AC // 4, 0x0AC % 4))
     # (Line 84) }
+    # (Line 86) function CenterViewAll(locID)
+
+# (Line 87) {
+@EUDFunc
+def CenterViewAll(locID):
+    # (Line 88) EUDPlayerLoop()();
+    EUDPlayerLoop()()
+    # (Line 89) CenterView(locID+1);
+    DoActions(CenterView(locID + 1))
+    # (Line 90) EUDEndPlayerLoop();
+    EUDEndPlayerLoop()
+    # (Line 91) }
+    # (Line 93) function isAtLocation(unitEpd, locID)
+
+# (Line 94) {
+@EUDFunc
+def f_isAtLocation(unitEpd, locID):
+    # (Line 95) const x, y = getUnitXY(unitEpd);
+    x, y = List2Assignable([f_getUnitXY(unitEpd)])
+    # (Line 96) const l = dwread_epd(EPD(0x58DC60) + 5 * locID);
+    l = f_dwread_epd(EPD(0x58DC60) + 5 * locID)
+    # (Line 97) const t = dwread_epd(EPD(0x58DC60) + 5 * locID + 1);
+    t = f_dwread_epd(EPD(0x58DC60) + 5 * locID + 1)
+    # (Line 98) const r = dwread_epd(EPD(0x58DC60) + 5 * locID + 2);
+    r = f_dwread_epd(EPD(0x58DC60) + 5 * locID + 2)
+    # (Line 99) const d = dwread_epd(EPD(0x58DC60) + 5 * locID + 3);
+    d = f_dwread_epd(EPD(0x58DC60) + 5 * locID + 3)
+    # (Line 101) if(x > l && y > t && x < r && y < d) return 1;
+    if EUDIf()(EUDSCAnd()(x <= l, neg=True)(y <= t, neg=True)(x >= r, neg=True)(y >= d, neg=True)()):
+        EUDReturn(1)
+        # (Line 102) else return 0;
+    if EUDElse()():
+        EUDReturn(0)
+        # (Line 103) }
+    EUDEndIf()

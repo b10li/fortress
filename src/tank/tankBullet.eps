@@ -4,9 +4,9 @@ import util.utilMath;
 import tank.tankAim;
 import tank.tankWeapon;
 import physics;
+import sound.emplayer;
 
-
-const TOPSPEED = 30;
+const TOPSPEED = 46;
 const BOTSPEED = 2;
 // physics -----------------------------------------------------
 const gravity = 1;
@@ -41,17 +41,40 @@ function renderBullet(wind)
             const locID = $L('locBullet');
             const unitEpd = pTargetArray[i];
             const unitType = utilEud.getUnitType(unitEpd);
+
             physics.renderUnit(unitEpd, 1);
             MoveLocation(locID+1, unitType, $P7, $L('locDst')+1);
-            if(pTargetArray[0]) CenterView(locID+1);
-            //collision
+            if(pTargetArray[0]) utilEud.CenterViewAll(locID);
+//탱크와의 거리x, 현재 위치 playarea 와의 비교
+            
             if(Bring($P8, AtLeast, 1, '(buildings)', locID+1)
                 || Bring($Force1, AtLeast, 1, '(men)', locID+1)
-                || Bring($Force3, AtLeast, 1, '(men)', locID+1))
-            {
+                /*|| Bring($Force3, AtLeast, 1, '(men)', locID+1)*/)
+            {//collision
+                popmid(unitEpd);
+                if(unitType == header.List[2*3+1]
+                    || unitType == header.List[2*3+2]
+                    || unitType == header.List[9*3+1]) 
+                {
+                    KillUnit(unitType, $P7);
+                }
+                else RemoveUnitAt(1, '(men)', locID+1, $P7);
+                //mine or not
+                if(unitType == header.List[7*3+2]) 
+                    CreateUnitWithProperties(1, 13, locID+1, $P8, UnitProperty(invincible = true));
+                else if(unitType == header.List[9*3+2])
+                {//overlord
+                    const gasEpd = epdread_epd(EPD(0x628438));
+                    CreateUnitWithProperties(1, 84, locID+1, $P8, UnitProperty(invincible = true));
+                    bwrite_epd(gasEpd + 0x118 / 4,  0x118 % 4, 1000);
+                    wwrite_epd(gasEpd + 0x110 / 4,  0x110 % 4, 1010);
+                }
+                else boom(unitType, locID);
+            }
+            else if(!utilEud.isAtLocation(unitEpd, $L('PlayArea')))
+            {// out of playarea
                 popmid(unitEpd);
                 RemoveUnitAt(1, '(men)', locID+1, $P7);
-                boom(unitType, locID);
             }
             else
             {
@@ -59,16 +82,18 @@ function renderBullet(wind)
                 // speed limit
                 vx = speedLimit(vx);
                 vy = speedLimit(vy);
-                const nw = 2- wind/2;
+
+                var nw, ng;
                 // slower accleration
-                if(framebool == 0) physics.setVxy(unitEpd, vx, vy + gravity);
-                else if(framebool == 1) physics.setVxy(unitEpd, vx, vy);
-                else if(framebool == 2) physics.setVxy(unitEpd, vx, vy);
-                else physics.setVxy(unitEpd, vx + nw, vy + gravity);
-                framebool = (framebool+1)%4;
+                if(framebool % 2) ng = 0;
+                else ng = 1;
+                if(framebool == 0) nw = 2- wind/2;
+                else nw = 0;
+                physics.setVxy(unitEpd, vx + nw, vy + gravity);
             }
         }
     }
+    framebool = (framebool+1)%6;
 }
 function speedLimit(v)
 {
@@ -79,6 +104,7 @@ function speedLimit(v)
     }
     return v;
 }
+
 // shoot & create ----------------------------------------------------
 
 function getBullet(unitType, num);
@@ -99,7 +125,7 @@ function makeBullet(unitType, x, y, angle, speed)
     const locID = $L('locBullet');
     utilEud.moveLocationXY(locID, x, y);
     const unitEpd = epdread_epd(EPD(0x628438));
-    CreateUnit(1, unitType, locID+1, $P7);
+    CreateUnitWithProperties(1, unitType, locID+1, $P7, UnitProperty(invincible=true));
     // speed : 100(max) = x : 32(maxspeed)
     // and +minimum
     const changedSpeed = TOPSPEED * speed/100 + BOTSPEED;
@@ -114,27 +140,29 @@ function shoot(unitEpd)
     // shoot from distances
     const speed = utilEud.getKillCount(unitEpd); //killcount
     const angle = tankAim.getAngle(unitEpd);
-    const dx, dy = lengthdir(32, angle);
+    
     const targetPlayer = utilEud.getPlayerID(unitEpd);
     const unitType = utilEud.getUnitType(unitEpd);
     const bullet = getBullet(unitType, utilEud.getDeath(targetPlayer, header.bulletQ));
-    // 총알 종류에 따른 다양한 생성
-    if(bullet == 47)
-    {
-        for (var i=1; i<4; i++){
-            makeBullet(bullet, x+dx, y+dy, angle+i, speed);
-        }
-    }
-    if(unitType == header.Devourer) makeBullet(bullet, x+dx, y+dy + 32, angle, speed);
-    makeBullet(bullet, x+dx, y+dy, angle, speed);
-}
 
-function getWeapon(unitType);
+    emplayer.shootEffectMusic(bullet);
+    // 총알 종류에 따른 다양한 생성
+    var dx, dy = lengthdir(32, angle);
+    makeBullet(bullet, x+dx, y+dy, angle, speed);
+    if(bullet == header.List[8*3+2]) // tankLu 2
+    {
+    	for (var i=1; i<4; i++) 
+    	{
+    		dx, dy = lengthdir(32 + i*8, angle);
+    		makeBullet(bullet, x+dx, y+dy, angle, speed);
+    	}
+	}
+}
 function boom(unitType, locID)
 {
     const bombUnit = 50;
     //change Weapon
-    tankWeapon.setWeapon(unitType);
+    const effectUnit = tankWeapon.setWeapon(unitType);
     //dwwrite(0x6564E0 + 1992 + 54 * 4, 150);
     const unitEpd = epdread_epd(EPD(0x628438));
     //create
@@ -143,48 +171,22 @@ function boom(unitType, locID)
     //suicide attack
     dwwrite_epd(unitEpd + 0x58/4, unitPos);
     utilEud.setOrderID(unitEpd, 135);
+    if(effectUnit != -1)
+    {
+        const effectEpd = epdread_epd(EPD(0x628438));
+        CreateUnitWithProperties(1, effectUnit, locID+1, $P7, UnitProperty(invincible=true));
+        dwwrite_epd(effectEpd + 0x58/4, unitPos);
+        utilEud.setOrderID(effectEpd, 135);
+    }
 }
 // 무기
 function getBullet(unitType, num)
 {
-    if(unitType == header.Dragoon){
-        if(num) return 60;   //bullet1
-        else    return 70;   //bullet2
-    }
-    else if(unitType == header.Reaver){
-        if(num) return 71;   //bullet1
-        else    return 69;   //bullet2
-    }
-    else if(unitType == header.Ursadon){
-        if(num) return 94;   //bullet1
-        else    return 95;   //bullet2
-    }
-    else if(unitType == header.Darchon){
-        if(num) return 72;   //bullet1
-        else    return 80;   //bullet2
-    }
-    else if(unitType == header.Devourer){
-        if(num) return 43;   //bullet1
-        else    return 44;   //bullet2
-    }
-    else if(unitType == header.Tank){
-        if(num) return 12;   //bullet1
-        else    return 8;   //bullet2
-    }
-    else if(unitType == header.Goliath){
-        if(num) return 9;   //bullet1
-        else    return 28;   //bullet2
-    }
-    else if(unitType == header.Vulture){
-        if(num) return 11;   //bullet1
-        else    return 21;   //bullet2
-    }
-    else if(unitType == header.Lurker){
-        if(num) return 45;   //bullet1
-        else    return 47;   //bullet2
-    }
-    else if(unitType == header.Ultralisk){
-        if(num) return 42;   //bullet1 overlord
-        else    return 57;   //bullet2
+    for (var i = 0; i<header.ListNum; i++)
+    {
+        const index = i*3;
+        if(header.List[index] == unitType)
+            if(num) return header.List[index+1];
+            else return header.List[index+2];
     }
 }

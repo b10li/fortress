@@ -4,7 +4,7 @@ import customText3 as ct;
 
 
 
-
+function showTankInfo(unitType, targetPlayer);
 function isSelecting()
 {
     if(Bring($Force1, AtLeast, 1, header.Flag, $L('preTurn')+1)
@@ -26,121 +26,15 @@ function getSelection(targetPlayer)
         return 0;
 }
 
-function showTankInfo(unitType, targetPlayer)
-{
-    //None
-   
-    if (unitType == 0)
-    {
-        const chatPtr = dwread_epd(EPD(0x640B58));
-        ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-        ct.printP(targetPlayer, "\x13원하는 탱크를 마우스로 클릭해주세요");
-        dwwrite_epd(EPD(0x640B58), chatPtr);
-    }
-    else
-    {
-        const chatPtr = dwread_epd(EPD(0x640B58));
-        //Dragoon
-        if(unitType == header.Dragoon)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
-        }
-        //Reaver
-        else if(unitType == header.Reaver)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07립탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01기어다님");
-        }
-        //Ursadon
-        else if(unitType == header.Ursadon)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07곰탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01귀여움");
-        }
-        //Darchon
-        else if(unitType == header.Darchon)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01당하면 화남");
-        }
-        //Devourer
-        else if(unitType == header.Devourer)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07딥탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03문제: \x01디바가 울면?");
-        }
-        //Tank
-        else if(unitType == header.Tank)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07탱크\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01시즈 못함");
-        }
-        //Goliath
-        else if(unitType == header.Goliath)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07골탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
-        }
-        //Vulture
-        else if(unitType == header.Vulture)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07벌탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01마인 시벌탱");
-        }
-        //Lurker
-        else if(unitType == header.Lurker)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07럴탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■■□");
-            ct.printP(targetPlayer, "\x03특징: \x01숨어있음");
-        }
-        //Ultralisk
-        else if(unitType == header.Ultralisk)
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13[ \x07울탱\x01 ]");
-            ct.printP(targetPlayer, "\x13공격: \x08■■■□□");
-            ct.printP(targetPlayer, "\x03상식: \x01돼지는 하늘을 못본다");
-        }
-        else 
-        {
-            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
-            ct.printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요");
-        }
-        ct.printP(targetPlayer, "");
-        ct.printP(targetPlayer, "\x13\x07[ L ] : \x01선택");
-        dwwrite_epd(EPD(0x640B58), chatPtr);
-    }
-    return unitType;
-}
 
 function isListed(unitType)
 {
     for(var i=0; i<10; i++)
     {
-        if(header.List[i] == unitType) return 1;
+        if(header.List[i*3] == unitType) return 1;
     }
     return 0;
 }
-
 function selectScreen()
 {
     EUDPlayerLoop()();
@@ -164,4 +58,120 @@ function selectScreen()
         }
     }
     EUDEndPlayerLoop();
+}
+
+function showTankInfo(unitType, targetPlayer)
+{
+    //None
+   
+    if (unitType == 0)
+    {
+        const chatPtr = dwread_epd(EPD(0x640B58));
+        ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+        ct.printP(targetPlayer, "\x13원하는 탱크를 마우스로 클릭해주세요");
+        dwwrite_epd(EPD(0x640B58), chatPtr);
+    }
+    else
+    {
+        const chatPtr = dwread_epd(EPD(0x640B58));
+        //dragoon
+        if(unitType == header.tankDr)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07빡탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 사람 잘 죽임");
+            ct.printP(targetPlayer, "\x13특수탄: 지형도 잘 부숨");
+            ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
+        }
+        //rea ver
+        else if(unitType == header.tankRe)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07립탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 사람 좀 죽임");
+            ct.printP(targetPlayer, "\x13특수탄: 지형은 잘 부숨");
+            ct.printP(targetPlayer, "\x03특징: \x01기어다님");
+        }
+        //tankUr
+        else if(unitType == header.tankUr)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07곰탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 사람 좀 죽임");
+            ct.printP(targetPlayer, "\x13특수탄: 지랄 발광함");
+            ct.printP(targetPlayer, "\x03특징: \x01귀여움");
+        }
+        //dark archon
+        else if(unitType == header.tankDA)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07빨탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 마엘스톰 검");
+            ct.printP(targetPlayer, "\x13특수탄: 지형 좀 부숨");
+            ct.printP(targetPlayer, "\x03참고: \x01난 큰게 좋더라");
+        }
+        //defiler
+        else if(unitType == header.tankDe)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07딥탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 사람 확 죽임");
+            ct.printP(targetPlayer, "\x13특수탄: 지형 꽤 부숨");
+            ct.printP(targetPlayer, "\x03문제: \x01디바가 울면?");
+        }
+        //seidgeTank
+        else if(unitType == header.tankST)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07시즈탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 쾅");
+            ct.printP(targetPlayer, "\x13특수탄: 콰쾅");
+            ct.printP(targetPlayer, "\x03특징: \x01근데 시즈 못함");
+        }
+        //goliath
+        else if(unitType == header.tankGo)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07골탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 준 저격탄");
+            ct.printP(targetPlayer, "\x13특수탄: 지형만 부숨");
+            ct.printP(targetPlayer, "\x03특징: \x01길 못찾음");
+        }
+        //vulture
+        else if(unitType == header.tankVu)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07벌탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 마인 야캐요");
+            ct.printP(targetPlayer, "\x13특수탄: 지형 ㄹㅇ 잘 부숨");
+            ct.printP(targetPlayer, "\x03특징: \x01마인 시벌탱");
+        }
+        //lurker
+        else if(unitType == header.tankLu)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07럴탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 탄이 다섯개!");
+            ct.printP(targetPlayer, "\x13특수탄: 맞으면 느려짐");
+            ct.printP(targetPlayer, "\x03특징: \x01숨어있음");
+        }
+        //ultralisk
+        else if(unitType == header.tankUl)
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13[ \x07울탱\x01 ]");
+            ct.printP(targetPlayer, "\x13일반탄: 사람 죽임?");
+            ct.printP(targetPlayer, "\x13특수탄: 고춧가루");
+            ct.printP(targetPlayer, "\x03상식: \x01돼지는 하늘을 못본다");
+        }
+        else 
+        {
+            ct.printP(targetPlayer, ""); // ct.cp는 모두에게 출력
+            ct.printP(targetPlayer, "\x13유닛을 마우스로 선택해주세요");
+        }
+        ct.printP(targetPlayer, "");
+        ct.printP(targetPlayer, "\x13\x07[ L ] : \x01선택");
+        dwwrite_epd(EPD(0x640B58), chatPtr);
+    }
+    return unitType;
 }
