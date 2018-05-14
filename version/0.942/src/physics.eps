@@ -1,0 +1,32 @@
+import util.utilEud;
+function getVxy(unitEpd)
+{
+	const vx = dwread_epd(unitEpd + 0xF8/4);
+	const vy = dwread_epd(unitEpd + 0xFC/4);
+	//union 부분, rally & psi field
+	return vx, vy;
+}
+
+function setVxy(unitEpd, vx, vy)
+{
+	dwwrite_epd(unitEpd + 0xF8/4, vx);
+	dwwrite_epd(unitEpd + 0xFC/4, vy);
+}
+
+function renderUnit(unitEpd, option)
+{// move unit
+	const vx, vy = getVxy(unitEpd);
+	if(vx != 0 || vy != 0)
+	{
+		const unitX, unitY = utilEud.getUnitXY(unitEpd);
+		const unitPos = (unitX + vx) + (unitY + vy)*65536;
+		utilEud.moveLocationXY($L('locPre'), unitX, unitY);
+		utilEud.moveLocationXY($L('locDst'), unitX + vx, unitY + vy);
+		MoveUnit(1, utilEud.getUnitType(unitEpd), utilEud.getPlayerID(unitEpd), $L('locPre')+1, $L('locDst')+1);
+		if(option)
+		{
+		    //unit facing
+            bwrite_epd(unitEpd + 0x021 / 4,  0x021 % 4, (atan2(vy, vx)*256/360 + 64)%256);
+		}
+	}
+}

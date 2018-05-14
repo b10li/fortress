@@ -1,0 +1,14 @@
+[main]
+input:Test.scx
+output:Test_Out.scx
+
+[MurakamiShiinaQC.py]
+I : Terran Marine, 1
+K : Terran Marine, 2
+J : Terran Marine, 4
+L : Terran Marine, 8
+
+[customText3.py]
+
+[src\main.eps]
+[eudTurbo]

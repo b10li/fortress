@@ -1,0 +1,70 @@
+import header;
+var ctime;
+
+function PlayAll(num)
+{
+   	EUDPlayerLoop()();
+    if(num == 0) PlayWAV('sound\\Bullet\\TTaFir00.wav');// tank fire
+    else if(num == 1) PlayWAV('sound\\Bullet\\tvuFir00.wav');//vulture fire
+    else if(num == 2) PlayWAV('sound\\Bullet\\HKMISSLE.wav');// missil fire
+    else if(num == 3) PlayWAV('sound\\Bullet\\TGoFi200.wav');// eneregy ball fire
+    else if(num == 4) PlayWAV('sound\\Bullet\\TTaFi200.wav');// tank sidge fire
+    else if(num == 5) PlayWAV('sound\\glue\\mousedown2.wav');// turn notice
+    else if(num == 6) PlayWAV('sound\\glue\\scorefillend.wav'); // count down
+    else if(num == 7) PlayWAV('sound\\Misc\\PError.WAV'); // count down
+    
+    EUDEndPlayerLoop();
+}
+
+function shootEffectMusic(bulletType)
+{
+    if(bulletType == header.List[0*3+1]) {PlayAll(3); return ;}//corsair
+    if(bulletType == header.List[0*3+2]) {PlayAll(3); return ;}//scout
+
+    if(bulletType == header.List[1*3+1]) {PlayAll(6); return ;}//shuttle
+    if(bulletType == header.List[1*3+2]) {PlayAll(3); return ;}//arbiter
+
+    if(bulletType == header.List[2*3+1]) {PlayAll(0); return ;}//rhyno
+    if(bulletType == header.List[2*3+2]) {PlayAll(0); return ;}//kakaru
+
+    if(bulletType == header.List[3*3+1]) {PlayAll(6); return ;}//carrier
+    if(bulletType == header.List[3*3+2]) {PlayAll(3); return ;}//mojo
+
+    if(bulletType == header.List[4*3+1]) {PlayAll(0); return ;}//mutal
+    if(bulletType == header.List[4*3+2]) {PlayAll(0); return ;}//guard
+
+    if(bulletType == header.List[5*3+1]) {PlayAll(4); return ;}//wraith
+    if(bulletType == header.List[5*3+2]) {PlayAll(0); return ;}//battle
+
+    if(bulletType == header.List[6*3+1]) {PlayAll(2); return ;}//SV
+    if(bulletType == header.List[6*3+2]) {PlayAll(2); return ;}//battle H
+
+    if(bulletType == header.List[7*3+1]) {PlayAll(1); return ;}//drop
+    if(bulletType == header.List[7*3+2]) {PlayAll(1); return ;}//mine H wraith
+
+    if(bulletType == header.List[8*3+1]) {PlayAll(0); return ;}//queen
+    if(bulletType == header.List[8*3+2]) {PlayAll(0); return ;}//scourge spine
+
+    if(bulletType == header.List[9*3+1]) {PlayAll(0); return ;}//over H
+    if(bulletType == header.List[9*3+2]) {PlayAll(0); return ;}//over
+
+}
+
+function getCountdown()
+{
+    for(var i=0; i<11; i++)
+        if(CountdownTimer(Exactly, i)) return i;
+}
+
+function timeAlert()
+{
+    if(CountdownTimer(AtMost, 10))
+    {
+        const time = getCountdown();
+        if(time != ctime)
+        {
+            ctime = time;
+            PlayAll(7);
+        }
+    }
+}
